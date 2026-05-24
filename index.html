@@ -153,9 +153,185 @@
       color: #fff;
       box-shadow: 0 4px 12px rgba(26, 61, 46, 0.35);
       transition: transform 0.15s, box-shadow 0.15s;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
     }
     .map-btn:active { transform: scale(0.97); }
     .map-btn:hover { box-shadow: 0 6px 16px rgba(26, 61, 46, 0.45); }
+    .map-btn.map-btn--water { background: linear-gradient(135deg, #2d7ab8, #1e5a8a); }
+    .map-btn.map-btn--earth { background: linear-gradient(135deg, #967244, #7a5c38); }
+
+    /* Maps iframe modal */
+    .maps-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    }
+    .maps-modal.open { display: flex; }
+    .maps-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 22, 18, 0.78);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    .maps-modal-panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 56rem;
+      height: min(86vh, 720px);
+      background: linear-gradient(160deg, #ffffff 0%, #f0f7f3 100%);
+      border: 3px solid #3d8a62;
+      border-radius: 1.25rem;
+      box-shadow: 0 24px 64px rgba(26, 61, 46, 0.35), 0 0 0 1px rgba(184, 221, 199, 0.4);
+      overflow: hidden;
+    }
+    .maps-modal-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 4rem 0.85rem 1.15rem;
+      background: linear-gradient(90deg, #1a3d2e, #2d6f4e);
+      color: #fff;
+      border-bottom: 2px solid #5aa67d;
+    }
+    .maps-modal-title {
+      font-family: Montserrat, Inter, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 0;
+    }
+    .maps-modal-close {
+      position: absolute;
+      top: 0.65rem;
+      right: 0.65rem;
+      z-index: 2;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 0.75rem;
+      border: 2px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 1.75rem;
+      line-height: 1;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .maps-modal-close:hover { background: rgba(255,255,255,0.28); }
+    .maps-modal-close:active { transform: scale(0.94); }
+    .maps-modal-frame-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: #dceee3;
+    }
+    .maps-type-toggle {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 3;
+      display: flex;
+      gap: 0.35rem;
+      padding: 0.25rem;
+      border-radius: 0.75rem;
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid #b8ddc7;
+      box-shadow: 0 4px 14px rgba(26, 61, 46, 0.2);
+    }
+    .maps-type-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      min-height: 2.75rem;
+      padding: 0.45rem 0.85rem;
+      border: none;
+      border-radius: 0.55rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2d6f4e;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .maps-type-btn:hover:not(.active) { background: #f0f7f3; }
+    .maps-type-btn.active {
+      background: linear-gradient(135deg, #2d6f4e, #1a3d2e);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(26, 61, 46, 0.35);
+    }
+    html.dark .maps-type-toggle {
+      background: rgba(26, 46, 38, 0.94) !important;
+      border-color: #3d8a62 !important;
+    }
+    html.dark .maps-type-btn { color: #b8ddc7 !important; }
+    html.dark .maps-type-btn:hover:not(.active) { background: #243d32 !important; }
+    html.dark .maps-type-btn.active {
+      background: linear-gradient(135deg, #3d8a62, #1a3d2e) !important;
+      color: #fff !important;
+    }
+    .maps-modal-frame-wrap iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .maps-modal-footer {
+      flex-shrink: 0;
+      padding: 0.65rem 1rem;
+      background: #f0f7f3;
+      border-top: 1px solid #b8ddc7;
+      text-align: center;
+    }
+    .maps-modal-external {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2d6f4e;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .maps-modal-external:hover { color: #1a3d2e; }
+    @media (max-width: 640px) {
+      .maps-modal { padding: 0; align-items: flex-end; }
+      .maps-modal-panel {
+        max-width: 100%;
+        width: 100%;
+        height: 94vh;
+        max-height: none;
+        border-radius: 1.25rem 1.25rem 0 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+      }
+    }
+    html.dark .maps-modal-panel {
+      background: linear-gradient(160deg, #1e3329 0%, #141f1a 100%) !important;
+      border-color: #5aa67d !important;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55) !important;
+    }
+    html.dark .maps-modal-header { background: linear-gradient(90deg, #122a20, #1a3d2e) !important; }
+    html.dark .maps-modal-frame-wrap { background: #1a2e26 !important; }
+    html.dark .maps-modal-footer { background: #1a2e26 !important; border-color: #2d4a3a !important; }
+    html.dark .maps-modal-external { color: #8bc4a4 !important; }
 
     .distance-badge {
       display: inline-flex;
@@ -265,7 +441,7 @@
       display: none;
     }
     @media print {
-      .nav-mobile, .nav-desktop, .no-print, .fab-emergency, .emergency-panel, .offline-banner { display: none !important; }
+      .nav-mobile, .nav-desktop, .no-print, .fab-emergency, .emergency-panel, .offline-banner, .maps-modal { display: none !important; }
       .print-toolbar { display: block !important; text-align: center; padding: 0.5rem; border-bottom: 2px solid #333; margin-bottom: 1rem; font-size: 10pt; }
       .main-offset { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
       .adventure-card { break-inside: avoid; box-shadow: none; border: 1px solid #999; page-break-inside: avoid; }
@@ -389,6 +565,30 @@
   </div>
 
   <button type="button" id="fab-emergency" class="fab-emergency no-print" aria-label="Abrir emergencias" title="Emergencias">🆘</button>
+
+  <!-- Modal mapas embebido -->
+  <div id="maps-modal" class="maps-modal no-print" role="dialog" aria-modal="true" aria-labelledby="maps-modal-title" aria-hidden="true">
+    <div class="maps-modal-backdrop" id="maps-modal-backdrop"></div>
+    <div class="maps-modal-panel">
+      <button type="button" id="maps-modal-close" class="maps-modal-close" aria-label="Cerrar mapa">×</button>
+      <div class="maps-modal-header">
+        <h2 id="maps-modal-title" class="maps-modal-title">Mapa</h2>
+      </div>
+      <div class="maps-modal-frame-wrap">
+        <div class="maps-type-toggle" role="group" aria-label="Tipo de mapa">
+          <button type="button" id="maps-type-road" class="maps-type-btn active" data-map-type="road" aria-pressed="true">🗺️ Mapa</button>
+          <button type="button" id="maps-type-satellite" class="maps-type-btn" data-map-type="satellite" aria-pressed="false">🛰️ Satélite</button>
+        </div>
+        <iframe id="maps-modal-iframe" title="Mapa embebido" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="maps-modal-footer">
+        <a id="maps-modal-external" href="#" target="_blank" rel="noopener" class="maps-modal-external">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
+          Abrir en App de Maps
+        </a>
+      </div>
+    </div>
+  </div>
 
   <div id="emergency-modal" class="emergency-panel no-print" role="dialog" aria-labelledby="emergency-title" aria-modal="true">
     <div class="emergency-panel-inner">
@@ -519,14 +719,14 @@
             </div>
           </dl>
           <div class="mt-5 flex flex-wrap gap-2">
-            <a href="https://maps.google.com/?q=Cazorla,+Jaén,+España" target="_blank" rel="noopener" class="map-btn">
+            <button type="button" class="map-btn" data-maps-q="Cazorla, Jaén, España" data-maps-title="Cazorla, Jaén">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-              Cazorla en Maps
-            </a>
-            <a href="https://maps.google.com/?q=Málaga,+España" target="_blank" rel="noopener" class="map-btn bg-earth-600 hover:opacity-90" style="background:linear-gradient(135deg,#967244,#7a5c38)">
+              Ver en Maps
+            </button>
+            <button type="button" class="map-btn map-btn--earth" data-maps-q="Málaga, España" data-maps-title="Origen: Málaga">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
-              Origen: Málaga
-            </a>
+              Ver en Maps · Málaga
+            </button>
           </div>
         </div>
       </article>
@@ -552,10 +752,10 @@
             <span class="distance-badge">📍 Camino Viejo de Tramaya</span>
             <span class="distance-badge">🛒 Compra previa en Cazorla pueblo</span>
           </div>
-          <a href="https://maps.google.com/?q=37.9180,-3.0080" target="_blank" rel="noopener" class="map-btn">
+          <button type="button" class="map-btn" data-maps-q="37.9180,-3.0080" data-maps-title="Cortijo Los Teatinos">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
-            Cortijo / Tramaya en Maps
-          </a>
+            Ver en Maps
+          </button>
           <div class="gps-block" data-lat="37.9180" data-lng="-3.0080" data-label="Cortijo Los Teatinos">
             <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS (Camino Viejo de Tramaya)</p>
             <p class="gps-coords mt-0.5">37.9180, -3.0080</p>
@@ -585,7 +785,7 @@
               <p class="text-xs font-bold text-forest-500 uppercase">Tarde</p>
               <p class="font-semibold text-forest-900 timeline-text">Llegada, check-in y paseo por el casco histórico</p>
               <p class="text-sm text-forest-600 mt-1">Cazorla Pueblo</p>
-              <a href="https://maps.google.com/?q=Casco+histórico+de+Cazorla,+Jaén" target="_blank" rel="noopener" class="map-btn mt-3 text-sm">Casco histórico · Maps</a>
+              <button type="button" class="map-btn mt-3 text-sm" data-maps-q="Casco histórico de Cazorla, Jaén" data-maps-title="Casco histórico de Cazorla">Ver en Maps</button>
             </div>
           </div>
         </div>
@@ -608,7 +808,7 @@
                 <span class="distance-badge">⏰ Salida recomendada 08:30</span>
                 <span class="distance-badge route-title">🎯 Meta: Cerrada de Elías</span>
               </div>
-              <a href="https://maps.google.com/?q=38.01505,-2.86491" target="_blank" rel="noopener" class="map-btn mt-3">Centro Visitantes · Maps</a>
+              <button type="button" class="map-btn mt-3" data-maps-q="38.01505,-2.86491" data-maps-title="Centro Visitantes Río Borosa">Ver en Maps</button>
               <div class="gps-block" data-lat="38.01505" data-lng="-2.86491" data-label="Centro Visitantes Río Borosa">
                 <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Centro Visitantes</p>
                 <p class="gps-coords mt-0.5">38.01505, -2.86491</p>
@@ -637,7 +837,7 @@
               <p class="text-xs font-bold text-earth-600 uppercase">Mañana</p>
               <p class="font-bold text-lg text-forest-900 timeline-text">Vía Ferrata «La Mocha»</p>
               <p class="text-sm text-forest-600 mt-1">Aventura vertical · Turisla (Cazorla)</p>
-              <a href="https://maps.google.com/?q=Turisla,+Cazorla,+Jaén" target="_blank" rel="noopener" class="map-btn mt-3">Turisla · Maps</a>
+              <button type="button" class="map-btn mt-3" data-maps-q="Turisla, Cazorla, Jaén" data-maps-title="Turisla">Ver en Maps</button>
             </div>
           </div>
         </div>
@@ -661,8 +861,8 @@
                 <span class="distance-badge">🍽️ Reserva Restaurante El Tranco</span>
               </div>
               <div class="flex flex-wrap gap-2 mt-3">
-                <a href="https://maps.google.com/?q=38.13333,-2.78333" target="_blank" rel="noopener" class="map-btn">Embalse · Maps</a>
-                <a href="https://maps.google.com/?q=38.1300,-2.7850" target="_blank" rel="noopener" class="map-btn" style="background:linear-gradient(135deg,#2d7ab8,#1e5a8a)">Centro Ocio · Maps</a>
+                <button type="button" class="map-btn" data-maps-q="38.13333,-2.78333" data-maps-title="Embalse del Tranco">Ver en Maps · Embalse</button>
+                <button type="button" class="map-btn map-btn--water" data-maps-q="38.1300,-2.7850" data-maps-title="Centro de Ocio El Tranco">Ver en Maps · Centro Ocio</button>
               </div>
               <div class="gps-block mt-3" data-lat="38.13333" data-lng="-2.78333" data-label="Embalse del Tranco">
                 <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Embalse del Tranco</p>
@@ -691,7 +891,7 @@
               <span class="timeline-dot"></span>
               <p class="font-bold text-lg text-forest-900 timeline-text">Kayak Opción B — Descenso de Río</p>
               <p class="text-sm text-forest-600 mt-1">Cazorla Aventur (Arroyo Frío) · Tramo «La Herradura»</p>
-              <a href="https://maps.google.com/?q=Cazorla+Aventur,+Arroyo+Frío" target="_blank" rel="noopener" class="map-btn mt-3">Cazorla Aventur · Maps</a>
+              <button type="button" class="map-btn map-btn--water mt-3" data-maps-q="Cazorla Aventur, Arroyo Frío" data-maps-title="Cazorla Aventur">Ver en Maps</button>
             </div>
           </div>
         </div>
@@ -714,7 +914,7 @@
                 <span class="distance-badge">🐐 Cabra montés</span>
                 <span class="distance-badge">🦅 Quebrantahuesos</span>
               </div>
-              <a href="https://maps.google.com/?q=Tierra+Venturas,+Cazorla" target="_blank" rel="noopener" class="map-btn mt-3">Tierra Venturas · Maps</a>
+              <button type="button" class="map-btn mt-3" data-maps-q="Tierra Venturas, Cazorla" data-maps-title="Tierra Venturas">Ver en Maps</button>
             </div>
           </div>
         </div>
@@ -878,28 +1078,28 @@
               <p class="font-bold text-forest-900">Turisla</p>
               <p class="text-sm text-forest-600">Ferrata y multiaventura · Cazorla</p>
             </div>
-            <a href="https://maps.google.com/?q=Turisla+Cazorla" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+            <button type="button" class="map-btn text-sm self-start" data-maps-q="Turisla, Cazorla" data-maps-title="Turisla">Ver en Maps</button>
           </li>
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-blue-50 border border-blue-100">
             <div>
               <p class="font-bold text-forest-900">Cazorla Aventur</p>
               <p class="text-sm text-forest-600">Río Guadalquivir · Arroyo Frío</p>
             </div>
-            <a href="https://maps.google.com/?q=Cazorla+Aventur+Arroyo+Frío" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+            <button type="button" class="map-btn map-btn--water text-sm self-start" data-maps-q="Cazorla Aventur, Arroyo Frío" data-maps-title="Cazorla Aventur">Ver en Maps</button>
           </li>
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-blue-50/80 border border-blue-100">
             <div>
               <p class="font-bold text-forest-900">Centro de Ocio El Tranco</p>
               <p class="text-sm text-forest-600">Embalse y kayak recreo</p>
             </div>
-            <a href="https://maps.google.com/?q=Centro+de+Ocio+El+Tranco" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+            <button type="button" class="map-btn map-btn--water text-sm self-start" data-maps-q="38.1300,-2.7850" data-maps-title="Centro de Ocio El Tranco">Ver en Maps</button>
           </li>
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-earth-50 border border-earth-100">
             <div>
               <p class="font-bold text-forest-900">Tierra Venturas</p>
               <p class="text-sm text-forest-600">Rutas 4×4 alta montaña · Cazorla</p>
             </div>
-            <a href="https://maps.google.com/?q=Tierra+Venturas+Cazorla" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+            <button type="button" class="map-btn text-sm self-start" data-maps-q="Tierra Venturas, Cazorla" data-maps-title="Tierra Venturas">Ver en Maps</button>
           </li>
         </ul>
       </article>
@@ -1265,6 +1465,127 @@
           el.prepend(span);
         }
       });
+
+      // —— Modal mapas embebido (iframe) ——
+      (function () {
+        var MAP_TYPE_KEY = 'cazorla-map-layer';
+        var mapsModal = document.getElementById('maps-modal');
+        var mapsIframe = document.getElementById('maps-modal-iframe');
+        var mapsTitle = document.getElementById('maps-modal-title');
+        var mapsExternal = document.getElementById('maps-modal-external');
+        var mapsClose = document.getElementById('maps-modal-close');
+        var mapsBackdrop = document.getElementById('maps-modal-backdrop');
+        var btnMapRoad = document.getElementById('maps-type-road');
+        var btnMapSatellite = document.getElementById('maps-type-satellite');
+        var currentMapsQuery = '';
+        var currentMapType = 'road';
+
+        function queryFromStandardUrl(url) {
+          try {
+            return new URL(url).searchParams.get('q') || '';
+          } catch (e) {
+            return '';
+          }
+        }
+
+        function loadMapTypePreference() {
+          try {
+            var saved = localStorage.getItem(MAP_TYPE_KEY);
+            return saved === 'satellite' ? 'satellite' : 'road';
+          } catch (e) {
+            return 'road';
+          }
+        }
+
+        function saveMapTypePreference(type) {
+          try { localStorage.setItem(MAP_TYPE_KEY, type); } catch (e) {}
+        }
+
+        function toEmbedSrc(query, mapType) {
+          var q = (query || '').trim();
+          if (!q) return '';
+          if (q.indexOf('google.com/maps/embed') !== -1) return q;
+          var src = 'https://maps.google.com/maps?q=' + encodeURIComponent(q) + '&hl=es&z=15&output=embed';
+          if (mapType === 'satellite') {
+            src += '&t=k';
+          } else {
+            src += '&t=m';
+          }
+          return src;
+        }
+
+        function toExternalHref(query) {
+          var q = (query || '').trim();
+          if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(q)) {
+            return 'https://maps.google.com/?q=' + q.replace(/\s/g, '') + '&nav=1';
+          }
+          return 'https://maps.google.com/?q=' + encodeURIComponent(q);
+        }
+
+        function updateMapTypeButtons() {
+          var isRoad = currentMapType === 'road';
+          btnMapRoad?.classList.toggle('active', isRoad);
+          btnMapSatellite?.classList.toggle('active', !isRoad);
+          btnMapRoad?.setAttribute('aria-pressed', isRoad ? 'true' : 'false');
+          btnMapSatellite?.setAttribute('aria-pressed', !isRoad ? 'true' : 'false');
+        }
+
+        function applyMapLayer() {
+          if (!currentMapsQuery || !mapsIframe) return;
+          mapsIframe.src = toEmbedSrc(currentMapsQuery, currentMapType);
+        }
+
+        function setMapType(type, persist) {
+          currentMapType = type === 'satellite' ? 'satellite' : 'road';
+          if (persist !== false) saveMapTypePreference(currentMapType);
+          updateMapTypeButtons();
+          applyMapLayer();
+        }
+
+        currentMapType = loadMapTypePreference();
+        updateMapTypeButtons();
+
+        btnMapRoad?.addEventListener('click', function () { setMapType('road'); });
+        btnMapSatellite?.addEventListener('click', function () { setMapType('satellite'); });
+
+        window.openMapsModal = function (query, title) {
+          if (!mapsModal || !mapsIframe) return;
+          currentMapsQuery = (query || '').trim();
+          currentMapType = loadMapTypePreference();
+          updateMapTypeButtons();
+          mapsTitle.textContent = title || 'Mapa';
+          mapsIframe.src = toEmbedSrc(currentMapsQuery, currentMapType);
+          mapsExternal.href = toExternalHref(currentMapsQuery);
+          mapsModal.classList.add('open');
+          mapsModal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+          mapsClose.focus();
+        };
+
+        function closeMapsModal() {
+          if (!mapsModal) return;
+          mapsModal.classList.remove('open');
+          mapsModal.setAttribute('aria-hidden', 'true');
+          mapsIframe.src = '';
+          document.body.style.overflow = '';
+        }
+
+        document.addEventListener('click', function (e) {
+          var btn = e.target.closest('.map-btn');
+          if (!btn) return;
+          var q = btn.dataset.mapsQ || (btn.href ? queryFromStandardUrl(btn.href) : '');
+          if (!q) return;
+          e.preventDefault();
+          var title = btn.dataset.mapsTitle || btn.textContent.replace(/^Ver en Maps\s*·?\s*/i, '').trim() || 'Mapa';
+          window.openMapsModal(q, title);
+        });
+
+        mapsClose?.addEventListener('click', closeMapsModal);
+        mapsBackdrop?.addEventListener('click', closeMapsModal);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && mapsModal.classList.contains('open')) closeMapsModal();
+        });
+      })();
 
       // —— Emergencia modal ——
       var modal = document.getElementById('emergency-modal');
