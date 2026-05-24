@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Planificación viaje Cazorla — Dashboard offline" />
+  <meta name="theme-color" content="#1a3d2e" />
+  <title>Cazorla · Escapada Julio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: { 50:'#f0f7f3', 100:'#dceee3', 200:'#b8ddc7', 300:'#8bc4a4', 400:'#5aa67d', 500:'#3d8a62', 600:'#2d6f4e', 700:'#24583f', 800:'#1a3d2e', 900:'#122a20' },
+            earth: { 50:'#faf6f1', 100:'#f0e6d8', 200:'#e0cdb3', 300:'#c9a97d', 400:'#b08a57', 500:'#967244', 600:'#7a5c38' },
+            stone: { 50:'#f8f9f7', 100:'#eef1ec', 200:'#d8dfd4' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Montserrat', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --nav-h-mobile: 4.25rem;
+      --nav-w-desktop: 15.5rem;
+      --read-scale: 1;
+    }
+    html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+    @media (min-width: 1024px) {
+      html { scroll-padding-top: 2rem; scroll-padding-left: calc(var(--nav-w-desktop) + 1rem); }
+    }
+    body.reading-mode {
+      --read-scale: 1.12;
+      font-size: calc(1rem * var(--read-scale));
+      line-height: 1.75;
+    }
+    body.reading-mode .card-body,
+    body.reading-mode .timeline-text { font-size: 1.05em; }
+    body.reading-mode h1 { font-size: 2rem; }
+    body.reading-mode h2 { font-size: 1.5rem; }
+    body.reading-mode h3 { font-size: 1.25rem; }
+
+    .main-offset { padding-bottom: calc(var(--nav-h-mobile) + 1.5rem); }
+    @media (min-width: 1024px) {
+      .main-offset {
+        margin-left: var(--nav-w-desktop);
+        padding-bottom: 2rem;
+      }
+    }
+
+    /* Nav */
+    .nav-mobile {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 50;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .nav-desktop {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: var(--nav-w-desktop);
+      z-index: 40;
+    }
+    .nav-link.active {
+      background: rgba(255,255,255,0.15);
+      border-left: 3px solid #b8ddc7;
+      font-weight: 600;
+    }
+    @media (max-width: 1023px) {
+      .nav-link.active {
+        border-left: none;
+        border-top: 3px solid #3d8a62;
+        background: #dceee3;
+        color: #1a3d2e;
+      }
+    }
+
+    /* Cards */
+    .adventure-card {
+      background: linear-gradient(145deg, #ffffff 0%, #f8f9f7 100%);
+      border: 1px solid #d8dfd4;
+      box-shadow: 0 4px 24px -4px rgba(26, 61, 46, 0.12), 0 2px 8px -2px rgba(26, 61, 46, 0.06);
+    }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.55rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 3px;
+      background: linear-gradient(180deg, #3d8a62, #967244, #3d8a62);
+      border-radius: 2px;
+    }
+    .timeline-item { position: relative; padding-bottom: 1.5rem; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      left: -1.65rem;
+      top: 0.35rem;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid #3d8a62;
+      box-shadow: 0 0 0 3px rgba(61, 138, 98, 0.2);
+    }
+    .timeline-item.highlight .timeline-dot {
+      border-color: #967244;
+      box-shadow: 0 0 0 4px rgba(150, 114, 68, 0.25);
+      width: 16px; height: 16px;
+      left: -1.72rem;
+    }
+
+    /* Checklist */
+    .check-item input:checked + label { text-decoration: line-through; opacity: 0.55; }
+    .check-item input:checked + label .check-box {
+      background: #3d8a62;
+      border-color: #3d8a62;
+    }
+    .check-item input:checked + label .check-box svg { opacity: 1; }
+    .check-box svg { opacity: 0; }
+
+    /* Map btn */
+    .map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      background: linear-gradient(135deg, #2d6f4e, #1a3d2e);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(26, 61, 46, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .map-btn:active { transform: scale(0.97); }
+    .map-btn:hover { box-shadow: 0 6px 16px rgba(26, 61, 46, 0.45); }
+
+    .distance-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #f0e6d8;
+      color: #7a5c38;
+      border: 1px solid #e0cdb3;
+    }
+
+    .gps-block {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: #f0f7f3;
+      border: 1px dashed #8bc4a4;
+      border-radius: 0.65rem;
+    }
+    .gps-coords {
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.85rem;
+      color: #1a3d2e;
+      letter-spacing: 0.02em;
+    }
+    .copy-coords-btn {
+      margin-top: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      background: #fff;
+      border: 1px solid #3d8a62;
+      color: #2d6f4e;
+      cursor: pointer;
+    }
+    .copy-coords-btn.copied { background: #dceee3; }
+
+    .route-icon { margin-right: 0.25rem; }
+
+    .fab-emergency {
+      position: fixed;
+      right: 1rem;
+      bottom: calc(var(--nav-h-mobile) + 1rem);
+      z-index: 60;
+      width: 3.5rem; height: 3.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      color: #fff;
+      font-size: 1.35rem;
+      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+      border: 3px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    @media (min-width: 1024px) {
+      .fab-emergency { bottom: 1.5rem; right: 1.5rem; }
+    }
+
+    .emergency-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .emergency-panel.open { display: flex; }
+    .emergency-panel-inner {
+      max-width: 28rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 1.25rem 1.25rem 0 0;
+      border-top: 4px solid #dc2626;
+      padding: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      .emergency-panel { align-items: center; }
+      .emergency-panel-inner { border-radius: 1.25rem; }
+    }
+
+    .offline-banner {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0.4rem 1rem;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #fef3c7;
+      color: #92400e;
+      transform: translateY(-100%);
+      transition: transform 0.3s;
+    }
+    .offline-banner.show { transform: translateY(0); }
+    .offline-banner.cached-ok { background: #dceee3; color: #1a3d2e; }
+
+    .print-toolbar {
+      display: none;
+    }
+    @media print {
+      .nav-mobile, .nav-desktop, .no-print, .fab-emergency, .emergency-panel, .offline-banner { display: none !important; }
+      .print-toolbar { display: block !important; text-align: center; padding: 0.5rem; border-bottom: 2px solid #333; margin-bottom: 1rem; font-size: 10pt; }
+      .main-offset { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
+      .adventure-card { break-inside: avoid; box-shadow: none; border: 1px solid #999; page-break-inside: avoid; }
+      body { font-size: 11pt; color: #000; background: #fff; }
+      .map-btn, .copy-coords-btn { display: none !important; }
+      .gps-block { border: 1px solid #666; background: #f5f5f5; }
+      .gps-coords { font-size: 10pt; }
+      h1, h2, h3 { color: #000 !important; }
+      .timeline::before { background: #666; }
+      #emergencia { display: block !important; break-before: page; }
+      .emergency-print-block { display: block !important; }
+    }
+    body.print-export .no-print-screen { opacity: 0.3; pointer-events: none; }
+  </style>
+</head>
+<body class="bg-stone-50 text-forest-900 font-sans antialiased min-h-screen">
+
+  <div id="offline-banner" class="offline-banner no-print" role="status"></div>
+
+  <div class="print-toolbar" aria-hidden="true">
+    <strong>Cazorla · Escapada Julio</strong> — Guía de campo (versión impresa) · Emergencias: 112
+  </div>
+
+  <button type="button" id="fab-emergency" class="fab-emergency no-print" aria-label="Abrir emergencias" title="Emergencias">🆘</button>
+
+  <div id="emergency-modal" class="emergency-panel no-print" role="dialog" aria-labelledby="emergency-title" aria-modal="true">
+    <div class="emergency-panel-inner">
+      <div class="flex justify-between items-start mb-3">
+        <h2 id="emergency-title" class="font-display text-xl font-bold text-red-700">Emergencias</h2>
+        <button type="button" id="close-emergency" class="text-2xl leading-none text-stone-400 hover:text-stone-700" aria-label="Cerrar">×</button>
+      </div>
+      <ul class="space-y-3 mb-4">
+        <li><a href="tel:112" class="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-200"><span class="text-2xl">🚨</span><div><p class="font-bold text-red-900">112</p><p class="text-sm text-red-700">Emergencias europeas</p></div></a></li>
+        <li><a href="tel:953710232" class="flex items-center gap-3 p-3 rounded-xl bg-stone-50 border"><span class="text-2xl">👮</span><div><p class="font-bold">Guardia Civil Cazorla</p><p class="text-sm font-mono">953 71 02 32</p></div></a></li>
+        <li><a href="tel:953366144" class="flex items-center gap-3 p-3 rounded-xl bg-stone-50 border"><span class="text-2xl">🏥</span><div><p class="font-bold">Centro de Salud (urgencias)</p><p class="text-sm font-mono">953 36 61 44</p></div></a></li>
+        <li><a href="tel:953028611" class="flex items-center gap-3 p-3 rounded-xl bg-stone-50 border"><span class="text-2xl">🏨</span><div><p class="font-bold">Hospital CHARE Cazorla</p><p class="text-sm font-mono">953 02 86 11</p></div></a></li>
+      </ul>
+      <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-950">
+        <p class="font-bold mb-1">Sin cobertura móvil</p>
+        <p>Usa las coordenadas GPS de este dashboard en tu navegador satelital. Reúne al grupo en un punto visible. Si hay herido, no mover salvo peligro inmediato. Deja señal visible (ropa brillante, silbato). El 112 funciona con cualquier operador aunque no tengas saldo.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop sidebar -->
+  <nav class="nav-desktop hidden lg:flex flex-col bg-forest-800 text-white shadow-xl" aria-label="Navegación principal">
+    <div class="p-5 border-b border-forest-700">
+      <p class="font-display font-bold text-lg leading-tight">Cazorla</p>
+      <p class="text-forest-300 text-sm mt-1">Julio · 8 personas</p>
+    </div>
+    <ul class="flex-1 overflow-y-auto py-3 text-sm" id="nav-desktop-list">
+      <li><a href="#resumen" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Resumen</a></li>
+      <li><a href="#alojamiento" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Alojamiento</a></li>
+      <li><a href="#itinerario" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Itinerario</a></li>
+      <li class="px-5 pt-2 pb-1 text-forest-400 text-xs uppercase tracking-wider">Días</li>
+      <li><a href="#dia-1" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 1</a></li>
+      <li><a href="#dia-2" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 2</a></li>
+      <li><a href="#dia-3" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 3</a></li>
+      <li><a href="#dia-4" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 4</a></li>
+      <li><a href="#dia-5" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 5</a></li>
+      <li><a href="#dia-6" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 6</a></li>
+      <li><a href="#dia-7" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 7</a></li>
+      <li><a href="#actividades" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Actividades</a></li>
+      <li><a href="#presupuesto" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Presupuesto</a></li>
+      <li><a href="#seguridad" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Seguridad</a></li>
+      <li><a href="#operadores" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Operadores</a></li>
+      <li><a href="#checklist" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Checklist</a></li>
+      <li><a href="#emergencia" class="nav-link block px-5 py-2.5 hover:bg-red-900/40 text-red-200 transition">Emergencia</a></li>
+    </ul>
+    <div class="p-4 border-t border-forest-700 no-print space-y-2">
+      <button type="button" id="toggle-reading-desktop" class="w-full py-2.5 px-3 rounded-lg bg-forest-600 hover:bg-forest-500 text-sm font-semibold transition flex items-center justify-center gap-2">
+        <span aria-hidden="true">☀️</span> Modo lectura
+      </button>
+      <button type="button" id="export-pdf-btn" class="w-full py-2.5 px-3 rounded-lg bg-earth-500 hover:bg-earth-400 text-sm font-semibold transition flex items-center justify-center gap-2 text-white">
+        <span aria-hidden="true">📄</span> Exportar PDF
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile bottom nav -->
+  <nav class="nav-mobile lg:hidden bg-white border-t border-stone-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] no-print" aria-label="Navegación móvil">
+    <div class="flex overflow-x-auto scrollbar-hide gap-0 px-1" id="nav-mobile-scroll">
+      <a href="#resumen" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5">🏕️</span> Inicio
+      </a>
+      <a href="#itinerario" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5">📅</span> Plan
+      </a>
+      <a href="#dia-2" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5">🥾</span> Día 2
+      </a>
+      <a href="#dia-4" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5">🛶</span> Kayak
+      </a>
+      <a href="#checklist" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5">✅</span> Lista
+      </a>
+      <a href="#emergencia" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-red-700 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5">🆘</span> SOS
+      </a>
+      <button type="button" id="toggle-reading-mobile" class="flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-earth-600 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5">☀️</span> Leer
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-offset max-w-3xl mx-auto px-4 py-6 lg:py-10 lg:px-8">
+
+    <!-- Hero -->
+    <header class="mb-8 relative overflow-hidden rounded-2xl adventure-card">
+      <div class="absolute inset-0 bg-gradient-to-br from-forest-700 via-forest-600 to-earth-500 opacity-95"></div>
+      <div class="absolute inset-0 opacity-20" style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.15\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+      <div class="relative p-6 sm:p-8 text-white">
+        <p class="text-forest-200 text-sm font-medium uppercase tracking-widest mb-2">Sierra de Cazorla · Jaén</p>
+        <h1 class="font-display text-2xl sm:text-3xl font-extrabold leading-tight">Escapada a Cazorla</h1>
+        <p class="mt-2 text-forest-100 text-lg">Última semana de julio</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="px-3 py-1 rounded-full bg-white/15 text-sm font-medium backdrop-blur">4 adultos + 4 adolescentes (13 años)</span>
+          <span class="px-3 py-1 rounded-full bg-white/15 text-sm font-medium backdrop-blur">2 familias</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. Resumen -->
+    <section id="resumen" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="h-1.5 bg-gradient-to-r from-forest-500 via-forest-400 to-earth-400"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center text-base">📋</span>
+            Resumen ejecutivo
+          </h2>
+          <dl class="grid sm:grid-cols-2 gap-4">
+            <div class="bg-forest-50 rounded-xl p-4 border border-forest-100">
+              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Destino</dt>
+              <dd class="mt-1 font-semibold text-forest-900">Sierra de Cazorla, Jaén</dd>
+            </div>
+            <div class="bg-earth-50 rounded-xl p-4 border border-earth-100">
+              <dt class="text-xs font-semibold uppercase text-earth-500 tracking-wide">Alojamiento</dt>
+              <dd class="mt-1 font-semibold text-forest-900">Cortijo Los Teatinos</dd>
+              <dd class="text-sm text-forest-600 mt-0.5">Cerca de Cazorla pueblo</dd>
+            </div>
+            <div class="bg-forest-50 rounded-xl p-4 border border-forest-100 sm:col-span-2">
+              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Perfil del viaje</dt>
+              <dd class="mt-1 text-forest-800 timeline-text">Viaje activo centrado en naturaleza, actividades acuáticas y logística optimizada para adolescentes.</dd>
+            </div>
+          </dl>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <a href="https://maps.google.com/?q=Cazorla,+Jaén,+España" target="_blank" rel="noopener" class="map-btn">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Cazorla en Maps
+            </a>
+            <a href="https://maps.google.com/?q=Málaga,+España" target="_blank" rel="noopener" class="map-btn bg-earth-600 hover:opacity-90" style="background:linear-gradient(135deg,#967244,#7a5c38)">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+              Origen: Málaga
+            </a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 2. Alojamiento -->
+    <section id="alojamiento" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="h-1.5 bg-earth-400"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-earth-100 flex items-center justify-center text-base">🏡</span>
+            Alojamiento y base
+          </h2>
+          <h3 class="font-display font-bold text-lg text-earth-600 mb-2">Cortijo Los Teatinos</h3>
+          <p class="text-forest-700 mb-3 timeline-text"><strong>Ubicación:</strong> Camino Viejo de Tramaya. Ubicación estratégica para evitar el tráfico de las zonas más masificadas de la sierra central.</p>
+          <ul class="space-y-2 text-forest-700 mb-4">
+            <li class="flex gap-2"><span class="text-forest-500">✓</span> Piscina privada (indispensable en julio)</li>
+            <li class="flex gap-2"><span class="text-forest-500">✓</span> Barbacoa y amplias zonas comunes para las dos familias</li>
+            <li class="flex gap-2"><span class="text-forest-500">✓</span> Acceso por carril — comprar víveres en Cazorla antes del check-in</li>
+          </ul>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="distance-badge">📍 Camino Viejo de Tramaya</span>
+            <span class="distance-badge">🛒 Compra previa en Cazorla pueblo</span>
+          </div>
+          <a href="https://maps.google.com/?q=37.9180,-3.0080" target="_blank" rel="noopener" class="map-btn">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Cortijo / Tramaya en Maps
+          </a>
+          <div class="gps-block" data-lat="37.9180" data-lng="-3.0080" data-label="Cortijo Los Teatinos">
+            <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS (Camino Viejo de Tramaya)</p>
+            <p class="gps-coords mt-0.5">37.9180, -3.0080</p>
+            <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 3. Itinerario overview + days -->
+    <section id="itinerario" class="mb-8 scroll-mt-20">
+      <h2 class="font-display text-xl font-bold text-forest-800 mb-4 px-1 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">📅</span>
+        Itinerario operativo
+      </h2>
+
+      <!-- Day 1 -->
+      <article id="dia-1" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
+        <div class="px-5 py-3 bg-forest-700 text-white flex justify-between items-center rounded-t-2xl">
+          <span class="font-display font-bold">Día 1</span>
+          <span class="text-forest-200 text-sm">Tarde</span>
+        </div>
+        <div class="p-5">
+          <div class="timeline">
+            <div class="timeline-item">
+              <span class="timeline-dot"></span>
+              <p class="text-xs font-bold text-forest-500 uppercase">Tarde</p>
+              <p class="font-semibold text-forest-900 timeline-text">Llegada, check-in y paseo por el casco histórico</p>
+              <p class="text-sm text-forest-600 mt-1">Cazorla Pueblo</p>
+              <a href="https://maps.google.com/?q=Casco+histórico+de+Cazorla,+Jaén" target="_blank" rel="noopener" class="map-btn mt-3 text-sm">Casco histórico · Maps</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 2 -->
+      <article id="dia-2" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
+        <div class="px-5 py-3 bg-forest-600 text-white flex justify-between items-center rounded-t-2xl">
+          <span class="font-display font-bold">Día 2</span>
+          <span class="text-forest-200 text-sm font-mono">08:00 – 13:30</span>
+        </div>
+        <div class="p-5">
+          <div class="timeline">
+            <div class="timeline-item highlight">
+              <span class="timeline-dot"></span>
+              <p class="text-xs font-bold text-earth-600 uppercase">Mañana temprano</p>
+              <p class="font-bold text-lg text-forest-900 timeline-text route-title">Ruta del Río Borosa</p>
+              <p class="text-sm text-forest-600 mt-1">La ruta más emblemática · Centro de Visitantes Río Borosa</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="distance-badge">⏰ Salida recomendada 08:30</span>
+                <span class="distance-badge route-title">🎯 Meta: Cerrada de Elías</span>
+              </div>
+              <a href="https://maps.google.com/?q=38.01505,-2.86491" target="_blank" rel="noopener" class="map-btn mt-3">Centro Visitantes · Maps</a>
+              <div class="gps-block" data-lat="38.01505" data-lng="-2.86491" data-label="Centro Visitantes Río Borosa">
+                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Centro Visitantes</p>
+                <p class="gps-coords mt-0.5">38.01505, -2.86491</p>
+                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
+              </div>
+              <div class="gps-block mt-2" data-lat="38.0128" data-lng="-2.8517" data-label="Cerrada de Elías">
+                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Cerrada de Elías (meta sendero)</p>
+                <p class="gps-coords mt-0.5">38.0128, -2.8517</p>
+                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 3 -->
+      <article id="dia-3" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
+        <div class="px-5 py-3 bg-earth-500 text-white flex justify-between items-center rounded-t-2xl">
+          <span class="font-display font-bold">Día 3</span>
+          <span class="text-earth-100 text-sm font-mono">09:30 – 13:00</span>
+        </div>
+        <div class="p-5">
+          <div class="timeline">
+            <div class="timeline-item highlight">
+              <span class="timeline-dot"></span>
+              <p class="text-xs font-bold text-earth-600 uppercase">Mañana</p>
+              <p class="font-bold text-lg text-forest-900 timeline-text">Vía Ferrata «La Mocha»</p>
+              <p class="text-sm text-forest-600 mt-1">Aventura vertical · Turisla (Cazorla)</p>
+              <a href="https://maps.google.com/?q=Turisla,+Cazorla,+Jaén" target="_blank" rel="noopener" class="map-btn mt-3">Turisla · Maps</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 4 -->
+      <article id="dia-4" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
+        <div class="px-5 py-3 bg-blue-700 text-white flex justify-between items-center rounded-t-2xl" style="background:linear-gradient(90deg,#1e5a8a,#2d7ab8)">
+          <span class="font-display font-bold">Día 4</span>
+          <span class="text-blue-100 text-sm font-mono">10:00 – 16:00</span>
+        </div>
+        <div class="p-5">
+          <div class="timeline">
+            <div class="timeline-item highlight">
+              <span class="timeline-dot"></span>
+              <p class="text-xs font-bold text-blue-700 uppercase">Jornada completa</p>
+              <p class="font-bold text-lg text-forest-900 timeline-text">Kayak Opción A — Embalse del Tranco</p>
+              <p class="text-sm text-forest-600 mt-1">+ Almuerzo · Centro de Ocio El Tranco</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="distance-badge">🚗 ~1 h desde el cortijo</span>
+                <span class="distance-badge">🍽️ Reserva Restaurante El Tranco</span>
+              </div>
+              <div class="flex flex-wrap gap-2 mt-3">
+                <a href="https://maps.google.com/?q=38.13333,-2.78333" target="_blank" rel="noopener" class="map-btn">Embalse · Maps</a>
+                <a href="https://maps.google.com/?q=38.1300,-2.7850" target="_blank" rel="noopener" class="map-btn" style="background:linear-gradient(135deg,#2d7ab8,#1e5a8a)">Centro Ocio · Maps</a>
+              </div>
+              <div class="gps-block mt-3" data-lat="38.13333" data-lng="-2.78333" data-label="Embalse del Tranco">
+                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Embalse del Tranco</p>
+                <p class="gps-coords mt-0.5">38.13333, -2.78333</p>
+                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
+              </div>
+              <div class="gps-block mt-2" data-lat="38.1300" data-lng="-2.7850" data-label="Centro de Ocio El Tranco">
+                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Centro de Ocio El Tranco</p>
+                <p class="gps-coords mt-0.5">38.1300, -2.7850</p>
+                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 5 -->
+      <article id="dia-5" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
+        <div class="px-5 py-3 bg-blue-600 text-white flex justify-between items-center rounded-t-2xl">
+          <span class="font-display font-bold">Día 5</span>
+          <span class="text-blue-100 text-sm font-mono">09:30 – 13:30</span>
+        </div>
+        <div class="p-5">
+          <div class="timeline">
+            <div class="timeline-item highlight">
+              <span class="timeline-dot"></span>
+              <p class="font-bold text-lg text-forest-900 timeline-text">Kayak Opción B — Descenso de Río</p>
+              <p class="text-sm text-forest-600 mt-1">Cazorla Aventur (Arroyo Frío) · Tramo «La Herradura»</p>
+              <a href="https://maps.google.com/?q=Cazorla+Aventur,+Arroyo+Frío" target="_blank" rel="noopener" class="map-btn mt-3">Cazorla Aventur · Maps</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 6 -->
+      <article id="dia-6" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
+        <div class="px-5 py-3 bg-forest-800 text-white flex justify-between items-center rounded-t-2xl">
+          <span class="font-display font-bold">Día 6</span>
+          <span class="text-forest-300 text-sm font-mono">18:00 – 22:00</span>
+        </div>
+        <div class="p-5">
+          <div class="timeline">
+            <div class="timeline-item highlight">
+              <span class="timeline-dot"></span>
+              <p class="text-xs font-bold text-forest-600 uppercase">Tarde / atardecer</p>
+              <p class="font-bold text-lg text-forest-900 timeline-text">Ruta 4×4 Zonas Restringidas</p>
+              <p class="text-sm text-forest-600 mt-1">Avistamiento fauna · Tierra Venturas · Reserva Gualay</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="distance-badge">🐐 Cabra montés</span>
+                <span class="distance-badge">🦅 Quebrantahuesos</span>
+              </div>
+              <a href="https://maps.google.com/?q=Tierra+Venturas,+Cazorla" target="_blank" rel="noopener" class="map-btn mt-3">Tierra Venturas · Maps</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 7 -->
+      <article id="dia-7" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
+        <div class="px-5 py-3 bg-stone-300 text-forest-800 flex justify-between items-center rounded-t-2xl">
+          <span class="font-display font-bold">Día 7</span>
+          <span class="text-forest-600 text-sm">Mañana</span>
+        </div>
+        <div class="p-5">
+          <div class="timeline">
+            <div class="timeline-item">
+              <span class="timeline-dot"></span>
+              <p class="font-semibold text-forest-900 timeline-text">Desayuno tranquilo y regreso a Málaga</p>
+              <span class="distance-badge mt-2">🏠 Fin del viaje</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 4. Actividades -->
+    <section id="actividades" class="mb-8 scroll-mt-20">
+      <h2 class="font-display text-xl font-bold text-forest-800 mb-4 px-1">Análisis de actividades</h2>
+
+      <article class="adventure-card rounded-2xl mb-4 p-5 sm:p-6 card-body">
+        <h3 class="font-display font-bold text-lg text-blue-800 mb-3">🛶 Eje acuático: Kayak</h3>
+        <p class="text-sm text-forest-600 mb-4 italic">Rafting descartado — dos experiencias de kayak</p>
+
+        <div class="border-l-4 border-blue-500 pl-4 mb-5">
+          <h4 class="font-bold text-forest-900">Opción A: Embalse del Tranco</h4>
+          <p class="text-forest-700 mt-1 timeline-text">Kayak a ritmo propio. Bajo impacto físico, gran belleza visual. Libertad de movimiento y baño en mitad del embalse.</p>
+          <p class="mt-2"><span class="distance-badge">🚗 1 hora desde cortijo</span></p>
+        </div>
+
+        <div class="border-l-4 border-blue-700 pl-4">
+          <h4 class="font-bold text-forest-900">Opción B: Río Guadalquivir</h4>
+          <p class="text-forest-700 mt-1 timeline-text">Aguas bravas nivel iniciación. Corriente, piedras y rápidos. Ideal para adolescentes de 13 años.</p>
+          <p class="mt-2 text-sm text-forest-600">Guías recogen en base → inicio tramo «La Herradura»</p>
+        </div>
+      </article>
+
+      <article class="adventure-card rounded-2xl mb-4 p-5 sm:p-6 card-body">
+        <h3 class="font-display font-bold text-lg text-earth-600 mb-3">🧗 Vía Ferrata «La Mocha»</h3>
+        <p class="text-forest-700 timeline-text">Itinerario horizontal y vertical: clavos, grapas, presas, pasamanos, cadenas, puentes colgantes y tirolinas.</p>
+        <ul class="mt-3 space-y-2 text-forest-700">
+          <li><strong>Niños:</strong> Superación personal muy segura; guía controla cable de vida.</li>
+          <li><strong>Requisitos:</strong> Ropa cómoda y zapatillas con suela en buen estado.</li>
+        </ul>
+      </article>
+
+      <article class="adventure-card rounded-2xl mb-4 p-5 sm:p-6 card-body">
+        <h3 class="font-display font-bold text-lg text-forest-800 mb-3">🚙 Ruta 4×4 — Zonas protegidas</h3>
+        <ul class="space-y-2 text-forest-700 timeline-text">
+          <li><strong>Vehículo:</strong> Todoterreno 9 plazas exclusivo para las dos familias.</li>
+          <li><strong>Guía:</strong> Ecosistema, historia y binoculares para fauna.</li>
+          <li><strong>Itinerario:</strong> Reserva de Gualay — acceso particular prohibido.</li>
+        </ul>
+      </article>
+
+      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
+        <h3 class="font-display font-bold text-lg text-forest-700 mb-3 route-title">Senderismo: Río Borosa</h3>
+        <p class="text-forest-700 timeline-text">Caminar hasta la <strong class="route-title">Cerrada de Elías</strong> — cañón estrecho con pasarelas de madera sobre el agua.</p>
+        <div class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+          <p class="font-semibold text-amber-900">⚠️ Horario crítico (julio)</p>
+          <p class="text-amber-800 text-sm mt-1">Empezar a caminar a las <strong>08:30</strong> para volver antes del calor extremo.</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- 5. Presupuesto -->
+    <section id="presupuesto" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-earth-100 flex items-center justify-center">💶</span>
+            Presupuesto estimado (8 personas)
+          </h2>
+          <div class="overflow-x-auto -mx-1">
+            <table class="w-full text-left border-collapse min-w-[280px]">
+              <thead>
+                <tr class="border-b-2 border-forest-200">
+                  <th class="py-3 pr-4 font-display text-sm text-forest-600">Actividad</th>
+                  <th class="py-3 pr-4 font-display text-sm text-forest-600">€/persona</th>
+                  <th class="py-3 font-display text-sm text-forest-600">Total grupo</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-200">
+                <tr><td class="py-3 font-medium">Kayak Embalse</td><td class="py-3 text-earth-600 font-semibold">15€</td><td class="py-3 font-bold text-forest-800">120€</td></tr>
+                <tr><td class="py-3 font-medium">Kayak Río</td><td class="py-3 text-earth-600 font-semibold">35€</td><td class="py-3 font-bold text-forest-800">280€</td></tr>
+                <tr><td class="py-3 font-medium">Vía Ferrata</td><td class="py-3 text-earth-600 font-semibold">45€</td><td class="py-3 font-bold text-forest-800">360€</td></tr>
+                <tr><td class="py-3 font-medium">Ruta 4×4</td><td class="py-3 text-earth-600 font-semibold">35€</td><td class="py-3 font-bold text-forest-800">280€</td></tr>
+              </tbody>
+              <tfoot>
+                <tr class="bg-forest-50">
+                  <td class="py-4 font-display font-bold text-forest-800" colspan="2">Total actividades (est.)</td>
+                  <td class="py-4 font-display font-extrabold text-xl text-forest-700">1.040€</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 6. Seguridad -->
+    <section id="seguridad" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden border-amber-200">
+        <div class="h-1.5 bg-amber-400"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">🛡️</span>
+            Recomendaciones de seguridad
+          </h2>
+          <ol class="space-y-4">
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">1</span>
+              <div>
+                <p class="font-semibold text-forest-900">Calor extremo</p>
+                <p class="text-forest-700 text-sm timeline-text">Última semana de julio muy calurosa. Actividades de esfuerzo solo por la mañana.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">2</span>
+              <div>
+                <p class="font-semibold text-forest-900">Hidratación</p>
+                <p class="text-forest-700 text-sm timeline-text">Mínimo <span class="distance-badge">💧 1,5 L/persona</span> en cada actividad.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">3</span>
+              <div>
+                <p class="font-semibold text-forest-900">Calzado</p>
+                <p class="text-forest-700 text-sm timeline-text">No chanclas en kayak de río — calzado cerrado que se pueda mojar.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">4</span>
+              <div>
+                <p class="font-semibold text-forest-900">Reserva anticipada</p>
+                <p class="text-forest-700 text-sm timeline-text">Grupo de 8 — plazas 4×4 y guías ferrata se agotan. Formalizar antes del <strong>15 de junio</strong>.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </article>
+    </section>
+
+    <!-- 7. Operadores -->
+    <section id="operadores" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
+        <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">📞</span>
+          Directorio de operadores
+        </h2>
+        <ul class="space-y-4">
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-forest-50 border border-forest-100">
+            <div>
+              <p class="font-bold text-forest-900">Turisla</p>
+              <p class="text-sm text-forest-600">Ferrata y multiaventura · Cazorla</p>
+            </div>
+            <a href="https://maps.google.com/?q=Turisla+Cazorla" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+          </li>
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-blue-50 border border-blue-100">
+            <div>
+              <p class="font-bold text-forest-900">Cazorla Aventur</p>
+              <p class="text-sm text-forest-600">Río Guadalquivir · Arroyo Frío</p>
+            </div>
+            <a href="https://maps.google.com/?q=Cazorla+Aventur+Arroyo+Frío" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+          </li>
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-blue-50/80 border border-blue-100">
+            <div>
+              <p class="font-bold text-forest-900">Centro de Ocio El Tranco</p>
+              <p class="text-sm text-forest-600">Embalse y kayak recreo</p>
+            </div>
+            <a href="https://maps.google.com/?q=Centro+de+Ocio+El+Tranco" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+          </li>
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-earth-50 border border-earth-100">
+            <div>
+              <p class="font-bold text-forest-900">Tierra Venturas</p>
+              <p class="text-sm text-forest-600">Rutas 4×4 alta montaña · Cazorla</p>
+            </div>
+            <a href="https://maps.google.com/?q=Tierra+Venturas+Cazorla" target="_blank" rel="noopener" class="map-btn text-sm self-start">Maps</a>
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- 8. Checklist -->
+    <section id="checklist" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
+        <h2 class="font-display text-xl font-bold text-forest-800 mb-2 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">✅</span>
+          Checklist interactivo
+        </h2>
+        <p class="text-sm text-forest-500 mb-4 no-print">Se guarda automáticamente en este dispositivo.</p>
+
+        <h3 class="font-display font-semibold text-forest-700 mt-4 mb-2">Reservas (antes del 15 jun)</h3>
+        <ul class="space-y-2" data-checklist="reservas">
+          <li class="check-item">
+            <input type="checkbox" id="c1" class="sr-only peer" />
+            <label for="c1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
+              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </span>
+              <span class="timeline-text">Vía Ferrata «La Mocha» — Turisla</span>
+            </label>
+          </li>
+          <li class="check-item">
+            <input type="checkbox" id="c2" class="sr-only" />
+            <label for="c2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
+              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </span>
+              <span>Ruta 4×4 Tierra Venturas (8 plazas)</span>
+            </label>
+          </li>
+          <li class="check-item">
+            <input type="checkbox" id="c3" class="sr-only" />
+            <label for="c3" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
+              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </span>
+              <span>Kayak embalse + kayak río</span>
+            </label>
+          </li>
+          <li class="check-item">
+            <input type="checkbox" id="c4" class="sr-only" />
+            <label for="c4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
+              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+              </span>
+              <span>Restaurante El Tranco (día embalse)</span>
+            </label>
+          </li>
+        </ul>
+
+        <h3 class="font-display font-semibold text-forest-700 mt-6 mb-2">Equipaje y suministros</h3>
+        <ul class="space-y-2" data-checklist="equipaje">
+          <li class="check-item"><input type="checkbox" id="e1" class="sr-only" /><label for="e1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Compra víveres en Cazorla (agua, carne, bebidas)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e2" class="sr-only" /><label for="e2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>1,5 L agua mínimo por persona / actividad</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e3" class="sr-only" /><label for="e3" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Calzado cerrado para kayak río (no chanclas)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e4" class="sr-only" /><label for="e4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Zapatillas buen agarre (ferrata y senderismo)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e5" class="sr-only" /><label for="e5" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Protector solar, gorra y gafas de sol</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e6" class="sr-only" /><label for="e6" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Binoculares (opcional, ruta 4×4)</span></label></li>
+        </ul>
+
+        <h3 class="font-display font-semibold text-forest-700 mt-6 mb-2">Por día</h3>
+        <ul class="space-y-2" data-checklist="dias">
+          <li class="check-item"><input type="checkbox" id="d2" class="sr-only" /><label for="d2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Día 2: Salida Borosa 08:30</span></label></li>
+          <li class="check-item"><input type="checkbox" id="d4" class="sr-only" /><label for="d4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Día 4: Salir con tiempo (~1 h al Tranco)</span></label></li>
+        </ul>
+
+        <button type="button" id="clear-checklist" class="mt-6 text-sm text-forest-500 underline hover:text-forest-700 no-print">Restablecer checklist</button>
+      </article>
+    </section>
+
+    <!-- Emergencia (sección + impresión) -->
+    <section id="emergencia" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden border-2 border-red-200">
+        <div class="h-1.5 bg-red-600"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-xl font-bold text-red-800 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">🆘</span>
+            Emergencias y campo
+          </h2>
+          <div class="grid sm:grid-cols-2 gap-3 mb-4">
+            <a href="tel:112" class="p-4 rounded-xl bg-red-600 text-white text-center font-bold text-lg no-print-screen">112</a>
+            <a href="tel:953710232" class="p-4 rounded-xl bg-stone-100 border text-center no-print-screen">
+              <span class="block text-xs text-stone-500">Guardia Civil</span>
+              <span class="font-mono font-bold">953 71 02 32</span>
+            </a>
+            <a href="tel:953366144" class="p-4 rounded-xl bg-stone-100 border text-center no-print-screen">
+              <span class="block text-xs text-stone-500">Centro Salud urgencias</span>
+              <span class="font-mono font-bold">953 36 61 44</span>
+            </a>
+            <a href="tel:953028611" class="p-4 rounded-xl bg-stone-100 border text-center no-print-screen">
+              <span class="block text-xs text-stone-500">Hospital CHARE</span>
+              <span class="font-mono font-bold">953 02 86 11</span>
+            </a>
+          </div>
+          <div class="emergency-print-block hidden p-4 bg-stone-100 rounded-xl text-sm space-y-1 font-mono">
+            <p>112 · Guardia Civil 953710232 · CS urgencias 953366144 · Hospital 953028611</p>
+          </div>
+          <div class="p-4 bg-red-50 border border-red-100 rounded-xl text-sm text-red-950">
+            <p class="font-bold mb-2">Si pierdes señal en la sierra</p>
+            <ol class="list-decimal list-inside space-y-1.5">
+              <li>Copia las coordenadas GPS de este dashboard antes de salir.</li>
+              <li>Introduce lat/long en tu GPS o app de mapas offline.</li>
+              <li>No separes al grupo; busca sombra y agua si hay calor.</li>
+              <li>Silbato o espejo para señalizar a rescate aéreo en zonas remotas.</li>
+            </ol>
+          </div>
+          <p class="mt-3 text-xs text-forest-500">Coordenadas aproximadas verificadas en fuentes públicas (Junta de Andalucía, cartografía). Confirma en campo si es crítico.</p>
+        </div>
+      </article>
+    </section>
+
+    <footer class="text-center text-sm text-forest-500 pb-4 no-print">
+      <p id="cache-status">Cazorla Portable Dashboard · Cargando caché offline…</p>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'cazorla-dashboard-v1';
+      const READING_KEY = 'cazorla-reading-mode';
+      const CACHE_NAME = 'cazorla-field-v2';
+      const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap';
+
+      // —— Service Worker (blob embebido) ——
+      const SW_SOURCE = `
+        const CACHE = '${CACHE_NAME}';
+        const CORE = [
+          '${FONT_CSS}',
+          'https://cdn.tailwindcss.com'
+        ];
+        self.addEventListener('install', function(e) {
+          self.skipWaiting();
+          e.waitUntil(
+            caches.open(CACHE).then(function(cache) {
+              return cache.addAll(CORE).catch(function() { return Promise.resolve(); });
+            })
+          );
+        });
+        self.addEventListener('activate', function(e) {
+          e.waitUntil(
+            caches.keys().then(function(keys) {
+              return Promise.all(keys.filter(function(k) { return k !== CACHE; }).map(function(k) { return caches.delete(k); }));
+            }).then(function() { return self.clients.claim(); })
+          );
+        });
+        self.addEventListener('fetch', function(e) {
+          if (e.request.method !== 'GET') return;
+          var url = e.request.url;
+          if (url.indexOf('cdn.tailwindcss.com') !== -1 || url.indexOf('fonts.googleapis') !== -1 || url.indexOf('fonts.gstatic.com') !== -1) {
+            e.respondWith(
+              caches.match(e.request).then(function(cached) {
+                var fetchPromise = fetch(e.request).then(function(res) {
+                  if (res && res.status === 200) {
+                    var clone = res.clone();
+                    caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+                  }
+                  return res;
+                }).catch(function() { return cached; });
+                return cached || fetchPromise;
+              })
+            );
+          }
+        });
+      `;
+
+      function registerServiceWorker() {
+        if (!('serviceWorker' in navigator)) {
+          updateCacheStatus('Navegador sin Service Worker · Usa Chrome/Safari actualizado');
+          return prefetchAssets().then(function() { return false; });
+        }
+        if (location.protocol === 'file:') {
+          updateCacheStatus('Con WiFi: abre una vez, luego funciona sin red (HTML + datos). Para caché de diseño, sirve la carpeta con un servidor local.');
+          return prefetchAssets().catch(function() {}).then(function() { return false; });
+        }
+        function onRegistered() {
+          return prefetchAssets().then(function() {
+            updateCacheStatus('Listo para campo · Tailwind y fuentes en caché');
+            return true;
+          });
+        }
+        return navigator.serviceWorker.register('cazorla-sw.js').then(onRegistered).catch(function() {
+          try {
+            var blob = new Blob([SW_SOURCE], { type: 'application/javascript' });
+            return navigator.serviceWorker.register(URL.createObjectURL(blob)).then(onRegistered);
+          } catch (e) {
+            updateCacheStatus('Caché parcial · Recarga con WiFi antes de salir al monte');
+            return false;
+          }
+        });
+      }
+
+      function prefetchAssets() {
+        if (!('caches' in window)) return Promise.resolve();
+        return caches.open(CACHE_NAME).then(function(cache) {
+          return fetch(FONT_CSS, { mode: 'cors' }).then(function(res) {
+            if (res.ok) return cache.put(FONT_CSS, res);
+          }).catch(function() {}).then(function() {
+            return fetch('https://cdn.tailwindcss.com', { mode: 'cors' }).then(function(res) {
+              if (res.ok) return cache.put('https://cdn.tailwindcss.com', res);
+            });
+          }).catch(function() {});
+        }).catch(function() {});
+      }
+
+      function updateCacheStatus(msg) {
+        var el = document.getElementById('cache-status');
+        if (el) el.textContent = msg;
+      }
+
+      // —— Offline banner ——
+      var banner = document.getElementById('offline-banner');
+      function setOnlineStatus() {
+        if (!banner) return;
+        if (!navigator.onLine) {
+          banner.textContent = 'Sin conexión · GPS y teléfonos guardados siguen disponibles';
+          banner.classList.add('show');
+        } else {
+          banner.classList.remove('show');
+        }
+      }
+      window.addEventListener('online', setOnlineStatus);
+      window.addEventListener('offline', setOnlineStatus);
+      setOnlineStatus();
+
+      // —— Reading mode ——
+      function setReadingMode(on) {
+        document.body.classList.toggle('reading-mode', on);
+        localStorage.setItem(READING_KEY, on ? '1' : '0');
+        var label = on ? 'Modo normal' : 'Modo lectura';
+        ['toggle-reading-desktop', 'toggle-reading-mobile'].forEach(function(id) {
+          var btn = document.getElementById(id);
+          if (btn) btn.innerHTML = (id.includes('mobile') ? '<span class="text-lg mb-0.5">' + (on ? '📖' : '☀️') + '</span>' : '<span aria-hidden="true">' + (on ? '📖' : '☀️') + '</span> ') + label;
+        });
+      }
+      if (localStorage.getItem(READING_KEY) === '1') setReadingMode(true);
+      document.getElementById('toggle-reading-desktop')?.addEventListener('click', function() { setReadingMode(!document.body.classList.contains('reading-mode')); });
+      document.getElementById('toggle-reading-mobile')?.addEventListener('click', function() { setReadingMode(!document.body.classList.contains('reading-mode')); });
+
+      // —— Checklist ——
+      function saveChecks() {
+        var state = {};
+        document.querySelectorAll('.check-item input[type="checkbox"]').forEach(function(cb) { state[cb.id] = cb.checked; });
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+      }
+      function loadChecks() {
+        try {
+          var state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          Object.entries(state).forEach(function(entry) {
+            var el = document.getElementById(entry[0]);
+            if (el) el.checked = !!entry[1];
+          });
+        } catch (_) {}
+      }
+      loadChecks();
+      document.querySelectorAll('.check-item input').forEach(function(cb) { cb.addEventListener('change', saveChecks); });
+      document.getElementById('clear-checklist')?.addEventListener('click', function() {
+        if (confirm('¿Borrar todo el progreso del checklist?')) {
+          document.querySelectorAll('.check-item input').forEach(function(cb) { cb.checked = false; });
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      });
+
+      // —— Copiar coordenadas ——
+      document.querySelectorAll('.copy-coords-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var block = btn.closest('.gps-block');
+          var lat = block.dataset.lat;
+          var lng = block.dataset.lng;
+          var text = lat + ', ' + lng;
+          function done() {
+            btn.textContent = '¡Copiado!';
+            btn.classList.add('copied');
+            setTimeout(function() { btn.textContent = 'Copiar coordenadas'; btn.classList.remove('copied'); }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(function() { fallbackCopy(text, done); });
+          } else {
+            fallbackCopy(text, done);
+          }
+        });
+      });
+      function fallbackCopy(text, cb) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); cb(); } catch (_) { alert('Coordenadas: ' + text); }
+        document.body.removeChild(ta);
+      }
+
+      // —— Iconos automáticos en rutas naturales ——
+      var ROUTE_RULES = [
+        { re: /r[ií]o\s+borosa|borosa/gi, icon: '🏞️' },
+        { re: /cerrada\s+de\s+el[ií]as/gi, icon: '🏞️' },
+        { re: /guadalquivir/gi, icon: '🏞️' },
+        { re: /embalse|tranco/gi, icon: '🏞️' },
+        { re: /reserva\s+de\s+gualay|gualay/gi, icon: '⛰️' },
+        { re: /ruta\s+4\s*[x×]4|4\s*[x×]4/gi, icon: '⛰️' },
+        { re: /v[ií]a\s+ferrata|la\s+mocha/gi, icon: '⛰️' },
+        { re: /senderismo|sendero/gi, icon: '⛰️' }
+      ];
+      document.querySelectorAll('.route-title').forEach(function(el) {
+        var text = el.textContent;
+        var icon = '';
+        ROUTE_RULES.forEach(function(rule) {
+          if (rule.re.test(text)) icon = rule.icon;
+          rule.re.lastIndex = 0;
+        });
+        if (icon && !el.querySelector('.route-icon')) {
+          var span = document.createElement('span');
+          span.className = 'route-icon';
+          span.setAttribute('aria-hidden', 'true');
+          span.textContent = icon + ' ';
+          el.prepend(span);
+        }
+      });
+
+      // —— Emergencia modal ——
+      var modal = document.getElementById('emergency-modal');
+      document.getElementById('fab-emergency')?.addEventListener('click', function() { modal?.classList.add('open'); });
+      document.getElementById('close-emergency')?.addEventListener('click', function() { modal?.classList.remove('open'); });
+      modal?.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
+
+      // —— Exportar PDF (impresión optimizada) ——
+      document.getElementById('export-pdf-btn')?.addEventListener('click', function() {
+        document.body.classList.add('print-export');
+        var prev = document.title;
+        document.title = 'Cazorla_Escapada_Julio_Guia_Campo';
+        window.print();
+        setTimeout(function() {
+          document.body.classList.remove('print-export');
+          document.title = prev;
+        }, 500);
+      });
+
+      // —— Nav activo ——
+      var sections = [].slice.call(document.querySelectorAll('section[id], article[id^="dia-"]'));
+      var navLinks = [].slice.call(document.querySelectorAll('.nav-link'));
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var id = entry.target.id;
+            navLinks.forEach(function(link) {
+              link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+            });
+          }
+        });
+      }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+      sections.forEach(function(s) { observer.observe(s); });
+
+      registerServiceWorker();
+    })();
+  </script>
+</body>
+</html>
