@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-cazorla-build="2026.05.24-planificador-v4">
 <head>
   <script>
     (function () {
@@ -15,7 +15,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="Planificación viaje Cazorla — Dashboard offline" />
   <meta name="theme-color" content="#1a3d2e" id="theme-color-meta" />
-  <title>Cazorla · Escapada Julio</title>
+  <meta name="cazorla-build" content="2026.05.24-planificador-v4" />
+  <!-- Versión canónica única: Cazorla-2026/index.html + cazorla-sw.js -->
+  <title>Cazorla · 27 jul – 1 ago 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -554,6 +556,282 @@
     html.dark #toggle-reading-desktop { background-color: #2d4a3a !important; }
     html.dark #toggle-dark-desktop:hover,
     html.dark #toggle-reading-desktop:hover { background-color: #3d5c4a !important; }
+
+    /* Planificador interactivo */
+    .catalog-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.35rem;
+      background: #eef1ec;
+      border-radius: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+    .catalog-tab {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: none;
+      border-radius: 0.65rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #2d6f4e;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+    .catalog-tab.active {
+      background: #fff;
+      color: #1a3d2e;
+      box-shadow: 0 2px 8px rgba(26, 61, 46, 0.12);
+    }
+    html.dark .catalog-tabs { background: #1a2e26 !important; }
+    html.dark .catalog-tab { color: #b8ddc7 !important; }
+    html.dark .catalog-tab.active { background: #243d32 !important; color: #eef8f1 !important; }
+
+    .day-planner-scroll {
+      overflow-x: auto;
+      margin: 0 -0.25rem 1.25rem;
+      padding: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .day-planner-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(10.5rem, 1fr));
+      gap: 0.65rem;
+      min-width: min(100%, 66rem);
+    }
+    .day-column {
+      background: #f0f7f3;
+      border: 2px solid #b8ddc7;
+      border-radius: 0.85rem;
+      min-height: 8rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .day-column-header {
+      padding: 0.55rem 0.65rem;
+      background: linear-gradient(135deg, #2d6f4e, #1a3d2e);
+      color: #fff;
+      border-radius: 0.65rem 0.65rem 0 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .day-column-body {
+      flex: 1;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .day-column-empty {
+      font-size: 0.7rem;
+      color: #6aab85;
+      text-align: center;
+      padding: 0.75rem 0.25rem;
+      font-style: italic;
+    }
+    .plan-chip {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.35rem;
+      padding: 0.4rem 0.45rem;
+      background: #fff;
+      border: 1px solid #d8dfd4;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #1a3d2e;
+      line-height: 1.25;
+      cursor: pointer;
+    }
+    .plan-chip:hover { border-color: #3d8a62; background: #f8fdf9; }
+    .plan-chip-remove {
+      flex-shrink: 0;
+      width: 1.1rem;
+      height: 1.1rem;
+      border: none;
+      background: #e0cdb3;
+      color: #7a5c38;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    html.dark .day-column { background: #1a2e26 !important; border-color: #3d8a62 !important; }
+    html.dark .plan-chip { background: #243d32 !important; border-color: #2d4a3a !important; color: #dceee3 !important; }
+
+    .catalog-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+    @media (min-width: 640px) { .catalog-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .catalog-card {
+      text-align: left;
+      padding: 1rem;
+      border: 2px solid #d8dfd4;
+      border-radius: 1rem;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+      width: 100%;
+      font-family: inherit;
+    }
+    .catalog-card:hover {
+      border-color: #3d8a62;
+      box-shadow: 0 6px 16px rgba(26, 61, 46, 0.1);
+    }
+    .catalog-card.is-planned {
+      border-color: #3d8a62;
+      background: linear-gradient(145deg, #f0f7f3, #fff);
+    }
+    html.dark .catalog-card { background: #1e3329 !important; border-color: #2d4a3a !important; }
+    html.dark .catalog-card.is-planned { background: #243d32 !important; border-color: #5aa67d !important; }
+
+    .rating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: #f0e6d8;
+      color: #7a5c38;
+    }
+
+    .tip-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 75;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .tip-modal.open { display: flex; }
+    .tip-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 22, 18, 0.75);
+      backdrop-filter: blur(4px);
+    }
+    .tip-modal-panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 24rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border: 3px solid #3d8a62;
+      border-radius: 1.25rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      padding: 1.25rem;
+    }
+    .tip-modal-time {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 1px solid #f59e0b;
+      border-radius: 0.75rem;
+      padding: 0.85rem;
+      margin: 1rem 0;
+    }
+    html.dark .tip-modal-panel { background: #1a2e26 !important; color: #dceee3 !important; }
+    html.dark .tip-modal-time { background: #2d2410 !important; border-color: #5c4a20 !important; color: #fef3c7 !important; }
+
+    .confirm-modal-panel { max-width: 22rem; text-align: center; }
+    .confirm-modal-icon {
+      width: 3rem;
+      height: 3rem;
+      margin: 0 auto 0.75rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 2px solid #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+    html.dark .confirm-modal-icon {
+      background: #2d2410 !important;
+      border-color: #5c4a20 !important;
+    }
+    html.dark #confirm-modal-title { color: #eef8f1 !important; }
+    html.dark #confirm-modal-message { color: #b8ddc7 !important; }
+    .confirm-modal-actions {
+      display: flex;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
+    }
+    .confirm-btn {
+      flex: 1;
+      padding: 0.65rem 0.85rem;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      font-size: 0.875rem;
+      cursor: pointer;
+      font-family: inherit;
+      border: 2px solid transparent;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .confirm-btn:active { transform: scale(0.98); }
+    .confirm-btn--cancel {
+      background: #f0f7f3;
+      border-color: #b8ddc7;
+      color: #2d6f4e;
+    }
+    .confirm-btn--cancel:hover { background: #dceee3; }
+    .confirm-btn--accept {
+      background: linear-gradient(135deg, #b45309, #d97706);
+      border-color: #b45309;
+      color: #fff;
+    }
+    .confirm-btn--accept:hover {
+      background: linear-gradient(135deg, #92400e, #b45309);
+      border-color: #92400e;
+    }
+    html.dark .confirm-btn--cancel {
+      background: #243d32 !important;
+      border-color: #3d8a62 !important;
+      color: #dceee3 !important;
+    }
+    html.dark .confirm-btn--cancel:hover { background: #2d4a3a !important; }
+
+    .assign-day-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .assign-day-btn {
+      padding: 0.45rem 0.35rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid #b8ddc7;
+      border-radius: 0.5rem;
+      background: #f0f7f3;
+      color: #2d6f4e;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .assign-day-btn:hover { background: #dceee3; }
+    .rest-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; align-items: flex-start; }
+    .web-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #f0e6d8;
+      color: #7a5c38;
+      border: 1px solid #e0cdb3;
+      text-decoration: none;
+    }
+    .web-link-btn:hover { background: #e0cdb3; }
+    html.dark .web-link-btn { background: #3d3224 !important; color: #e0cdb3 !important; }
   </style>
 </head>
 <body class="bg-stone-50 text-forest-900 font-sans antialiased min-h-screen transition-colors duration-200">
@@ -561,7 +839,7 @@
   <div id="offline-banner" class="offline-banner no-print" role="status"></div>
 
   <div class="print-toolbar" aria-hidden="true">
-    <strong>Cazorla · Escapada Julio</strong> — Guía de campo (versión impresa) · Emergencias: 112
+    <strong>Cazorla · 27 jul – 1 ago 2026</strong> — Guía de campo · Emergencias: 112
   </div>
 
   <button type="button" id="fab-emergency" class="fab-emergency no-print" aria-label="Abrir emergencias" title="Emergencias">🆘</button>
@@ -590,6 +868,36 @@
     </div>
   </div>
 
+  <!-- Modal consejo horario actividad -->
+  <div id="activity-tip-modal" class="tip-modal no-print" role="dialog" aria-modal="true" aria-labelledby="tip-modal-title" aria-hidden="true">
+    <div class="tip-modal-backdrop" id="tip-modal-backdrop"></div>
+    <div class="tip-modal-panel">
+      <button type="button" id="tip-modal-close" class="maps-modal-close" style="top:0.5rem;right:0.5rem" aria-label="Cerrar">×</button>
+      <h3 id="tip-modal-title" class="font-display font-bold text-lg text-forest-800 pr-8"></h3>
+      <p id="tip-modal-desc" class="text-sm text-forest-600 mt-2"></p>
+      <div class="tip-modal-time">
+        <p class="text-xs font-bold uppercase text-amber-900 tracking-wide mb-1">⏰ Mejor momento del día</p>
+        <p id="tip-modal-time" class="text-sm font-semibold text-amber-950"></p>
+      </div>
+      <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide mb-2">Asignar a un día</p>
+      <div id="tip-assign-days" class="assign-day-grid"></div>
+      <button type="button" id="tip-modal-only-info" class="mt-3 w-full text-sm text-forest-500 underline">Solo cerrar</button>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="tip-modal no-print" role="alertdialog" aria-modal="true" aria-labelledby="confirm-modal-title" aria-describedby="confirm-modal-message" aria-hidden="true">
+    <div class="tip-modal-backdrop" id="confirm-modal-backdrop"></div>
+    <div class="tip-modal-panel confirm-modal-panel">
+      <div class="confirm-modal-icon" aria-hidden="true">🗓️</div>
+      <h3 id="confirm-modal-title" class="font-display font-bold text-lg text-forest-800">¿Vaciar el plan?</h3>
+      <p id="confirm-modal-message" class="text-sm text-forest-600 mt-2"></p>
+      <div class="confirm-modal-actions">
+        <button type="button" id="confirm-modal-cancel" class="confirm-btn confirm-btn--cancel">Cancelar</button>
+        <button type="button" id="confirm-modal-accept" class="confirm-btn confirm-btn--accept">Vaciar plan</button>
+      </div>
+    </div>
+  </div>
+
   <div id="emergency-modal" class="emergency-panel no-print" role="dialog" aria-labelledby="emergency-title" aria-modal="true">
     <div class="emergency-panel-inner">
       <div class="flex justify-between items-start mb-3">
@@ -613,24 +921,14 @@
   <nav class="nav-desktop hidden lg:flex flex-col bg-forest-800 text-white shadow-xl" aria-label="Navegación principal">
     <div class="p-5 border-b border-forest-700">
       <p class="font-display font-bold text-lg leading-tight">Cazorla</p>
-      <p class="text-forest-300 text-sm mt-1">Julio · 8 personas</p>
+      <p class="text-forest-300 text-sm mt-1">27 jul – 1 ago · 8 pers.</p>
     </div>
     <ul class="flex-1 overflow-y-auto py-3 text-sm" id="nav-desktop-list">
       <li><a href="#resumen" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Resumen</a></li>
       <li><a href="#alojamiento" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Alojamiento</a></li>
-      <li><a href="#itinerario" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Itinerario</a></li>
-      <li class="px-5 pt-2 pb-1 text-forest-400 text-xs uppercase tracking-wider">Días</li>
-      <li><a href="#dia-1" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 1</a></li>
-      <li><a href="#dia-2" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 2</a></li>
-      <li><a href="#dia-3" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 3</a></li>
-      <li><a href="#dia-4" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 4</a></li>
-      <li><a href="#dia-5" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 5</a></li>
-      <li><a href="#dia-6" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 6</a></li>
-      <li><a href="#dia-7" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Día 7</a></li>
-      <li><a href="#actividades" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Actividades</a></li>
-      <li><a href="#presupuesto" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Presupuesto</a></li>
+      <li><a href="#planificador" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Planificador</a></li>
+      <li><a href="#logistica" class="nav-link block px-5 py-2 pl-8 hover:bg-forest-700/60 transition">Logística</a></li>
       <li><a href="#seguridad" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Seguridad</a></li>
-      <li><a href="#operadores" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Operadores</a></li>
       <li><a href="#checklist" class="nav-link block px-5 py-2.5 hover:bg-forest-700/60 transition">Checklist</a></li>
       <li><a href="#emergencia" class="nav-link block px-5 py-2.5 hover:bg-red-900/40 text-red-200 transition">Emergencia</a></li>
     </ul>
@@ -653,14 +951,14 @@
       <a href="#resumen" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
         <span class="text-lg mb-0.5">🏕️</span> Inicio
       </a>
-      <a href="#itinerario" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
+      <a href="#planificador" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
         <span class="text-lg mb-0.5">📅</span> Plan
       </a>
-      <a href="#dia-2" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
-        <span class="text-lg mb-0.5">🥾</span> Día 2
+      <a href="#planificador" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]" data-open-tab="actividades">
+        <span class="text-lg mb-0.5">🥾</span> Actividades
       </a>
-      <a href="#dia-4" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
-        <span class="text-lg mb-0.5">🛶</span> Kayak
+      <a href="#planificador" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]" data-open-tab="restauracion">
+        <span class="text-lg mb-0.5">🍽️</span> Comer
       </a>
       <a href="#checklist" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
         <span class="text-lg mb-0.5">✅</span> Lista
@@ -686,7 +984,7 @@
       <div class="relative p-6 sm:p-8 text-white">
         <p class="text-forest-200 text-sm font-medium uppercase tracking-widest mb-2">Sierra de Cazorla · Jaén</p>
         <h1 class="font-display text-2xl sm:text-3xl font-extrabold leading-tight">Escapada a Cazorla</h1>
-        <p class="mt-2 text-forest-100 text-lg">Última semana de julio</p>
+        <p class="mt-2 text-forest-100 text-lg">27 julio – 1 agosto 2026</p>
         <div class="mt-4 flex flex-wrap gap-2">
           <span class="px-3 py-1 rounded-full bg-white/15 text-sm font-medium backdrop-blur">4 adultos + 4 adolescentes (13 años)</span>
           <span class="px-3 py-1 rounded-full bg-white/15 text-sm font-medium backdrop-blur">2 familias</span>
@@ -713,9 +1011,14 @@
               <dd class="mt-1 font-semibold text-forest-900">Cortijo Los Teatinos</dd>
               <dd class="text-sm text-forest-600 mt-0.5">Cerca de Cazorla pueblo</dd>
             </div>
+            <div class="bg-forest-50 rounded-xl p-4 border border-forest-100">
+              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Fechas</dt>
+              <dd class="mt-1 font-semibold text-forest-900">27 jul – 1 ago 2026</dd>
+              <dd class="text-sm text-forest-600">6 días · 5 noches</dd>
+            </div>
             <div class="bg-forest-50 rounded-xl p-4 border border-forest-100 sm:col-span-2">
-              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Perfil del viaje</dt>
-              <dd class="mt-1 text-forest-800 timeline-text">Viaje activo centrado en naturaleza, actividades acuáticas y logística optimizada para adolescentes.</dd>
+              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Enfoque</dt>
+              <dd class="mt-1 text-forest-800 timeline-text">Catálogo amplio de actividades y restauración — tú eliges qué hacer cada día desde el <a href="#planificador" class="underline font-semibold text-forest-700">planificador interactivo</a>.</dd>
             </div>
           </dl>
           <div class="mt-5 flex flex-wrap gap-2">
@@ -765,264 +1068,67 @@
       </article>
     </section>
 
-    <!-- 3. Itinerario overview + days -->
-    <section id="itinerario" class="mb-8 scroll-mt-20">
-      <h2 class="font-display text-xl font-bold text-forest-800 mb-4 px-1 flex items-center gap-2">
-        <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">📅</span>
-        Itinerario operativo
-      </h2>
-
-      <!-- Day 1 -->
-      <article id="dia-1" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
-        <div class="px-5 py-3 bg-forest-700 text-white flex justify-between items-center rounded-t-2xl">
-          <span class="font-display font-bold">Día 1</span>
-          <span class="text-forest-200 text-sm">Tarde</span>
-        </div>
-        <div class="p-5">
-          <div class="timeline">
-            <div class="timeline-item">
-              <span class="timeline-dot"></span>
-              <p class="text-xs font-bold text-forest-500 uppercase">Tarde</p>
-              <p class="font-semibold text-forest-900 timeline-text">Llegada, check-in y paseo por el casco histórico</p>
-              <p class="text-sm text-forest-600 mt-1">Cazorla Pueblo</p>
-              <button type="button" class="map-btn mt-3 text-sm" data-maps-q="Casco histórico de Cazorla, Jaén" data-maps-title="Casco histórico de Cazorla">Ver en Maps</button>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Day 2 -->
-      <article id="dia-2" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
-        <div class="px-5 py-3 bg-forest-600 text-white flex justify-between items-center rounded-t-2xl">
-          <span class="font-display font-bold">Día 2</span>
-          <span class="text-forest-200 text-sm font-mono">08:00 – 13:30</span>
-        </div>
-        <div class="p-5">
-          <div class="timeline">
-            <div class="timeline-item highlight">
-              <span class="timeline-dot"></span>
-              <p class="text-xs font-bold text-earth-600 uppercase">Mañana temprano</p>
-              <p class="font-bold text-lg text-forest-900 timeline-text route-title">Ruta del Río Borosa</p>
-              <p class="text-sm text-forest-600 mt-1">La ruta más emblemática · Centro de Visitantes Río Borosa</p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                <span class="distance-badge">⏰ Salida recomendada 08:30</span>
-                <span class="distance-badge route-title">🎯 Meta: Cerrada de Elías</span>
-              </div>
-              <button type="button" class="map-btn mt-3" data-maps-q="38.01505,-2.86491" data-maps-title="Centro Visitantes Río Borosa">Ver en Maps</button>
-              <div class="gps-block" data-lat="38.01505" data-lng="-2.86491" data-label="Centro Visitantes Río Borosa">
-                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Centro Visitantes</p>
-                <p class="gps-coords mt-0.5">38.01505, -2.86491</p>
-                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
-              </div>
-              <div class="gps-block mt-2" data-lat="38.0128" data-lng="-2.8517" data-label="Cerrada de Elías">
-                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Cerrada de Elías (meta sendero)</p>
-                <p class="gps-coords mt-0.5">38.0128, -2.8517</p>
-                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Day 3 -->
-      <article id="dia-3" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
-        <div class="px-5 py-3 bg-earth-500 text-white flex justify-between items-center rounded-t-2xl">
-          <span class="font-display font-bold">Día 3</span>
-          <span class="text-earth-100 text-sm font-mono">09:30 – 13:00</span>
-        </div>
-        <div class="p-5">
-          <div class="timeline">
-            <div class="timeline-item highlight">
-              <span class="timeline-dot"></span>
-              <p class="text-xs font-bold text-earth-600 uppercase">Mañana</p>
-              <p class="font-bold text-lg text-forest-900 timeline-text">Vía Ferrata «La Mocha»</p>
-              <p class="text-sm text-forest-600 mt-1">Aventura vertical · Turisla (Cazorla)</p>
-              <button type="button" class="map-btn mt-3" data-maps-q="Turisla, Cazorla, Jaén" data-maps-title="Turisla">Ver en Maps</button>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Day 4 -->
-      <article id="dia-4" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
-        <div class="px-5 py-3 bg-blue-700 text-white flex justify-between items-center rounded-t-2xl" style="background:linear-gradient(90deg,#1e5a8a,#2d7ab8)">
-          <span class="font-display font-bold">Día 4</span>
-          <span class="text-blue-100 text-sm font-mono">10:00 – 16:00</span>
-        </div>
-        <div class="p-5">
-          <div class="timeline">
-            <div class="timeline-item highlight">
-              <span class="timeline-dot"></span>
-              <p class="text-xs font-bold text-blue-700 uppercase">Jornada completa</p>
-              <p class="font-bold text-lg text-forest-900 timeline-text">Kayak Opción A — Embalse del Tranco</p>
-              <p class="text-sm text-forest-600 mt-1">+ Almuerzo · Centro de Ocio El Tranco</p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                <span class="distance-badge">🚗 ~1 h desde el cortijo</span>
-                <span class="distance-badge">🍽️ Reserva Restaurante El Tranco</span>
-              </div>
-              <div class="flex flex-wrap gap-2 mt-3">
-                <button type="button" class="map-btn" data-maps-q="38.13333,-2.78333" data-maps-title="Embalse del Tranco">Ver en Maps · Embalse</button>
-                <button type="button" class="map-btn map-btn--water" data-maps-q="38.1300,-2.7850" data-maps-title="Centro de Ocio El Tranco">Ver en Maps · Centro Ocio</button>
-              </div>
-              <div class="gps-block mt-3" data-lat="38.13333" data-lng="-2.78333" data-label="Embalse del Tranco">
-                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Embalse del Tranco</p>
-                <p class="gps-coords mt-0.5">38.13333, -2.78333</p>
-                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
-              </div>
-              <div class="gps-block mt-2" data-lat="38.1300" data-lng="-2.7850" data-label="Centro de Ocio El Tranco">
-                <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS · Centro de Ocio El Tranco</p>
-                <p class="gps-coords mt-0.5">38.1300, -2.7850</p>
-                <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Day 5 -->
-      <article id="dia-5" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
-        <div class="px-5 py-3 bg-blue-600 text-white flex justify-between items-center rounded-t-2xl">
-          <span class="font-display font-bold">Día 5</span>
-          <span class="text-blue-100 text-sm font-mono">09:30 – 13:30</span>
-        </div>
-        <div class="p-5">
-          <div class="timeline">
-            <div class="timeline-item highlight">
-              <span class="timeline-dot"></span>
-              <p class="font-bold text-lg text-forest-900 timeline-text">Kayak Opción B — Descenso de Río</p>
-              <p class="text-sm text-forest-600 mt-1">Cazorla Aventur (Arroyo Frío) · Tramo «La Herradura»</p>
-              <button type="button" class="map-btn map-btn--water mt-3" data-maps-q="Cazorla Aventur, Arroyo Frío" data-maps-title="Cazorla Aventur">Ver en Maps</button>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Day 6 -->
-      <article id="dia-6" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
-        <div class="px-5 py-3 bg-forest-800 text-white flex justify-between items-center rounded-t-2xl">
-          <span class="font-display font-bold">Día 6</span>
-          <span class="text-forest-300 text-sm font-mono">18:00 – 22:00</span>
-        </div>
-        <div class="p-5">
-          <div class="timeline">
-            <div class="timeline-item highlight">
-              <span class="timeline-dot"></span>
-              <p class="text-xs font-bold text-forest-600 uppercase">Tarde / atardecer</p>
-              <p class="font-bold text-lg text-forest-900 timeline-text">Ruta 4×4 Zonas Restringidas</p>
-              <p class="text-sm text-forest-600 mt-1">Avistamiento fauna · Tierra Venturas · Reserva Gualay</p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                <span class="distance-badge">🐐 Cabra montés</span>
-                <span class="distance-badge">🦅 Quebrantahuesos</span>
-              </div>
-              <button type="button" class="map-btn mt-3" data-maps-q="Tierra Venturas, Cazorla" data-maps-title="Tierra Venturas">Ver en Maps</button>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- Day 7 -->
-      <article id="dia-7" class="adventure-card rounded-2xl mb-4 scroll-mt-24">
-        <div class="px-5 py-3 bg-stone-300 text-forest-800 flex justify-between items-center rounded-t-2xl">
-          <span class="font-display font-bold">Día 7</span>
-          <span class="text-forest-600 text-sm">Mañana</span>
-        </div>
-        <div class="p-5">
-          <div class="timeline">
-            <div class="timeline-item">
-              <span class="timeline-dot"></span>
-              <p class="font-semibold text-forest-900 timeline-text">Desayuno tranquilo y regreso a Málaga</p>
-              <span class="distance-badge mt-2">🏠 Fin del viaje</span>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <!-- 4. Actividades -->
-    <section id="actividades" class="mb-8 scroll-mt-20">
-      <h2 class="font-display text-xl font-bold text-forest-800 mb-4 px-1">Análisis de actividades</h2>
-
-      <article class="adventure-card rounded-2xl mb-4 p-5 sm:p-6 card-body">
-        <h3 class="font-display font-bold text-lg text-blue-800 mb-3">🛶 Eje acuático: Kayak</h3>
-        <p class="text-sm text-forest-600 mb-4 italic">Rafting descartado — dos experiencias de kayak</p>
-
-        <div class="border-l-4 border-blue-500 pl-4 mb-5">
-          <h4 class="font-bold text-forest-900">Opción A: Embalse del Tranco</h4>
-          <p class="text-forest-700 mt-1 timeline-text">Kayak a ritmo propio. Bajo impacto físico, gran belleza visual. Libertad de movimiento y baño en mitad del embalse.</p>
-          <p class="mt-2"><span class="distance-badge">🚗 1 hora desde cortijo</span></p>
-        </div>
-
-        <div class="border-l-4 border-blue-700 pl-4">
-          <h4 class="font-bold text-forest-900">Opción B: Río Guadalquivir</h4>
-          <p class="text-forest-700 mt-1 timeline-text">Aguas bravas nivel iniciación. Corriente, piedras y rápidos. Ideal para adolescentes de 13 años.</p>
-          <p class="mt-2 text-sm text-forest-600">Guías recogen en base → inicio tramo «La Herradura»</p>
-        </div>
-      </article>
-
-      <article class="adventure-card rounded-2xl mb-4 p-5 sm:p-6 card-body">
-        <h3 class="font-display font-bold text-lg text-earth-600 mb-3">🧗 Vía Ferrata «La Mocha»</h3>
-        <p class="text-forest-700 timeline-text">Itinerario horizontal y vertical: clavos, grapas, presas, pasamanos, cadenas, puentes colgantes y tirolinas.</p>
-        <ul class="mt-3 space-y-2 text-forest-700">
-          <li><strong>Niños:</strong> Superación personal muy segura; guía controla cable de vida.</li>
-          <li><strong>Requisitos:</strong> Ropa cómoda y zapatillas con suela en buen estado.</li>
-        </ul>
-      </article>
-
-      <article class="adventure-card rounded-2xl mb-4 p-5 sm:p-6 card-body">
-        <h3 class="font-display font-bold text-lg text-forest-800 mb-3">🚙 Ruta 4×4 — Zonas protegidas</h3>
-        <ul class="space-y-2 text-forest-700 timeline-text">
-          <li><strong>Vehículo:</strong> Todoterreno 9 plazas exclusivo para las dos familias.</li>
-          <li><strong>Guía:</strong> Ecosistema, historia y binoculares para fauna.</li>
-          <li><strong>Itinerario:</strong> Reserva de Gualay — acceso particular prohibido.</li>
-        </ul>
-      </article>
-
-      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
-        <h3 class="font-display font-bold text-lg text-forest-700 mb-3 route-title">Senderismo: Río Borosa</h3>
-        <p class="text-forest-700 timeline-text">Caminar hasta la <strong class="route-title">Cerrada de Elías</strong> — cañón estrecho con pasarelas de madera sobre el agua.</p>
-        <div class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-          <p class="font-semibold text-amber-900">⚠️ Horario crítico (julio)</p>
-          <p class="text-amber-800 text-sm mt-1">Empezar a caminar a las <strong>08:30</strong> para volver antes del calor extremo.</p>
-        </div>
-      </article>
-    </section>
-
-    <!-- 5. Presupuesto -->
-    <section id="presupuesto" class="mb-8 scroll-mt-20">
+    <!-- CAZORLA-PLANNER-START — no reemplazar por itinerario fijo -->
+    <section id="planificador" class="mb-8 scroll-mt-20">
       <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="h-1.5 bg-gradient-to-r from-forest-500 via-earth-400 to-forest-600"></div>
         <div class="p-5 sm:p-6 card-body">
-          <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
-            <span class="w-8 h-8 rounded-lg bg-earth-100 flex items-center justify-center">💶</span>
-            Presupuesto estimado (8 personas)
+          <h2 class="font-display text-xl font-bold text-forest-800 mb-2 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">🗓️</span>
+            Planificador · 27 jul – 1 ago 2026
           </h2>
-          <div class="overflow-x-auto -mx-1">
-            <table class="w-full text-left border-collapse min-w-[280px]">
-              <thead>
-                <tr class="border-b-2 border-forest-200">
-                  <th class="py-3 pr-4 font-display text-sm text-forest-600">Actividad</th>
-                  <th class="py-3 pr-4 font-display text-sm text-forest-600">€/persona</th>
-                  <th class="py-3 font-display text-sm text-forest-600">Total grupo</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-stone-200">
-                <tr><td class="py-3 font-medium">Kayak Embalse</td><td class="py-3 text-earth-600 font-semibold">15€</td><td class="py-3 font-bold text-forest-800">120€</td></tr>
-                <tr><td class="py-3 font-medium">Kayak Río</td><td class="py-3 text-earth-600 font-semibold">35€</td><td class="py-3 font-bold text-forest-800">280€</td></tr>
-                <tr><td class="py-3 font-medium">Vía Ferrata</td><td class="py-3 text-earth-600 font-semibold">45€</td><td class="py-3 font-bold text-forest-800">360€</td></tr>
-                <tr><td class="py-3 font-medium">Ruta 4×4</td><td class="py-3 text-earth-600 font-semibold">35€</td><td class="py-3 font-bold text-forest-800">280€</td></tr>
-              </tbody>
-              <tfoot>
-                <tr class="bg-forest-50">
-                  <td class="py-4 font-display font-bold text-forest-800" colspan="2">Total actividades (est.)</td>
-                  <td class="py-4 font-display font-extrabold text-xl text-forest-700">1.040€</td>
-                </tr>
-              </tfoot>
-            </table>
+          <p class="text-sm text-forest-600 mb-4">Elige actividades del catálogo, consulta el mejor horario y asígnalas a cada día. Tu plan se guarda en este dispositivo.</p>
+
+          <div class="catalog-tabs" role="tablist">
+            <button type="button" class="catalog-tab active" data-catalog-tab="actividades" role="tab" aria-selected="true">🥾 Actividades</button>
+            <button type="button" class="catalog-tab" data-catalog-tab="restauracion" role="tab" aria-selected="false">🍽️ Restauración</button>
+          </div>
+
+          <div id="panel-actividades" data-catalog-panel="actividades">
+            <h3 class="font-display font-semibold text-forest-700 text-sm uppercase tracking-wide mb-2">Tu calendario (6 días)</h3>
+            <div class="day-planner-scroll">
+              <div id="day-planner-grid" class="day-planner-grid" aria-label="Distribución por días"></div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4 no-print">
+              <button type="button" id="clear-plan-btn" class="text-sm px-3 py-1.5 rounded-lg border border-forest-300 text-forest-700 hover:bg-forest-50">Vaciar plan</button>
+            </div>
+            <h3 class="font-display font-semibold text-forest-700 text-sm uppercase tracking-wide mb-3">Catálogo de actividades</h3>
+            <p class="text-xs text-forest-500 mb-3">Pulsa una tarjeta para ver el mejor momento del día y asignarla.</p>
+            <div id="activity-catalog" class="catalog-grid"></div>
+          </div>
+
+          <div id="panel-restauracion" data-catalog-panel="restauracion" hidden>
+            <p class="text-sm text-forest-600 mb-4">Top del informe 2026. Web oficial, mapa embebido y coordenadas GPS.</p>
+            <div id="restaurant-catalog" class="catalog-grid"></div>
           </div>
         </div>
       </article>
     </section>
 
-    <!-- 6. Seguridad -->
+    <section id="logistica" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
+        <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-earth-100 flex items-center justify-center">📊</span>
+          Puntuación y tiempos (referencia)
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm min-w-[300px]">
+            <thead>
+              <tr class="border-b-2 border-forest-200">
+                <th class="py-2 pr-3 text-forest-600">Opción</th>
+                <th class="py-2 pr-3 text-forest-600">Nota</th>
+                <th class="py-2 text-forest-600">Coche</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200 text-forest-800" id="logistics-table-body"></tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-sm text-forest-600 p-3 bg-forest-50 rounded-xl border border-forest-100">
+          <strong>Consejo del asesor:</strong> La astronomía Starlight tras la cena combina frescor de la sierra y poco esfuerzo. El kayak en el Alto Guadalquivir es la opción favorita para adolescentes por el componente de acción.
+        </p>
+      </article>
+    </section>
+
     <section id="seguridad" class="mb-8 scroll-mt-20">
       <article class="adventure-card rounded-2xl overflow-hidden border-amber-200">
         <div class="h-1.5 bg-amber-400"></div>
@@ -1035,29 +1141,22 @@
             <li class="flex gap-3">
               <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">1</span>
               <div>
-                <p class="font-semibold text-forest-900">Calor extremo</p>
-                <p class="text-forest-700 text-sm timeline-text">Última semana de julio muy calurosa. Actividades de esfuerzo solo por la mañana.</p>
+                <p class="font-semibold text-forest-900">Calor extremo (julio)</p>
+                <p class="text-forest-700 text-sm">Senderismo y aventura activa: solo por la mañana. Mínimo 1,5 L/persona.</p>
               </div>
             </li>
             <li class="flex gap-3">
               <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">2</span>
               <div>
-                <p class="font-semibold text-forest-900">Hidratación</p>
-                <p class="text-forest-700 text-sm timeline-text">Mínimo <span class="distance-badge">💧 1,5 L/persona</span> en cada actividad.</p>
+                <p class="font-semibold text-forest-900">Reservas grupo de 8</p>
+                <p class="text-forest-700 text-sm">Ferrata, 4×4, barranquismo, kayak río y restaurantes top: reservar con antelación.</p>
               </div>
             </li>
             <li class="flex gap-3">
               <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">3</span>
               <div>
                 <p class="font-semibold text-forest-900">Calzado</p>
-                <p class="text-forest-700 text-sm timeline-text">No chanclas en kayak de río — calzado cerrado que se pueda mojar.</p>
-              </div>
-            </li>
-            <li class="flex gap-3">
-              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">4</span>
-              <div>
-                <p class="font-semibold text-forest-900">Reserva anticipada</p>
-                <p class="text-forest-700 text-sm timeline-text">Grupo de 8 — plazas 4×4 y guías ferrata se agotan. Formalizar antes del <strong>15 de junio</strong>.</p>
+                <p class="text-forest-700 text-sm">Kayak río y barranquismo: calzado cerrado que se pueda mojar. Ferrata: buen agarre.</p>
               </div>
             </li>
           </ol>
@@ -1065,45 +1164,45 @@
       </article>
     </section>
 
-    <!-- 7. Operadores -->
     <section id="operadores" class="mb-8 scroll-mt-20">
       <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
         <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
           <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">📞</span>
-          Directorio de operadores
+          Operadores de actividades
         </h2>
         <ul class="space-y-4">
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-forest-50 border border-forest-100">
             <div>
               <p class="font-bold text-forest-900">Turisla</p>
-              <p class="text-sm text-forest-600">Ferrata y multiaventura · Cazorla</p>
+              <p class="text-sm text-forest-600">Vía Ferrata «La Mocha» · Cazorla</p>
             </div>
             <button type="button" class="map-btn text-sm self-start" data-maps-q="Turisla, Cazorla" data-maps-title="Turisla">Ver en Maps</button>
           </li>
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-blue-50 border border-blue-100">
             <div>
               <p class="font-bold text-forest-900">Cazorla Aventur</p>
-              <p class="text-sm text-forest-600">Río Guadalquivir · Arroyo Frío</p>
+              <p class="text-sm text-forest-600">Kayak Alto Guadalquivir · Arroyo Frío</p>
             </div>
             <button type="button" class="map-btn map-btn--water text-sm self-start" data-maps-q="Cazorla Aventur, Arroyo Frío" data-maps-title="Cazorla Aventur">Ver en Maps</button>
           </li>
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-blue-50/80 border border-blue-100">
             <div>
               <p class="font-bold text-forest-900">Centro de Ocio El Tranco</p>
-              <p class="text-sm text-forest-600">Embalse y kayak recreo</p>
+              <p class="text-sm text-forest-600">SUP Giant y kayak embalse</p>
             </div>
             <button type="button" class="map-btn map-btn--water text-sm self-start" data-maps-q="38.1300,-2.7850" data-maps-title="Centro de Ocio El Tranco">Ver en Maps</button>
           </li>
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-earth-50 border border-earth-100">
             <div>
               <p class="font-bold text-forest-900">Tierra Venturas</p>
-              <p class="text-sm text-forest-600">Rutas 4×4 alta montaña · Cazorla</p>
+              <p class="text-sm text-forest-600">Ruta 4×4 zonas de reserva</p>
             </div>
             <button type="button" class="map-btn text-sm self-start" data-maps-q="Tierra Venturas, Cazorla" data-maps-title="Tierra Venturas">Ver en Maps</button>
           </li>
         </ul>
       </article>
     </section>
+    <!-- CAZORLA-PLANNER-END -->
 
     <!-- 8. Checklist -->
     <section id="checklist" class="mb-8 scroll-mt-20">
@@ -1114,44 +1213,12 @@
         </h2>
         <p class="text-sm text-forest-500 mb-4 no-print">Se guarda automáticamente en este dispositivo.</p>
 
-        <h3 class="font-display font-semibold text-forest-700 mt-4 mb-2">Reservas (antes del 15 jun)</h3>
+        <h3 class="font-display font-semibold text-forest-700 mt-4 mb-2">Reservas recomendadas</h3>
         <ul class="space-y-2" data-checklist="reservas">
-          <li class="check-item">
-            <input type="checkbox" id="c1" class="sr-only peer" />
-            <label for="c1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
-              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-              </span>
-              <span class="timeline-text">Vía Ferrata «La Mocha» — Turisla</span>
-            </label>
-          </li>
-          <li class="check-item">
-            <input type="checkbox" id="c2" class="sr-only" />
-            <label for="c2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
-              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-              </span>
-              <span>Ruta 4×4 Tierra Venturas (8 plazas)</span>
-            </label>
-          </li>
-          <li class="check-item">
-            <input type="checkbox" id="c3" class="sr-only" />
-            <label for="c3" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
-              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-              </span>
-              <span>Kayak embalse + kayak río</span>
-            </label>
-          </li>
-          <li class="check-item">
-            <input type="checkbox" id="c4" class="sr-only" />
-            <label for="c4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50">
-              <span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-              </span>
-              <span>Restaurante El Tranco (día embalse)</span>
-            </label>
-          </li>
+          <li class="check-item"><input type="checkbox" id="c1" class="sr-only" /><label for="c1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Vía Ferrata + kayak río + 4×4 (8 pers.)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="c2" class="sr-only" /><label for="c2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Mesón Leandro o Casa Alfonso</span></label></li>
+          <li class="check-item"><input type="checkbox" id="c3" class="sr-only" /><label for="c3" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Restaurante El Tranco (día Tranco/SUP)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="c4" class="sr-only" /><label for="c4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Astronomía Starlight (plazas/fecha)</span></label></li>
         </ul>
 
         <h3 class="font-display font-semibold text-forest-700 mt-6 mb-2">Equipaje y suministros</h3>
@@ -1164,10 +1231,11 @@
           <li class="check-item"><input type="checkbox" id="e6" class="sr-only" /><label for="e6" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Binoculares (opcional, ruta 4×4)</span></label></li>
         </ul>
 
-        <h3 class="font-display font-semibold text-forest-700 mt-6 mb-2">Por día</h3>
+        <h3 class="font-display font-semibold text-forest-700 mt-6 mb-2">Plan guardado</h3>
+        <p class="text-sm text-forest-600 mb-2">Revisa el <a href="#planificador" class="underline font-semibold">planificador</a> antes de salir.</p>
         <ul class="space-y-2" data-checklist="dias">
-          <li class="check-item"><input type="checkbox" id="d2" class="sr-only" /><label for="d2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Día 2: Salida Borosa 08:30</span></label></li>
-          <li class="check-item"><input type="checkbox" id="d4" class="sr-only" /><label for="d4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Día 4: Salir con tiempo (~1 h al Tranco)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="d1" class="sr-only" /><label for="d1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Calendario de 6 días completado en el planificador</span></label></li>
+        <li class="check-item"><input type="checkbox" id="d2" class="sr-only" /><label for="d2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Borosa/Cerezuelo: salida antes de las 09:00</span></label></li>
         </ul>
 
         <button type="button" id="clear-checklist" class="mt-6 text-sm text-forest-500 underline hover:text-forest-700 no-print">Restablecer checklist</button>
@@ -1216,16 +1284,59 @@
     </section>
 
     <footer class="text-center text-sm text-forest-500 pb-4 no-print">
-      <p id="cache-status">Cazorla Portable Dashboard · Cargando caché offline…</p>
+      <p id="cache-status">Cazorla 2026 · Cargando caché offline…</p>
+      <p class="text-xs text-forest-400 mt-1" id="build-label">Build 2026.05.24-planificador-v4</p>
     </footer>
   </main>
 
   <script>
     (function () {
+      var confirmModal = document.getElementById('confirm-modal');
+      var confirmTitle = document.getElementById('confirm-modal-title');
+      var confirmMessage = document.getElementById('confirm-modal-message');
+      var confirmAccept = document.getElementById('confirm-modal-accept');
+      var confirmCancel = document.getElementById('confirm-modal-cancel');
+      var confirmBackdrop = document.getElementById('confirm-modal-backdrop');
+      var confirmOnAccept = null;
+
+      function closeConfirmModal() {
+        if (!confirmModal) return;
+        confirmModal.classList.remove('open');
+        confirmModal.setAttribute('aria-hidden', 'true');
+        confirmOnAccept = null;
+      }
+
+      window.showConfirmModal = function (opts) {
+        if (!confirmModal) return;
+        opts = opts || {};
+        confirmTitle.textContent = opts.title || '¿Estás seguro?';
+        confirmMessage.textContent = opts.message || '';
+        confirmAccept.textContent = opts.acceptLabel || 'Aceptar';
+        confirmCancel.textContent = opts.cancelLabel || 'Cancelar';
+        confirmOnAccept = typeof opts.onConfirm === 'function' ? opts.onConfirm : null;
+        confirmModal.classList.add('open');
+        confirmModal.setAttribute('aria-hidden', 'false');
+        confirmCancel.focus();
+      };
+
+      confirmAccept?.addEventListener('click', function () {
+        var cb = confirmOnAccept;
+        closeConfirmModal();
+        if (cb) cb();
+      });
+      confirmCancel?.addEventListener('click', closeConfirmModal);
+      confirmBackdrop?.addEventListener('click', closeConfirmModal);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && confirmModal?.classList.contains('open')) closeConfirmModal();
+      });
+    })();
+
+    (function () {
       const STORAGE_KEY = 'cazorla-dashboard-v1';
       const READING_KEY = 'cazorla-reading-mode';
       const DARK_KEY = 'cazorla-dark-mode';
-      const CACHE_NAME = 'cazorla-field-v3';
+      const DASHBOARD_BUILD = '2026.05.24-planificador-v4';
+      const CACHE_NAME = 'cazorla-field-v4';
       const INDEX_URL = 'index.html';
       const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap';
 
@@ -1257,14 +1368,15 @@
           var url = e.request.url;
           if (url.indexOf('index.html') !== -1 || e.request.mode === 'navigate') {
             e.respondWith(
-              caches.match(e.request).then(function(cached) {
-                var net = fetch(e.request).then(function(res) {
-                  if (res && res.status === 200) {
-                    caches.open('${CACHE_NAME}').then(function(c) { c.put(e.request, res.clone()); });
-                  }
-                  return res;
-                }).catch(function() { return caches.match('${INDEX_URL}'); });
-                return cached || net;
+              fetch(e.request).then(function(res) {
+                if (res && res.status === 200) {
+                  caches.open('${CACHE_NAME}').then(function(c) { c.put(e.request, res.clone()); });
+                }
+                return res;
+              }).catch(function() {
+                return caches.match(e.request).then(function(cached) {
+                  return cached || caches.match('${INDEX_URL}');
+                });
               })
             );
             return;
@@ -1409,24 +1521,23 @@
         }
       });
 
-      // —— Copiar coordenadas ——
-      document.querySelectorAll('.copy-coords-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var block = btn.closest('.gps-block');
-          var lat = block.dataset.lat;
-          var lng = block.dataset.lng;
-          var text = lat + ', ' + lng;
-          function done() {
-            btn.textContent = '¡Copiado!';
-            btn.classList.add('copied');
-            setTimeout(function() { btn.textContent = 'Copiar coordenadas'; btn.classList.remove('copied'); }, 2000);
-          }
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(done).catch(function() { fallbackCopy(text, done); });
-          } else {
-            fallbackCopy(text, done);
-          }
-        });
+      // —— Copiar coordenadas (delegación, incluye restaurantes dinámicos) ——
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.copy-coords-btn');
+        if (!btn) return;
+        var block = btn.closest('.gps-block');
+        if (!block) return;
+        var text = block.dataset.lat + ', ' + block.dataset.lng;
+        function done() {
+          btn.textContent = '¡Copiado!';
+          btn.classList.add('copied');
+          setTimeout(function () { btn.textContent = 'Copiar coordenadas'; btn.classList.remove('copied'); }, 2000);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
+        } else {
+          fallbackCopy(text, done);
+        }
       });
       function fallbackCopy(text, cb) {
         var ta = document.createElement('textarea');
@@ -1465,6 +1576,256 @@
           el.prepend(span);
         }
       });
+
+      // —— Planificador interactivo ——
+      (function () {
+        var PLAN_KEY = 'cazorla-plan-v3';
+        var STAY_DAYS = [
+          { id: '2026-07-27', label: 'Lun 27', sub: 'Llegada' },
+          { id: '2026-07-28', label: 'Mar 28', sub: '' },
+          { id: '2026-07-29', label: 'Mié 29', sub: '' },
+          { id: '2026-07-30', label: 'Jue 30', sub: '' },
+          { id: '2026-07-31', label: 'Vie 31', sub: '' },
+          { id: '2026-08-01', label: 'Sáb 1', sub: 'Regreso' }
+        ];
+        var ACTIVITIES = [
+          { id: 'cerezuelo', title: 'Ruta del Río Cerezuelo', rating: 9.5, drive: '12 min', cat: 'Senderismo', icon: '🏞️',
+            desc: 'Sombra y frescor máximo. Ideal para julio en familia.',
+            bestTime: 'Mañana (08:00–11:30). Evita el mediodía: menos sombra y más calor.',
+            mapsQ: 'Río Cerezuelo, Cazorla, Jaén', lat: '37.9115', lng: '-3.0012' },
+          { id: 'astronomia', title: 'Astronomía Starlight', rating: 9.4, drive: '20 min', cat: 'Nocturna', icon: '🌌',
+            desc: 'Cielo certificado Starlight. Telescopios (Saturno, Luna). Miradores de la zona.',
+            bestTime: 'Noche (22:00–00:30), tras la cena. Sin esfuerzo físico; julio = máxima visibilidad.',
+            mapsQ: 'Mirador Castillo de la Yedra, La Iruela', lat: '37.9214', lng: '-2.9998' },
+          { id: 'ferrata', title: 'Vía Ferrata «La Mocha»', rating: 9.2, drive: '15 min', cat: 'Aventura', icon: '⛰️',
+            desc: 'Adrenalina vertical con guía (Turisla, Cazorla).',
+            bestTime: 'Mañana (09:00–13:00). Reservar con antelación para 8 personas.',
+            mapsQ: 'Turisla, Cazorla, Jaén', lat: '37.9110', lng: '-3.0025' },
+          { id: 'kayak-rio', title: 'Kayak Alto Guadalquivir (Río)', rating: 8.9, drive: '40 min', cat: 'Aventura acuática', icon: '🛶',
+            desc: 'Descenso dinámico con pequeños rápidos y corrientes suaves. Opción favorita para adolescentes de 13 años.',
+            bestTime: 'Mañana (09:30–13:30). Calzado cerrado que se pueda mojar. Guías recogen en base (Arroyo Frío).',
+            mapsQ: 'Cazorla Aventur, Arroyo Frío, Jaén', lat: '37.9540', lng: '-2.9910' },
+          { id: '4x4', title: 'Ruta 4×4 Zonas de Reserva', rating: 9.0, drive: '12 min', cat: 'Naturaleza', icon: '⛰️',
+            desc: 'Fauna exclusiva: cabra montés y quebrantahuesos (Tierra Venturas).',
+            bestTime: 'Tarde (18:00–21:00). Mejor avistamiento al atardecer.',
+            mapsQ: 'Tierra Venturas, Cazorla', lat: '37.9120', lng: '-3.0018' },
+          { id: 'borosa', title: 'Ruta del Río Borosa', rating: 8.8, drive: '50 min', cat: 'Senderismo', icon: '🏞️',
+            desc: 'Paisaje icónico hasta la Cerrada de Elías.',
+            bestTime: 'Muy temprano: salida 08:00–08:30. Crítico en julio por el calor.',
+            mapsQ: '38.01505,-2.86491', lat: '38.01505', lng: '-2.86491' },
+          { id: 'barranquismo', title: 'Barranquismo Cerrada del Utrero', rating: 8.6, drive: '40 min', cat: 'Aventura', icon: '🏞️',
+            desc: 'Saltos y agua pura. Nivel iniciación con monitor.',
+            bestTime: 'Mañana (10:00–14:00). Agua más fresca y menos gente.',
+            mapsQ: 'Cerrada del Utrero, Cazorla', lat: '37.9480', lng: '-2.9650' },
+          { id: 'paddle', title: 'Kayak / Paddle Surf Giant (SUP)', rating: 8.7, drive: '1 h 10 min', cat: 'Agua / equipo', icon: '🛶',
+            desc: 'Tabla gigante para 8 personas en el embalse del Tranco. Centro de Ocio El Tranco.',
+            bestTime: 'Mañana o primera hora de tarde. Combina con comida en el embalse.',
+            mapsQ: '38.1300,-2.7850', lat: '38.1300', lng: '-2.7850' }
+        ];
+        var RESTAURANTS = [
+          { id: 'leandro', title: 'Mesón Leandro', rating: 9.7, drive: '12 min', cat: 'Gourmet',
+            desc: 'Excelencia gastronómica de la sierra. Carnes y cordero segureño.',
+            web: 'https://www.mesonleandro.com', webLabel: 'mesonleandro.com',
+            mapsQ: 'Mesón Leandro, C. Hoz 3, Cazorla', lat: '37.9103', lng: '-3.0035', address: 'C. Hoz, 3 · Cazorla' },
+          { id: 'alfonso', title: 'Casa Alfonso', rating: 9.2, drive: '12 min', cat: 'Terraza familiar',
+            desc: 'Gran terraza y cocina creativa mediterránea.',
+            web: 'https://www.casalfonso.es', webLabel: 'casalfonso.es',
+            mapsQ: 'Casa Alfonso, Plaza Consuelo Mendieta, Cazorla', lat: '37.9108', lng: '-3.0028', address: 'Pl. Consuelo Mendieta · Cazorla' },
+          { id: 'tranco', title: 'Restaurante El Tranco', rating: 8.9, drive: '1 h 10 min', cat: 'Embalse',
+            desc: 'Vistas al embalse. Gastronomía local. Reserva recomendada.',
+            web: 'https://www.centrodeocioeltranco.com', webLabel: 'centrodeocioeltranco.com',
+            mapsQ: '38.1300,-2.7850', lat: '38.1300', lng: '-2.7850', address: 'Embalse del Tranco' },
+          { id: 'iruela', title: 'Restaurante La Iruela', rating: 8.5, drive: '10 min', cat: 'Castillo',
+            desc: 'Ideal tras visitar el castillo de La Iruela.',
+            web: 'https://www.lairuela.es', webLabel: 'lairuela.es',
+            mapsQ: 'Restaurante La Iruela, La Iruela, Jaén', lat: '37.9210', lng: '-3.0005', address: 'La Iruela · junto al castillo' }
+        ];
+        var plan = {};
+        var selectedActivity = null;
+
+        function esc(s) {
+          return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function getActivity(id) {
+          return ACTIVITIES.filter(function (a) { return a.id === id; })[0];
+        }
+        function loadPlan() {
+          try { plan = JSON.parse(localStorage.getItem(PLAN_KEY) || '{}'); } catch (e) { plan = {}; }
+          STAY_DAYS.forEach(function (d) { if (!Array.isArray(plan[d.id])) plan[d.id] = []; });
+        }
+        function savePlan() {
+          try { localStorage.setItem(PLAN_KEY, JSON.stringify(plan)); } catch (e) {}
+          renderPlanner();
+        }
+        function isPlanned(id) {
+          return STAY_DAYS.some(function (d) { return plan[d.id].indexOf(id) >= 0; });
+        }
+        function renderDayPlanner() {
+          var grid = document.getElementById('day-planner-grid');
+          if (!grid) return;
+          grid.innerHTML = STAY_DAYS.map(function (day) {
+            var ids = plan[day.id] || [];
+            var chips = ids.length ? ids.map(function (aid) {
+              var a = getActivity(aid);
+              if (!a) return '';
+              return '<div class="plan-chip" data-chip-activity="' + aid + '">' +
+                '<span class="flex-1">' + a.icon + ' ' + esc(a.title) + '</span>' +
+                '<button type="button" class="plan-chip-remove" data-remove-day="' + day.id + '" data-remove-id="' + aid + '" aria-label="Quitar">×</button></div>';
+            }).join('') : '<p class="day-column-empty">Pulsa una actividad del catálogo</p>';
+            return '<div class="day-column"><div class="day-column-header">' + esc(day.label) +
+              (day.sub ? ' · ' + esc(day.sub) : '') + '</div><div class="day-column-body">' + chips + '</div></div>';
+          }).join('');
+        }
+        function renderActivityCatalog() {
+          var el = document.getElementById('activity-catalog');
+          if (!el) return;
+          el.innerHTML = ACTIVITIES.map(function (a) {
+            return '<button type="button" class="catalog-card' + (isPlanned(a.id) ? ' is-planned' : '') + '" data-activity-id="' + a.id + '">' +
+              '<div class="flex justify-between gap-2 mb-1"><span class="font-display font-bold text-forest-900 text-left">' + a.icon + ' ' + esc(a.title) + '</span>' +
+              '<span class="rating-pill">⭐ ' + a.rating + '</span></div>' +
+              '<p class="text-xs text-forest-500 text-left">' + esc(a.cat) + ' · 🚗 ' + esc(a.drive) + '</p>' +
+              '<p class="text-sm text-forest-700 text-left mt-1">' + esc(a.desc) + '</p>' +
+              (isPlanned(a.id) ? '<p class="text-xs text-forest-600 font-semibold mt-2 text-left">✓ En tu plan</p>' : '') +
+              '</button>';
+          }).join('');
+        }
+        function renderRestaurants() {
+          var el = document.getElementById('restaurant-catalog');
+          if (!el) return;
+          el.innerHTML = RESTAURANTS.map(function (r) {
+            return '<article class="catalog-card" style="cursor:default">' +
+              '<div class="flex justify-between gap-2 mb-1"><h3 class="font-display font-bold text-forest-900">' + esc(r.title) + '</h3>' +
+              '<span class="rating-pill">⭐ ' + r.rating + '</span></div>' +
+              '<p class="text-xs text-forest-500">' + esc(r.cat) + ' · 🚗 ' + esc(r.drive) + '</p>' +
+              '<p class="text-sm text-forest-700 mt-1">' + esc(r.desc) + '</p>' +
+              '<p class="text-xs text-forest-600 mt-1">📍 ' + esc(r.address) + '</p>' +
+              '<div class="rest-card-actions">' +
+              '<a href="' + esc(r.web) + '" target="_blank" rel="noopener" class="web-link-btn">🌐 ' + esc(r.webLabel) + '</a>' +
+              '<button type="button" class="map-btn text-sm" data-maps-q="' + esc(r.mapsQ) + '" data-maps-title="' + esc(r.title) + '">Ver en Maps</button></div>' +
+              '<div class="gps-block mt-2" data-lat="' + r.lat + '" data-lng="' + r.lng + '" data-label="' + esc(r.title) + '">' +
+              '<p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS</p>' +
+              '<p class="gps-coords mt-0.5">' + r.lat + ', ' + r.lng + '</p>' +
+              '<button type="button" class="copy-coords-btn">Copiar coordenadas</button></div></article>';
+          }).join('');
+        }
+        function renderLogisticsTable() {
+          var tbody = document.getElementById('logistics-table-body');
+          if (!tbody) return;
+          var rows = ACTIVITIES.map(function (a) {
+            return { title: a.title, rating: a.rating, drive: a.drive };
+          }).concat(RESTAURANTS.map(function (r) {
+            return { title: r.title, rating: r.rating, drive: r.drive };
+          })).sort(function (a, b) { return b.rating - a.rating; });
+          tbody.innerHTML = rows.map(function (r) {
+            return '<tr><td class="py-2 pr-3 font-medium">' + esc(r.title) + '</td><td class="py-2 pr-3">⭐ ' + r.rating +
+              '</td><td class="py-2">' + esc(r.drive) + '</td></tr>';
+          }).join('');
+        }
+        function renderPlanner() {
+          renderDayPlanner();
+          renderActivityCatalog();
+          renderRestaurants();
+          renderLogisticsTable();
+        }
+        function openTipModal(activityId) {
+          var a = getActivity(activityId);
+          if (!a) return;
+          selectedActivity = activityId;
+          document.getElementById('tip-modal-title').textContent = a.title;
+          document.getElementById('tip-modal-desc').textContent = a.desc;
+          document.getElementById('tip-modal-time').textContent = a.bestTime;
+          document.getElementById('tip-assign-days').innerHTML = STAY_DAYS.map(function (d) {
+            var on = plan[d.id].indexOf(activityId) >= 0;
+            return '<button type="button" class="assign-day-btn' + (on ? ' ring-2 ring-forest-500 font-bold' : '') +
+              '" data-assign-day="' + d.id + '" data-assign-id="' + activityId + '">' + esc(d.label) + (on ? ' ✓' : '') + '</button>';
+          }).join('');
+          var modal = document.getElementById('activity-tip-modal');
+          modal.classList.add('open');
+          modal.setAttribute('aria-hidden', 'false');
+        }
+        function closeTipModal() {
+          document.getElementById('activity-tip-modal').classList.remove('open');
+          document.getElementById('activity-tip-modal').setAttribute('aria-hidden', 'true');
+          selectedActivity = null;
+        }
+        function toggleOnDay(dayId, activityId) {
+          var list = plan[dayId];
+          var i = list.indexOf(activityId);
+          if (i >= 0) list.splice(i, 1); else list.push(activityId);
+          savePlan();
+          if (selectedActivity === activityId) openTipModal(activityId);
+        }
+
+        document.querySelectorAll('.catalog-tab').forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var t = tab.dataset.catalogTab;
+            document.querySelectorAll('.catalog-tab').forEach(function (x) {
+              x.classList.toggle('active', x === tab);
+              x.setAttribute('aria-selected', x === tab ? 'true' : 'false');
+            });
+            document.querySelectorAll('[data-catalog-panel]').forEach(function (p) {
+              p.hidden = p.dataset.catalogPanel !== t;
+            });
+          });
+        });
+        document.querySelectorAll('[data-open-tab]').forEach(function (link) {
+          link.addEventListener('click', function () {
+            var t = link.dataset.openTab;
+            setTimeout(function () {
+              var tab = document.querySelector('.catalog-tab[data-catalog-tab="' + t + '"]');
+              if (tab) tab.click();
+            }, 400);
+          });
+        });
+        document.getElementById('activity-catalog')?.addEventListener('click', function (e) {
+          var card = e.target.closest('[data-activity-id]');
+          if (card) openTipModal(card.dataset.activityId);
+        });
+        document.getElementById('day-planner-grid')?.addEventListener('click', function (e) {
+          var rm = e.target.closest('[data-remove-id]');
+          if (rm) { e.stopPropagation(); toggleOnDay(rm.dataset.removeDay, rm.dataset.removeId); return; }
+          var chip = e.target.closest('[data-chip-activity]');
+          if (chip) openTipModal(chip.dataset.chipActivity);
+        });
+        document.getElementById('tip-assign-days')?.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-assign-day]');
+          if (btn) toggleOnDay(btn.dataset.assignDay, btn.dataset.assignId);
+        });
+        document.getElementById('tip-modal-close')?.addEventListener('click', closeTipModal);
+        document.getElementById('tip-modal-backdrop')?.addEventListener('click', closeTipModal);
+        document.getElementById('tip-modal-only-info')?.addEventListener('click', closeTipModal);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && document.getElementById('activity-tip-modal').classList.contains('open')) closeTipModal();
+        });
+        document.getElementById('clear-plan-btn')?.addEventListener('click', function () {
+          showConfirmModal({
+            title: '¿Vaciar el plan?',
+            message: 'Se quitarán todas las actividades asignadas a los 6 días. Podrás volver a armar el calendario desde el catálogo.',
+            acceptLabel: 'Vaciar plan',
+            cancelLabel: 'Cancelar',
+            onConfirm: function () {
+              STAY_DAYS.forEach(function (d) { plan[d.id] = []; });
+              savePlan();
+            }
+          });
+        });
+        function initPlanner() {
+          if (!document.getElementById('day-planner-grid') || !document.getElementById('activity-catalog')) {
+            var host = document.querySelector('main');
+            if (host) {
+              var alert = document.createElement('div');
+              alert.className = 'mb-6 p-4 rounded-xl border-2 border-amber-400 bg-amber-50 text-amber-950 text-sm';
+              alert.setAttribute('role', 'alert');
+              alert.innerHTML = '<strong>Planificador no cargado.</strong> El HTML de esta página está incompleto o es una copia en caché antigua. Recarga con <kbd>Ctrl+F5</kbd> o abre de nuevo <code>index.html</code> desde Descargas.';
+              host.insertBefore(alert, host.firstChild);
+            }
+            return;
+          }
+          loadPlan();
+          renderPlanner();
+        }
+        initPlanner();
+      })();
 
       // —— Modal mapas embebido (iframe) ——
       (function () {
@@ -1606,7 +1967,7 @@
       });
 
       // —— Nav activo ——
-      var sections = [].slice.call(document.querySelectorAll('section[id], article[id^="dia-"]'));
+      var sections = [].slice.call(document.querySelectorAll('section[id]'));
       var navLinks = [].slice.call(document.querySelectorAll('.nav-link'));
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
