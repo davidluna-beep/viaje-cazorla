@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('cazorla-dark-mode');
+        if (s === '1' || (s === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="Planificación viaje Cazorla — Dashboard offline" />
-  <meta name="theme-color" content="#1a3d2e" />
+  <meta name="theme-color" content="#1a3d2e" id="theme-color-meta" />
   <title>Cazorla · Escapada Julio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -269,9 +279,108 @@
       .emergency-print-block { display: block !important; }
     }
     body.print-export .no-print-screen { opacity: 0.3; pointer-events: none; }
+
+    /* —— Dark mode —— */
+    html.dark { color-scheme: dark; }
+    html.dark body {
+      background-color: #0c1612 !important;
+      color: #dceee3 !important;
+    }
+    html.dark .adventure-card {
+      background: linear-gradient(145deg, #1e3329 0%, #141f1a 100%) !important;
+      border-color: #2d4a3a !important;
+      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.45);
+    }
+    html.dark .text-forest-900 { color: #eef8f1 !important; }
+    html.dark .text-forest-800 { color: #dceee3 !important; }
+    html.dark .text-forest-700 { color: #b8ddc7 !important; }
+    html.dark .text-forest-600 { color: #8bc4a4 !important; }
+    html.dark .text-forest-500 { color: #6aab85 !important; }
+    html.dark .text-forest-300 { color: #8bc4a4 !important; }
+    html.dark .text-earth-600 { color: #d4b896 !important; }
+    html.dark .text-earth-500 { color: #c9a97d !important; }
+    html.dark .text-blue-800 { color: #93c5fd !important; }
+    html.dark .text-blue-700 { color: #7dd3fc !important; }
+    html.dark .text-blue-100 { color: #e0f2fe !important; }
+    html.dark .text-amber-900 { color: #fde68a !important; }
+    html.dark .text-amber-800 { color: #fcd34d !important; }
+    html.dark .text-amber-950 { color: #fef3c7 !important; }
+    html.dark .text-red-800, html.dark .text-red-900 { color: #fecaca !important; }
+    html.dark .text-red-700 { color: #fca5a5 !important; }
+    html.dark .text-red-950 { color: #fee2e2 !important; }
+    html.dark .bg-forest-50 { background-color: #1a2e26 !important; }
+    html.dark .bg-forest-100 { background-color: #243d32 !important; }
+    html.dark .bg-earth-50 { background-color: #2a2218 !important; }
+    html.dark .bg-earth-100 { background-color: #3d3224 !important; }
+    html.dark .bg-amber-50 { background-color: #2d2410 !important; }
+    html.dark .bg-amber-100 { background-color: #3d3018 !important; }
+    html.dark .bg-blue-50 { background-color: #152535 !important; }
+    html.dark .bg-blue-50\/80 { background-color: #152535 !important; }
+    html.dark .bg-red-50 { background-color: #2d1518 !important; }
+    html.dark .bg-stone-50 { background-color: #1c2420 !important; }
+    html.dark .bg-stone-100 { background-color: #243029 !important; }
+    html.dark #dia-7 .rounded-t-2xl { background-color: #2d3832 !important; color: #dceee3 !important; }
+    html.dark .border-forest-100 { border-color: #2d4a3a !important; }
+    html.dark .border-forest-200 { border-color: #3d5c4a !important; }
+    html.dark .border-earth-100 { border-color: #4a3d28 !important; }
+    html.dark .border-amber-200 { border-color: #5c4a20 !important; }
+    html.dark .border-blue-100 { border-color: #1e3a52 !important; }
+    html.dark .border-red-100 { border-color: #5c2020 !important; }
+    html.dark .border-red-200 { border-color: #7a2828 !important; }
+    html.dark .divide-stone-200 > :not([hidden]) ~ :not([hidden]) { border-color: #2d4a3a !important; }
+    html.dark .gps-block {
+      background: #1a2e26 !important;
+      border-color: #3d8a62 !important;
+    }
+    html.dark .gps-coords { color: #b8ddc7 !important; }
+    html.dark .copy-coords-btn {
+      background: #243d32 !important;
+      border-color: #5aa67d !important;
+      color: #b8ddc7 !important;
+    }
+    html.dark .copy-coords-btn.copied { background: #2d4a3a !important; }
+    html.dark .distance-badge {
+      background: #3d3224 !important;
+      color: #e0cdb3 !important;
+      border-color: #5c4a30 !important;
+    }
+    html.dark .nav-mobile {
+      background: #141f1a !important;
+      border-color: #2d4a3a !important;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35) !important;
+    }
+    html.dark .nav-mobile .nav-link { color: #b8ddc7 !important; }
+    html.dark .nav-mobile .nav-link.active {
+      background: #1a2e26 !important;
+      color: #dceee3 !important;
+      border-top-color: #5aa67d !important;
+    }
+    html.dark .emergency-panel-inner {
+      background: #1a2e26 !important;
+      color: #dceee3 !important;
+    }
+    html.dark .emergency-panel-inner .bg-stone-50 { background-color: #243029 !important; }
+    html.dark .emergency-panel-inner .font-bold { color: #eef8f1 !important; }
+    html.dark .emergency-panel-inner .text-stone-500 { color: #8bc4a4 !important; }
+    html.dark .close-emergency-btn { color: #8bc4a4 !important; }
+    html.dark .timeline-dot {
+      background: #1a2e26 !important;
+      border-color: #5aa67d !important;
+    }
+    html.dark .timeline-item.highlight .timeline-dot { border-color: #c9a97d !important; }
+    html.dark .fab-emergency { border-color: #2d4a3a !important; }
+    html.dark .offline-banner { background: #2d2410 !important; color: #fcd34d !important; }
+    html.dark .offline-banner.cached-ok { background: #1a2e26 !important; color: #b8ddc7 !important; }
+    html.dark .check-item label:hover { background: #1a2e26 !important; }
+    html.dark .border-l-4.border-blue-500 { border-color: #3b82f6 !important; }
+    html.dark .border-l-4.border-blue-700 { border-color: #2563eb !important; }
+    html.dark #toggle-dark-desktop,
+    html.dark #toggle-reading-desktop { background-color: #2d4a3a !important; }
+    html.dark #toggle-dark-desktop:hover,
+    html.dark #toggle-reading-desktop:hover { background-color: #3d5c4a !important; }
   </style>
 </head>
-<body class="bg-stone-50 text-forest-900 font-sans antialiased min-h-screen">
+<body class="bg-stone-50 text-forest-900 font-sans antialiased min-h-screen transition-colors duration-200">
 
   <div id="offline-banner" class="offline-banner no-print" role="status"></div>
 
@@ -285,7 +394,7 @@
     <div class="emergency-panel-inner">
       <div class="flex justify-between items-start mb-3">
         <h2 id="emergency-title" class="font-display text-xl font-bold text-red-700">Emergencias</h2>
-        <button type="button" id="close-emergency" class="text-2xl leading-none text-stone-400 hover:text-stone-700" aria-label="Cerrar">×</button>
+        <button type="button" id="close-emergency" class="close-emergency-btn text-2xl leading-none text-stone-400 hover:text-stone-700" aria-label="Cerrar">×</button>
       </div>
       <ul class="space-y-3 mb-4">
         <li><a href="tel:112" class="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-200"><span class="text-2xl">🚨</span><div><p class="font-bold text-red-900">112</p><p class="text-sm text-red-700">Emergencias europeas</p></div></a></li>
@@ -326,6 +435,9 @@
       <li><a href="#emergencia" class="nav-link block px-5 py-2.5 hover:bg-red-900/40 text-red-200 transition">Emergencia</a></li>
     </ul>
     <div class="p-4 border-t border-forest-700 no-print space-y-2">
+      <button type="button" id="toggle-dark-desktop" class="w-full py-2.5 px-3 rounded-lg bg-forest-700 hover:bg-forest-600 text-sm font-semibold transition flex items-center justify-center gap-2">
+        <span aria-hidden="true" id="dark-icon-desktop">🌙</span> Modo oscuro
+      </button>
       <button type="button" id="toggle-reading-desktop" class="w-full py-2.5 px-3 rounded-lg bg-forest-600 hover:bg-forest-500 text-sm font-semibold transition flex items-center justify-center gap-2">
         <span aria-hidden="true">☀️</span> Modo lectura
       </button>
@@ -356,6 +468,9 @@
       <a href="#emergencia" class="nav-link flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-red-700 min-w-[4.5rem]">
         <span class="text-lg mb-0.5">🆘</span> SOS
       </a>
+      <button type="button" id="toggle-dark-mobile" class="flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-forest-700 min-w-[4.5rem]">
+        <span class="text-lg mb-0.5" id="dark-icon-mobile">🌙</span> Noche
+      </button>
       <button type="button" id="toggle-reading-mobile" class="flex-shrink-0 flex flex-col items-center py-2 px-3 text-xs text-earth-600 min-w-[4.5rem]">
         <span class="text-lg mb-0.5">☀️</span> Leer
       </button>
@@ -909,13 +1024,16 @@
     (function () {
       const STORAGE_KEY = 'cazorla-dashboard-v1';
       const READING_KEY = 'cazorla-reading-mode';
-      const CACHE_NAME = 'cazorla-field-v2';
+      const DARK_KEY = 'cazorla-dark-mode';
+      const CACHE_NAME = 'cazorla-field-v3';
+      const INDEX_URL = 'index.html';
       const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap';
 
       // —— Service Worker (blob embebido) ——
       const SW_SOURCE = `
         const CACHE = '${CACHE_NAME}';
         const CORE = [
+          '${INDEX_URL}',
           '${FONT_CSS}',
           'https://cdn.tailwindcss.com'
         ];
@@ -937,6 +1055,20 @@
         self.addEventListener('fetch', function(e) {
           if (e.request.method !== 'GET') return;
           var url = e.request.url;
+          if (url.indexOf('index.html') !== -1 || e.request.mode === 'navigate') {
+            e.respondWith(
+              caches.match(e.request).then(function(cached) {
+                var net = fetch(e.request).then(function(res) {
+                  if (res && res.status === 200) {
+                    caches.open('${CACHE_NAME}').then(function(c) { c.put(e.request, res.clone()); });
+                  }
+                  return res;
+                }).catch(function() { return caches.match('${INDEX_URL}'); });
+                return cached || net;
+              })
+            );
+            return;
+          }
           if (url.indexOf('cdn.tailwindcss.com') !== -1 || url.indexOf('fonts.googleapis') !== -1 || url.indexOf('fonts.gstatic.com') !== -1) {
             e.respondWith(
               caches.match(e.request).then(function(cached) {
@@ -983,8 +1115,10 @@
       function prefetchAssets() {
         if (!('caches' in window)) return Promise.resolve();
         return caches.open(CACHE_NAME).then(function(cache) {
-          return fetch(FONT_CSS, { mode: 'cors' }).then(function(res) {
-            if (res.ok) return cache.put(FONT_CSS, res);
+          return cache.add(INDEX_URL).catch(function() {}).then(function() {
+            return fetch(FONT_CSS, { mode: 'cors' }).then(function(res) {
+              if (res.ok) return cache.put(FONT_CSS, res);
+            });
           }).catch(function() {}).then(function() {
             return fetch('https://cdn.tailwindcss.com', { mode: 'cors' }).then(function(res) {
               if (res.ok) return cache.put('https://cdn.tailwindcss.com', res);
@@ -1012,6 +1146,30 @@
       window.addEventListener('online', setOnlineStatus);
       window.addEventListener('offline', setOnlineStatus);
       setOnlineStatus();
+
+      // —— Dark mode ——
+      function setDarkMode(on, persist) {
+        document.documentElement.classList.toggle('dark', on);
+        if (persist !== false) {
+          try { localStorage.setItem(DARK_KEY, on ? '1' : '0'); } catch (_) {}
+        }
+        var meta = document.getElementById('theme-color-meta');
+        if (meta) meta.content = on ? '#0c1612' : '#1a3d2e';
+        var label = on ? 'Modo claro' : 'Modo oscuro';
+        var icon = on ? '☀️' : '🌙';
+        var desktopBtn = document.getElementById('toggle-dark-desktop');
+        if (desktopBtn) desktopBtn.innerHTML = '<span aria-hidden="true">' + icon + '</span> ' + label;
+        var mobileBtn = document.getElementById('toggle-dark-mobile');
+        if (mobileBtn) {
+          mobileBtn.innerHTML = '<span class="text-lg mb-0.5" id="dark-icon-mobile">' + icon + '</span> ' + (on ? 'Día' : 'Noche');
+        }
+      }
+      function toggleDarkMode() {
+        setDarkMode(!document.documentElement.classList.contains('dark'));
+      }
+      setDarkMode(document.documentElement.classList.contains('dark'), false);
+      document.getElementById('toggle-dark-desktop')?.addEventListener('click', toggleDarkMode);
+      document.getElementById('toggle-dark-mobile')?.addEventListener('click', toggleDarkMode);
 
       // —— Reading mode ——
       function setReadingMode(on) {
