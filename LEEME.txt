@@ -1,20 +1,23 @@
-CAZORLA 2026 — VERSIÓN ÚNICA (canónica)
+CAZORLA 2026 — VIAJE CAZORLA (canónico)
 ========================================
+
+Repositorio: https://github.com/davidluna-beep/viaje-cazorla
 
 Abre SIEMPRE este archivo para el dashboard:
 
   index.html
 
-Los tres archivos de esta carpeta deben permanecer juntos:
+Los archivos principales de esta carpeta deben permanecer juntos:
 
   index.html                              → Dashboard (planificador, logística, checklist)
   cazorla-sw.js                           → Caché offline (compañero de index.html)
-  Informe_Planificacion_Cazorla_Completo.md → Fuente / informe en Markdown
+  catalogo-actividades.md                 → Catálogo fuente de actividades
+  Informe_Planificacion_Cazorla_Completo.md → Informe en Markdown
 
 Build: 2026.05.26-natural-explorer
 
 No uses copias antiguas (p. ej. Cazorla_Portable_Dashboard.html o itinerario fijo de 7 días).
 Si el planificador no carga: Ctrl+F5 o desregistra el Service Worker en F12 → Application.
 
-Ruta completa:
-  C:\Users\davidluna\Downloads\Cazorla-2026\
+Ruta local (renombrar carpeta a viaje-cazorla si aún no lo está):
+  C:\Users\davidluna\Downloads\viaje-cazorla\
