@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cazorla Trip Summary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-cream": "#F4F1EA",
+                    "surface": "#fbf9f5",
+                    "inverse-surface": "#30312e",
+                    "on-tertiary-fixed-variant": "#304a55",
+                    "on-background": "#1b1c1a",
+                    "outline": "#727973",
+                    "on-secondary-fixed-variant": "#5e411d",
+                    "surface-container-high": "#eae8e4",
+                    "on-surface": "#1b1c1a",
+                    "on-error-container": "#93000a",
+                    "surface-variant": "#e4e2de",
+                    "primary": "#163526",
+                    "surface-tint": "#466553",
+                    "starlight-blue": "#1A237E",
+                    "on-secondary-fixed": "#2b1700",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#c7ebd4",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#18323d",
+                    "on-primary-container": "#99bca6",
+                    "inverse-primary": "#accfb8",
+                    "adventure-accent": "#D35400",
+                    "tertiary-fixed-dim": "#afcbd8",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#ffddb9",
+                    "nature-accent": "#27AE60",
+                    "secondary-container": "#fed2a2",
+                    "primary-container": "#2d4c3b",
+                    "on-primary-fixed-variant": "#2e4d3c",
+                    "gastronomy-accent": "#C0392B",
+                    "tertiary-container": "#2f4954",
+                    "surface-container-highest": "#e4e2de",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#9cb7c5",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#cbe7f5",
+                    "background": "#fbf9f5",
+                    "secondary-fixed-dim": "#e9bf90",
+                    "outline-variant": "#c2c8c1",
+                    "on-primary-fixed": "#012113",
+                    "on-secondary-container": "#795932",
+                    "inverse-on-surface": "#f2f0ed",
+                    "on-surface-variant": "#424843",
+                    "secondary": "#785832",
+                    "surface-container-low": "#f5f3ef",
+                    "primary-fixed-dim": "#accfb8",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#efeeea",
+                    "surface-dim": "#dbdad6",
+                    "surface-bright": "#fbf9f5",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#021f29"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "margin-desktop": "40px",
+                    "stack-sm": "8px",
+                    "unit": "8px",
+                    "stack-lg": "32px",
+                    "container-max": "1200px",
+                    "gutter": "24px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Montserrat"],
+                    "headline-md": ["Montserrat"],
+                    "label-sm": ["Inter"],
+                    "display-lg-mobile": ["Montserrat"],
+                    "label-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Montserrat"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { background-color: #fbf9f5; }
+        .glass-header { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-bright/90 backdrop-blur-md">
+<div class="flex items-center justify-between px-margin-mobile h-16 max-w-container-max mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+<h1 class="font-headline-md text-headline-md font-semibold text-primary">Cazorla Trip • 8 People</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile max-w-container-max mx-auto">
+<!-- Introduction Header -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-2">Tabla Resumen</h2>
+<p class="font-body-lg text-on-surface-variant max-w-2xl">Compare the proposed activities based on the group's preferences. Use these metrics to prioritize your itinerary for the week.</p>
+</section>
+<!-- Filters/Sort Chips -->
+<div class="flex gap-stack-sm overflow-x-auto no-scrollbar mb-stack-md pb-2">
+<button class="bg-primary text-on-primary rounded-full px-4 py-2 font-label-lg whitespace-nowrap active:scale-95 transition-transform">All Activities</button>
+<button class="bg-surface-container border border-outline-variant text-on-surface-variant rounded-full px-4 py-2 font-label-lg whitespace-nowrap hover:bg-surface-container-high transition-colors">Highest Rating</button>
+<button class="bg-surface-container border border-outline-variant text-on-surface-variant rounded-full px-4 py-2 font-label-lg whitespace-nowrap hover:bg-surface-container-high transition-colors">Shortest Drive</button>
+<button class="bg-surface-container border border-outline-variant text-on-surface-variant rounded-full px-4 py-2 font-label-lg whitespace-nowrap hover:bg-surface-container-high transition-colors">Low Effort</button>
+</div>
+<!-- Tabla Resumen - Bento Grid Style Table -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Comparison Table Header (Hidden on Mobile, replaced by cards) -->
+<div class="hidden md:contents">
+<div class="md:col-span-5 px-4 font-label-lg text-outline uppercase tracking-wider">Activity</div>
+<div class="md:col-span-2 px-4 font-label-lg text-outline uppercase tracking-wider text-center">Rating</div>
+<div class="md:col-span-2 px-4 font-label-lg text-outline uppercase tracking-wider text-center">Car Time</div>
+<div class="md:col-span-3 px-4 font-label-lg text-outline uppercase tracking-wider text-center">Effort Level</div>
+</div>
+<!-- Row 1: Rio Borosa -->
+<div class="md:col-span-12 group">
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(45,76,59,0.05)] hover:shadow-[0_4px_20px_rgba(45,76,59,0.12)] transition-all flex flex-col md:flex-row items-center p-4 gap-4 border border-surface-container-high">
+<div class="w-full md:w-5/12 flex items-center gap-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A lush, vibrant river canyon in the Sierra de Cazorla mountains. Crystal clear turquoise water flows between jagged grey limestone cliffs, surrounded by deep green Mediterranean pine forests. The scene is bathed in bright, warm natural sunlight, reflecting a high-end nature travel aesthetic with rich earth tones and organic textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKsCSa5HB1SeED1aLAri0PmE-hKk60mrIZwSP-nDb3lXVLb3ApJRUSHmS5vOp4cJQAjqNN9nvggJDyyB4L7mQx-Eel46_0vI_jjWy3SVlCMHmYBacSmPDGPkCivqbXCCrtdog3PAxbfaB0kHLfkubvSZYSADcXAV3l-eIXpjyFqtl4Rcv25Z7uif0wDdXqVYmfmBCFCY7bLa5HtOFFUZKVxfpZU4Rq5TTcqhPCSSHhMURoLrSf8d8iRxCCrmwWLYHRW9p3AIzvanE"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Ruta del Río Borosa</h3>
+<span class="inline-flex items-center gap-1 text-nature-accent font-label-sm">
+<span class="material-symbols-outlined text-sm" data-icon="forest">forest</span> Nature
+                            </span>
+</div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center border-t md:border-t-0 pt-4 md:pt-0 border-surface-variant">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Rating</span>
+<div class="flex items-center gap-1 text-primary font-bold text-lg">
+<span class="material-symbols-outlined text-adventure-accent" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            9.8
+                        </div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Car Time</span>
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="directions_car">directions_car</span>
+<span class="font-medium text-body-md">25 min</span>
+</div>
+</div>
+<div class="w-full md:w-3/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Effort Level</span>
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5">
+<div class="w-2 h-5 rounded-full bg-nature-accent"></div>
+<div class="w-2 h-5 rounded-full bg-nature-accent"></div>
+<div class="w-2 h-5 rounded-full bg-outline-variant/30"></div>
+</div>
+<span class="ml-2 font-semibold text-nature-accent">Medio</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 2: Cerrada del Utrero -->
+<div class="md:col-span-12 group">
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(45,76,59,0.05)] hover:shadow-[0_4px_20px_rgba(45,76,59,0.12)] transition-all flex flex-col md:flex-row items-center p-4 gap-4 border border-surface-container-high">
+<div class="w-full md:w-5/12 flex items-center gap-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A spectacular waterfall cascading down a sheer rock face in the Sierra de Cazorla. The surrounding cliffs are aged limestone with mossy patches, and the lighting is soft afternoon glow filtering through the trees. The composition captures the rugged, pristine beauty of the natural park with a focus on tactile stone and water textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWvwHVwIbhMLfl_ugl7q4DkHoL8BI9nCJULjtlpuxNHU01dw4bOpVWK85-aRYzybSWZUammg8dHRmFisTxuNmRkdxFmiJfRk0oNX9mJeDHsp1H81Ny9mY80NDU6W3WRjSUqLTNaFWrawZCl7Qp-ql8i6jJ8AKt37-Tr7t_4q5ZBJhhcL6k-gpKjrSsHnknMVWvnDhR0hJ7DzdVErQdDDAd3lwtiG5MUufgqFCGIYfGAiQrxV5108ejHCCEhBvTzTrKUmAb4CHLF5M"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Cerrada del Utrero</h3>
+<span class="inline-flex items-center gap-1 text-adventure-accent font-label-sm">
+<span class="material-symbols-outlined text-sm" data-icon="landscape">landscape</span> Adventure
+                            </span>
+</div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center border-t md:border-t-0 pt-4 md:pt-0 border-surface-variant">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Rating</span>
+<div class="flex items-center gap-1 text-primary font-bold text-lg">
+<span class="material-symbols-outlined text-adventure-accent" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            9.2
+                        </div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Car Time</span>
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="directions_car">directions_car</span>
+<span class="font-medium text-body-md">15 min</span>
+</div>
+</div>
+<div class="w-full md:w-3/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Effort Level</span>
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5">
+<div class="w-2 h-5 rounded-full bg-nature-accent"></div>
+<div class="w-2 h-5 rounded-full bg-outline-variant/30"></div>
+<div class="w-2 h-5 rounded-full bg-outline-variant/30"></div>
+</div>
+<span class="ml-2 font-semibold text-nature-accent">Bajo</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 3: Nacimiento Rio Guadalquivir -->
+<div class="md:col-span-12 group">
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(45,76,59,0.05)] hover:shadow-[0_4px_20px_rgba(45,76,59,0.12)] transition-all flex flex-col md:flex-row items-center p-4 gap-4 border border-surface-container-high">
+<div class="w-full md:w-5/12 flex items-center gap-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="High mountain peaks overlooking a misty valley in Cazorla. The sunrise light casts long shadows and warm orange hues across the peaks. The style is grand and epic, emphasizing the scale of the wilderness with professional nature photography techniques including high contrast and deep depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAOV_YEBsrbpYV40p7d9t9-GZmAs3WlDIKr-utvVgiy3N6-85JHZ7LyKeDHDLI5GZ6j8JH6UlPZIg6wePizwer3agAYviiMc4876e-M4CMZU9p6PogsaVBb6nEEfNrFZ6W_w8plgQz2HdMZhBZ_X_pYUV74rsrqtiCQncqSU6A4RTl2Wd-K9YUk8q7Jl8aMN6FVIu4pYifpPbAXk7L-nmNkAVPvyuJcE_H1omEBFn9tx5Q3aczUWdeefZ1wdYAh2e6NWpXT7R37Iw"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Nacimiento Guadalquivir</h3>
+<span class="inline-flex items-center gap-1 text-tertiary font-label-sm">
+<span class="material-symbols-outlined text-sm" data-icon="history_edu">history_edu</span> Culture
+                            </span>
+</div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center border-t md:border-t-0 pt-4 md:pt-0 border-surface-variant">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Rating</span>
+<div class="flex items-center gap-1 text-primary font-bold text-lg">
+<span class="material-symbols-outlined text-adventure-accent" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            8.5
+                        </div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Car Time</span>
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="directions_car">directions_car</span>
+<span class="font-medium text-body-md">45 min</span>
+</div>
+</div>
+<div class="w-full md:w-3/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Effort Level</span>
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5">
+<div class="w-2 h-5 rounded-full bg-error"></div>
+<div class="w-2 h-5 rounded-full bg-error"></div>
+<div class="w-2 h-5 rounded-full bg-error"></div>
+</div>
+<span class="ml-2 font-semibold text-error">Alto</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 4: Gastronomy Stop -->
+<div class="md:col-span-12 group">
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(45,76,59,0.05)] hover:shadow-[0_4px_20px_rgba(45,76,59,0.12)] transition-all flex flex-col md:flex-row items-center p-4 gap-4 border border-surface-container-high">
+<div class="w-full md:w-5/12 flex items-center gap-4">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A rustic Spanish tavern setting in Cazorla with wooden tables and stone walls. On the table is a platter of local game meats and artisanal cheeses, accompanied by a glass of deep red wine. The lighting is warm and candle-lit, creating a cozy, authentic gastronomic atmosphere that feels grounded and premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRl-OuvEmZcz2jo22Y2VBU3D67gSGlFoTh6KOz8aHIjgsUirg8yh75gcuqkcvYGWLXWtTUpwhnEIl0HyIDOaeF8SMJAW9gBh4_5apjGYpHPJns92yypL1KXi-pgewKhtK7RHuoA5G3oEyLOVhjzFYcigT9W_-u8rbUFdlQ6Wy96Bsu7xUYQMDT4C9w8ZvllKsiFRe3QgR70Xa27JubuhBAdMgExtoVfr09WQRO3k-uHmSxT7aMHH1SPmxdiFPlCuYNxy_jGcmNOm0"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Cena Típica Cazorleña</h3>
+<span class="inline-flex items-center gap-1 text-gastronomy-accent font-label-sm">
+<span class="material-symbols-outlined text-sm" data-icon="restaurant">restaurant</span> Gastronomy
+                            </span>
+</div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center border-t md:border-t-0 pt-4 md:pt-0 border-surface-variant">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Rating</span>
+<div class="flex items-center gap-1 text-primary font-bold text-lg">
+<span class="material-symbols-outlined text-adventure-accent" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            9.5
+                        </div>
+</div>
+<div class="w-full md:w-2/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Car Time</span>
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="directions_car">directions_car</span>
+<span class="font-medium text-body-md">5 min</span>
+</div>
+</div>
+<div class="w-full md:w-3/12 flex flex-col items-center">
+<span class="text-on-surface-variant font-label-sm md:hidden mb-1">Effort Level</span>
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5">
+<div class="w-2 h-5 rounded-full bg-nature-accent"></div>
+<div class="w-2 h-5 rounded-full bg-outline-variant/30"></div>
+<div class="w-2 h-5 rounded-full bg-outline-variant/30"></div>
+</div>
+<span class="ml-2 font-semibold text-nature-accent">Muy Bajo</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Consultant Notes Bento Card -->
+<section class="mt-stack-lg">
+<div class="bg-surface-cream rounded-2xl p-6 md:p-8 border border-outline-variant/20 relative overflow-hidden">
+<!-- Subtle decorative background element -->
+<div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-primary-container p-3 rounded-xl text-on-primary-container">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Consultant's Expert Notes</h3>
+<p class="font-label-sm text-outline uppercase tracking-wider">Priority Recommendations</p>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-stack-lg">
+<div class="space-y-4">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="text-primary font-bold">1</span>
+</div>
+<p class="text-body-md text-on-surface">For the group of 8, <strong class="text-primary">Rio Borosa</strong> is non-negotiable but must be started before 9:00 AM to avoid crowds at the Cerrada de Elías.</p>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="text-primary font-bold">2</span>
+</div>
+<p class="text-body-md text-on-surface">The <strong class="text-primary">Nacimiento</strong> drive is scenic but long—consider this only if the group feels energetic after Day 2.</p>
+</div>
+</div>
+<div class="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/50 shadow-sm">
+<h4 class="font-label-lg text-primary mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="lightbulb">lightbulb</span>
+                            Pro Tip: Effort vs. Reward
+                        </h4>
+<p class="text-body-md text-on-surface-variant italic leading-relaxed">
+                            "Focus on activities with <span class="text-nature-accent font-semibold">Medio</span> effort levels during the mid-week. Balance these with local gastronomy stops to keep morale high for the final summit push."
+                        </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-bright/90 backdrop-blur-md">
+<div class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe max-w-container-max mx-auto">
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-full px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span class="font-label-sm text-label-sm">Plan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm">Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+<span class="font-label-sm text-label-sm">Eat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Floating Action Button (FAB) - For quick "Lock In" Or Save Selection -->
+<div class="fixed bottom-24 right-6 md:right-12 z-40">
+<button class="bg-primary text-on-primary shadow-lg rounded-2xl p-4 flex items-center gap-3 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+<span class="font-label-lg">Finalize Selection</span>
+</button>
+</div>
+<script>
+        // Micro-interaction for filter chips
+        document.querySelectorAll('button.rounded-full').forEach(button => {
+            button.addEventListener('click', function() {
+                if(this.classList.contains('bg-primary')) return;
+                
+                // Find and reset current active
+                const active = this.parentElement.querySelector('.bg-primary');
+                if(active) {
+                    active.classList.remove('bg-primary', 'text-on-primary');
+                    active.classList.add('bg-surface-container', 'border', 'border-outline-variant', 'text-on-surface-variant');
+                }
+                
+                // Set new active
+                this.classList.remove('bg-surface-container', 'border', 'border-outline-variant', 'text-on-surface-variant');
+                this.classList.add('bg-primary', 'text-on-primary');
+            });
+        });
+    </script>
+</body></html>

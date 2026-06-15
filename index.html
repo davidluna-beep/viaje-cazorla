@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="es" data-cazorla-build="2026.05.26-natural-explorer">
+<head>
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('cazorla-dark-mode');
+        if (s === '1' || (s === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Planificación viaje Cazorla — Dashboard offline" />
+  <meta name="theme-color" content="#163526" id="theme-color-meta" />
+  <meta name="cazorla-build" content="2026.05.26-natural-explorer" />
+  <!-- Versión canónica única: Cazorla-2026/index.html + cazorla-sw.js -->
+  <title>Cazorla · 27 jul – 1 ago 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#163526',
+            'on-primary': '#ffffff',
+            'primary-container': '#2d4c3b',
+            'on-primary-container': '#99bca6',
+            'primary-fixed': '#c7ebd4',
+            secondary: '#785832',
+            'secondary-container': '#fed2a2',
+            tertiary: '#18323d',
+            background: '#fbf9f5',
+            'surface-cream': '#F4F1EA',
+            'surface-bright': '#fbf9f5',
+            'surface-container-low': '#f5f3ef',
+            'surface-container-high': '#eae8e4',
+            'surface-container-lowest': '#ffffff',
+            outline: '#727973',
+            'outline-variant': '#c2c8c1',
+            'on-surface': '#1b1c1a',
+            'on-surface-variant': '#424843',
+            'adventure-accent': '#D35400',
+            'gastronomy-accent': '#C0392B',
+            'nature-accent': '#27AE60',
+            'starlight-blue': '#1A237E',
+            forest: { 50:'#f5f3ef', 100:'#efeeea', 200:'#c2c8c1', 300:'#99bca6', 400:'#466553', 500:'#2d4c3b', 600:'#163526', 700:'#163526', 800:'#163526', 900:'#1b1c1a' },
+            earth: { 50:'#f5f3ef', 100:'#fed2a2', 200:'#e9bf90', 300:'#c9a97d', 400:'#b08a57', 500:'#785832', 600:'#785832' },
+            stone: { 50:'#fbf9f5', 100:'#efeeea', 200:'#e4e2de' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Montserrat', 'Inter', 'sans-serif']
+          },
+          maxWidth: { 'container-max': '1200px' },
+          spacing: { 'margin-mobile': '16px', 'stack-md': '16px', 'stack-lg': '32px', 'gutter': '24px' },
+          fontSize: {
+            'headline-md': ['24px', { lineHeight: '32px', fontWeight: '600' }],
+            'headline-lg': ['32px', { lineHeight: '40px', fontWeight: '600' }],
+            'label-sm': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+            'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0.05em', fontWeight: '600' }]
+          },
+          boxShadow: {
+            natural: '0 4px 20px rgba(45, 76, 59, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --nav-h-mobile: 4.25rem;
+      --nav-w-desktop: 15.5rem;
+      --read-scale: 1;
+      --cazorla-primary: #163526;
+      --cazorla-secondary: #785832;
+      --cazorla-surface: #fbf9f5;
+      --cazorla-cream: #F4F1EA;
+      --cazorla-shadow: 0 4px 20px rgba(45, 76, 59, 0.08);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.filled-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .timeline-line-stitch {
+      background: repeating-linear-gradient(to bottom, #785832 0, #785832 4px, transparent 4px, transparent 8px);
+    }
+    html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+    @media (min-width: 1024px) {
+      html { scroll-padding-top: 2rem; scroll-padding-left: calc(var(--nav-w-desktop) + 1rem); }
+    }
+    body.reading-mode {
+      --read-scale: 1.12;
+      font-size: calc(1rem * var(--read-scale));
+      line-height: 1.75;
+    }
+    body.reading-mode .card-body,
+    body.reading-mode .timeline-text { font-size: 1.05em; }
+    body.reading-mode h1 { font-size: 2rem; }
+    body.reading-mode h2 { font-size: 1.5rem; }
+    body.reading-mode h3 { font-size: 1.25rem; }
+
+    .main-offset { padding-bottom: calc(var(--nav-h-mobile) + 1.5rem); }
+    @media (min-width: 1024px) {
+      .main-offset {
+        margin-left: var(--nav-w-desktop);
+        padding-bottom: 2rem;
+      }
+    }
+
+    /* Nav */
+    .nav-mobile {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 50;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .nav-desktop {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: var(--nav-w-desktop);
+      z-index: 40;
+    }
+    .nav-link.active {
+      background: rgba(255,255,255,0.12);
+      border-left: 3px solid #accfb8;
+      font-weight: 600;
+    }
+    @media (max-width: 1023px) {
+      .nav-link.active {
+        border-left: none;
+        border-top: none;
+        background: #2d4c3b;
+        color: #99bca6 !important;
+        border-radius: 9999px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .nav-mobile .nav-link.active .nav-icon {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    }
+
+    /* Cards — Natural Explorer */
+    .adventure-card {
+      background: #ffffff;
+      border: 1px solid #eae8e4;
+      box-shadow: var(--cazorla-shadow);
+      border-radius: 1rem;
+    }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.55rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 2px;
+      background: repeating-linear-gradient(to bottom, #785832 0, #785832 4px, transparent 4px, transparent 8px);
+      border-radius: 0;
+    }
+    .timeline-item { position: relative; padding-bottom: 1.5rem; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      left: -1.65rem;
+      top: 0.35rem;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #F4F1EA;
+      border: 2px solid #163526;
+      box-shadow: 0 0 0 2px rgba(22, 53, 38, 0.12);
+    }
+    .timeline-item.highlight .timeline-dot {
+      border-color: #785832;
+      box-shadow: 0 0 0 3px rgba(120, 88, 50, 0.2);
+      width: 14px; height: 14px;
+      left: -1.72rem;
+    }
+
+    /* Checklist */
+    .check-item input:checked + label { text-decoration: line-through; opacity: 0.55; }
+    .check-item input:checked + label .check-box {
+      background: #163526;
+      border-color: #163526;
+    }
+    .check-item input:checked + label .check-box svg { opacity: 1; }
+    .check-box svg { opacity: 0; }
+
+    /* Map btn */
+    .map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      background: #163526;
+      color: #fff;
+      box-shadow: var(--cazorla-shadow);
+      transition: transform 0.15s, opacity 0.15s;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .map-btn:active { transform: scale(0.97); }
+    .map-btn:hover { box-shadow: 0 6px 16px rgba(26, 61, 46, 0.45); }
+    .map-btn.map-btn--water { background: linear-gradient(135deg, #2d7ab8, #1e5a8a); }
+    .map-btn.map-btn--earth { background: linear-gradient(135deg, #967244, #7a5c38); }
+
+    /* Maps iframe modal */
+    .maps-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    }
+    .maps-modal.open { display: flex; }
+    .maps-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 22, 18, 0.78);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    .maps-modal-panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 56rem;
+      height: min(86vh, 720px);
+      background: linear-gradient(160deg, #ffffff 0%, #f0f7f3 100%);
+      border: 3px solid #3d8a62;
+      border-radius: 1.25rem;
+      box-shadow: 0 24px 64px rgba(26, 61, 46, 0.35), 0 0 0 1px rgba(184, 221, 199, 0.4);
+      overflow: hidden;
+    }
+    .maps-modal-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 4rem 0.85rem 1.15rem;
+      background: linear-gradient(90deg, #163526, #2d4c3b);
+      color: #fff;
+      border-bottom: 2px solid #466553;
+    }
+    .maps-modal-title {
+      font-family: Montserrat, Inter, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 0;
+    }
+    .maps-modal-close {
+      position: absolute;
+      top: 0.65rem;
+      right: 0.65rem;
+      z-index: 2;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 0.75rem;
+      border: 2px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 1.75rem;
+      line-height: 1;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .maps-modal-close:hover { background: rgba(255,255,255,0.28); }
+    .maps-modal-close:active { transform: scale(0.94); }
+    .maps-modal-frame-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: #dceee3;
+    }
+    .maps-type-toggle {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 3;
+      display: flex;
+      gap: 0.35rem;
+      padding: 0.25rem;
+      border-radius: 0.75rem;
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid #b8ddc7;
+      box-shadow: 0 4px 14px rgba(26, 61, 46, 0.2);
+    }
+    .maps-type-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      min-height: 2.75rem;
+      padding: 0.45rem 0.85rem;
+      border: none;
+      border-radius: 0.55rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2d6f4e;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .maps-type-btn:hover:not(.active) { background: #f0f7f3; }
+    .maps-type-btn.active {
+      background: linear-gradient(135deg, #2d6f4e, #1a3d2e);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(26, 61, 46, 0.35);
+    }
+    html.dark .maps-type-toggle {
+      background: rgba(26, 46, 38, 0.94) !important;
+      border-color: #3d8a62 !important;
+    }
+    html.dark .maps-type-btn { color: #b8ddc7 !important; }
+    html.dark .maps-type-btn:hover:not(.active) { background: #243d32 !important; }
+    html.dark .maps-type-btn.active {
+      background: linear-gradient(135deg, #3d8a62, #1a3d2e) !important;
+      color: #fff !important;
+    }
+    .maps-modal-frame-wrap iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .maps-modal-footer {
+      flex-shrink: 0;
+      padding: 0.65rem 1rem;
+      background: #f0f7f3;
+      border-top: 1px solid #b8ddc7;
+      text-align: center;
+    }
+    .maps-modal-external {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2d6f4e;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .maps-modal-external:hover { color: #1a3d2e; }
+    @media (max-width: 640px) {
+      .maps-modal { padding: 0; align-items: flex-end; }
+      .maps-modal-panel {
+        max-width: 100%;
+        width: 100%;
+        height: 94vh;
+        max-height: none;
+        border-radius: 1.25rem 1.25rem 0 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+      }
+    }
+    html.dark .maps-modal-panel {
+      background: linear-gradient(160deg, #1e3329 0%, #141f1a 100%) !important;
+      border-color: #5aa67d !important;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55) !important;
+    }
+    html.dark .maps-modal-header { background: linear-gradient(90deg, #122a20, #1a3d2e) !important; }
+    html.dark .maps-modal-frame-wrap { background: #1a2e26 !important; }
+    html.dark .maps-modal-footer { background: #1a2e26 !important; border-color: #2d4a3a !important; }
+    html.dark .maps-modal-external { color: #8bc4a4 !important; }
+
+    .distance-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #f0e6d8;
+      color: #7a5c38;
+      border: 1px solid #e0cdb3;
+    }
+
+    .gps-block {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: #F4F1EA;
+      border: 1px dashed #c2c8c1;
+      border-radius: 0.5rem;
+    }
+    .gps-coords {
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 0.85rem;
+      color: #1a3d2e;
+      letter-spacing: 0.02em;
+    }
+    .copy-coords-btn {
+      margin-top: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      background: #fff;
+      border: 1px solid #3d8a62;
+      color: #2d6f4e;
+      cursor: pointer;
+    }
+    .copy-coords-btn.copied { background: #dceee3; }
+
+    .route-icon { margin-right: 0.25rem; }
+
+    .fab-emergency {
+      position: fixed;
+      right: 1rem;
+      bottom: calc(var(--nav-h-mobile) + 1rem);
+      z-index: 60;
+      width: 3.5rem; height: 3.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      color: #fff;
+      font-size: 1.35rem;
+      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+      border: 3px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    @media (min-width: 1024px) {
+      .fab-emergency { bottom: 1.5rem; right: 1.5rem; }
+    }
+
+    .emergency-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .emergency-panel.open { display: flex; }
+    .emergency-panel-inner {
+      max-width: 28rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 1.25rem 1.25rem 0 0;
+      border-top: 4px solid #dc2626;
+      padding: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      .emergency-panel { align-items: center; }
+      .emergency-panel-inner { border-radius: 1.25rem; }
+    }
+
+    .offline-banner {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0.4rem 1rem;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #fef3c7;
+      color: #92400e;
+      transform: translateY(-100%);
+      transition: transform 0.3s;
+    }
+    .offline-banner.show { transform: translateY(0); }
+    .offline-banner.cached-ok { background: #dceee3; color: #1a3d2e; }
+
+    .print-toolbar {
+      display: none;
+    }
+    @media print {
+      .nav-mobile, .nav-desktop, .no-print, .fab-emergency, .emergency-panel, .offline-banner, .maps-modal { display: none !important; }
+      .print-toolbar { display: block !important; text-align: center; padding: 0.5rem; border-bottom: 2px solid #333; margin-bottom: 1rem; font-size: 10pt; }
+      .main-offset { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
+      .adventure-card { break-inside: avoid; box-shadow: none; border: 1px solid #999; page-break-inside: avoid; }
+      body { font-size: 11pt; color: #000; background: #fff; }
+      .map-btn, .copy-coords-btn { display: none !important; }
+      .gps-block { border: 1px solid #666; background: #f5f5f5; }
+      .gps-coords { font-size: 10pt; }
+      h1, h2, h3 { color: #000 !important; }
+      .timeline::before { background: #666; }
+      #emergencia { display: block !important; break-before: page; }
+      .emergency-print-block { display: block !important; }
+    }
+    body.print-export .no-print-screen { opacity: 0.3; pointer-events: none; }
+
+    /* —— Dark mode —— */
+    html.dark { color-scheme: dark; }
+    html.dark body {
+      background-color: #121814 !important;
+      color: #c7ebd4 !important;
+    }
+    html.dark .adventure-card {
+      background: linear-gradient(145deg, #1e3329 0%, #141f1a 100%) !important;
+      border-color: #2d4a3a !important;
+      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.45);
+    }
+    html.dark .text-forest-900 { color: #eef8f1 !important; }
+    html.dark .text-forest-800 { color: #dceee3 !important; }
+    html.dark .text-forest-700 { color: #b8ddc7 !important; }
+    html.dark .text-forest-600 { color: #8bc4a4 !important; }
+    html.dark .text-forest-500 { color: #6aab85 !important; }
+    html.dark .text-forest-300 { color: #8bc4a4 !important; }
+    html.dark .text-earth-600 { color: #d4b896 !important; }
+    html.dark .text-earth-500 { color: #c9a97d !important; }
+    html.dark .text-blue-800 { color: #93c5fd !important; }
+    html.dark .text-blue-700 { color: #7dd3fc !important; }
+    html.dark .text-blue-100 { color: #e0f2fe !important; }
+    html.dark .text-amber-900 { color: #fde68a !important; }
+    html.dark .text-amber-800 { color: #fcd34d !important; }
+    html.dark .text-amber-950 { color: #fef3c7 !important; }
+    html.dark .text-red-800, html.dark .text-red-900 { color: #fecaca !important; }
+    html.dark .text-red-700 { color: #fca5a5 !important; }
+    html.dark .text-red-950 { color: #fee2e2 !important; }
+    html.dark .bg-forest-50 { background-color: #1a2e26 !important; }
+    html.dark .bg-forest-100 { background-color: #243d32 !important; }
+    html.dark .bg-earth-50 { background-color: #2a2218 !important; }
+    html.dark .bg-earth-100 { background-color: #3d3224 !important; }
+    html.dark .bg-amber-50 { background-color: #2d2410 !important; }
+    html.dark .bg-amber-100 { background-color: #3d3018 !important; }
+    html.dark .bg-blue-50 { background-color: #152535 !important; }
+    html.dark .bg-blue-50\/80 { background-color: #152535 !important; }
+    html.dark .bg-red-50 { background-color: #2d1518 !important; }
+    html.dark .bg-stone-50 { background-color: #1c2420 !important; }
+    html.dark .bg-stone-100 { background-color: #243029 !important; }
+    html.dark #dia-7 .rounded-t-2xl { background-color: #2d3832 !important; color: #dceee3 !important; }
+    html.dark .border-forest-100 { border-color: #2d4a3a !important; }
+    html.dark .border-forest-200 { border-color: #3d5c4a !important; }
+    html.dark .border-earth-100 { border-color: #4a3d28 !important; }
+    html.dark .border-amber-200 { border-color: #5c4a20 !important; }
+    html.dark .border-blue-100 { border-color: #1e3a52 !important; }
+    html.dark .border-red-100 { border-color: #5c2020 !important; }
+    html.dark .border-red-200 { border-color: #7a2828 !important; }
+    html.dark .divide-stone-200 > :not([hidden]) ~ :not([hidden]) { border-color: #2d4a3a !important; }
+    html.dark .gps-block {
+      background: #1a2e26 !important;
+      border-color: #3d8a62 !important;
+    }
+    html.dark .gps-coords { color: #b8ddc7 !important; }
+    html.dark .copy-coords-btn {
+      background: #243d32 !important;
+      border-color: #5aa67d !important;
+      color: #b8ddc7 !important;
+    }
+    html.dark .copy-coords-btn.copied { background: #2d4a3a !important; }
+    html.dark .distance-badge {
+      background: #3d3224 !important;
+      color: #e0cdb3 !important;
+      border-color: #5c4a30 !important;
+    }
+    html.dark .nav-mobile {
+      background: rgba(20, 31, 26, 0.92) !important;
+      border-color: #2d4a3a !important;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35) !important;
+    }
+    html.dark .nav-mobile .nav-link { color: #99bca6 !important; }
+    html.dark .nav-mobile .nav-link.active {
+      background: #2d4c3b !important;
+      color: #c7ebd4 !important;
+    }
+    html.dark .emergency-panel-inner {
+      background: #1a2e26 !important;
+      color: #dceee3 !important;
+    }
+    html.dark .emergency-panel-inner .bg-stone-50 { background-color: #243029 !important; }
+    html.dark .emergency-panel-inner .font-bold { color: #eef8f1 !important; }
+    html.dark .emergency-panel-inner .text-stone-500 { color: #8bc4a4 !important; }
+    html.dark .close-emergency-btn { color: #8bc4a4 !important; }
+    html.dark .timeline-dot {
+      background: #1a2e26 !important;
+      border-color: #5aa67d !important;
+    }
+    html.dark .timeline-item.highlight .timeline-dot { border-color: #c9a97d !important; }
+    html.dark .fab-emergency { border-color: #2d4a3a !important; }
+    html.dark .offline-banner { background: #2d2410 !important; color: #fcd34d !important; }
+    html.dark .offline-banner.cached-ok { background: #1a2e26 !important; color: #b8ddc7 !important; }
+    html.dark .check-item label:hover { background: #1a2e26 !important; }
+    html.dark .border-l-4.border-blue-500 { border-color: #3b82f6 !important; }
+    html.dark .border-l-4.border-blue-700 { border-color: #2563eb !important; }
+    html.dark #toggle-dark-desktop,
+    html.dark #toggle-reading-desktop { background-color: #2d4a3a !important; }
+    html.dark #toggle-dark-desktop:hover,
+    html.dark #toggle-reading-desktop:hover { background-color: #3d5c4a !important; }
+
+    /* Planificador interactivo */
+    .catalog-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.35rem;
+      background: #efeeea;
+      border-radius: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .catalog-tab {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: none;
+      border-radius: 9999px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #424843;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+    .catalog-tab.active {
+      background: #163526;
+      color: #fff;
+      box-shadow: var(--cazorla-shadow);
+    }
+    html.dark .catalog-tabs { background: #1a2e26 !important; }
+    html.dark .catalog-tab { color: #b8ddc7 !important; }
+    html.dark .catalog-tab.active { background: #243d32 !important; color: #eef8f1 !important; }
+
+    .day-planner-scroll {
+      overflow-x: auto;
+      margin: 0 -0.25rem 1.25rem;
+      padding: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .day-planner-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(10.5rem, 1fr));
+      gap: 0.65rem;
+      min-width: min(100%, 66rem);
+    }
+    .day-column {
+      background: #f5f3ef;
+      border: 1px solid #eae8e4;
+      border-radius: 0.75rem;
+      min-height: 8rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--cazorla-shadow);
+    }
+    .day-column-header {
+      padding: 0.55rem 0.65rem;
+      background: #163526;
+      color: #fff;
+      border-radius: 0.65rem 0.65rem 0 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .day-column-body {
+      flex: 1;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .day-column-empty {
+      font-size: 0.7rem;
+      color: #6aab85;
+      text-align: center;
+      padding: 0.75rem 0.25rem;
+      font-style: italic;
+    }
+    .plan-chip {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.35rem;
+      padding: 0.4rem 0.45rem;
+      background: #fff;
+      border: 1px solid #d8dfd4;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #1a3d2e;
+      line-height: 1.25;
+      cursor: pointer;
+    }
+    .plan-chip:hover { border-color: #3d8a62; background: #f8fdf9; }
+    .plan-chip-remove {
+      flex-shrink: 0;
+      width: 1.1rem;
+      height: 1.1rem;
+      border: none;
+      background: #e0cdb3;
+      color: #7a5c38;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    html.dark .day-column { background: #1a2e26 !important; border-color: #3d8a62 !important; }
+    html.dark .plan-chip { background: #243d32 !important; border-color: #2d4a3a !important; color: #dceee3 !important; }
+
+    .catalog-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) { .catalog-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .catalog-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .catalog-card {
+      text-align: left;
+      padding: 0;
+      border: 1px solid #eae8e4;
+      border-radius: 0.75rem;
+      background: #ffffff;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      width: 100%;
+      font-family: inherit;
+      overflow: hidden;
+      box-shadow: var(--cazorla-shadow);
+    }
+    .catalog-card:hover {
+      border-color: #c2c8c1;
+      box-shadow: 0 8px 28px rgba(45, 76, 59, 0.12);
+      transform: translateY(-2px);
+    }
+    .catalog-card.is-planned {
+      border-color: #2d4c3b;
+      box-shadow: 0 4px 20px rgba(45, 76, 59, 0.14);
+    }
+    .catalog-card-media {
+      position: relative;
+      height: 7rem;
+      background: linear-gradient(135deg, #2d4c3b 0%, #466553 45%, #785832 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 0.75rem;
+    }
+    .catalog-card-media--nature { background: linear-gradient(135deg, #1e5631 0%, #27AE60 55%, #466553 100%); }
+    .catalog-card-media--adventure { background: linear-gradient(135deg, #8B4513 0%, #D35400 50%, #163526 100%); }
+    .catalog-card-media--starlight { background: linear-gradient(135deg, #1A237E 0%, #304a55 50%, #163526 100%); }
+    .catalog-card-media--water { background: linear-gradient(135deg, #18323d 0%, #2f4954 45%, #466553 100%); }
+    .catalog-card-media--gastro { background: linear-gradient(135deg, #7a1f18 0%, #C0392B 45%, #785832 100%); }
+    .catalog-card-body { padding: 1rem; }
+    .catalog-badge {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+    .catalog-badge--nature { background: #27AE60; }
+    .catalog-badge--adventure { background: #D35400; }
+    .catalog-badge--starlight { background: #1A237E; }
+    .catalog-badge--water { background: #18323d; }
+    .catalog-badge--gastro { background: #C0392B; }
+    .catalog-badge--default { background: #466553; }
+    .rating-pill-stitch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      color: #1b1c1a;
+      position: absolute;
+      top: 0.65rem;
+      right: 0.65rem;
+    }
+    .catalog-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: #18323d;
+    }
+    .catalog-meta span { display: inline-flex; align-items: center; gap: 0.2rem; }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    html.dark .catalog-card { background: #1e3329 !important; border-color: #2d4a3a !important; }
+    html.dark .catalog-card.is-planned { background: #243d32 !important; border-color: #5aa67d !important; }
+
+    .rating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #fed2a2;
+      color: #795932;
+    }
+
+    .tip-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 75;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .tip-modal.open { display: flex; }
+    .tip-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 22, 18, 0.75);
+      backdrop-filter: blur(4px);
+    }
+    .tip-modal-panel {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 24rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border: 2px solid #eae8e4;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(45, 76, 59, 0.15);
+      padding: 1.25rem;
+    }
+    .tip-modal-time {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 1px solid #f59e0b;
+      border-radius: 0.75rem;
+      padding: 0.85rem;
+      margin: 1rem 0;
+    }
+    html.dark .tip-modal-panel { background: #1a2e26 !important; color: #dceee3 !important; }
+    html.dark .tip-modal-time { background: #2d2410 !important; border-color: #5c4a20 !important; color: #fef3c7 !important; }
+
+    .confirm-modal-panel { max-width: 22rem; text-align: center; }
+    .confirm-modal-icon {
+      width: 3rem;
+      height: 3rem;
+      margin: 0 auto 0.75rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 2px solid #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+    html.dark .confirm-modal-icon {
+      background: #2d2410 !important;
+      border-color: #5c4a20 !important;
+    }
+    html.dark #confirm-modal-title { color: #eef8f1 !important; }
+    html.dark #confirm-modal-message { color: #b8ddc7 !important; }
+    .confirm-modal-actions {
+      display: flex;
+      gap: 0.65rem;
+      margin-top: 1.25rem;
+    }
+    .confirm-btn {
+      flex: 1;
+      padding: 0.65rem 0.85rem;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      font-size: 0.875rem;
+      cursor: pointer;
+      font-family: inherit;
+      border: 2px solid transparent;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .confirm-btn:active { transform: scale(0.98); }
+    .confirm-btn--cancel {
+      background: #f0f7f3;
+      border-color: #b8ddc7;
+      color: #2d6f4e;
+    }
+    .confirm-btn--cancel:hover { background: #dceee3; }
+    .confirm-btn--accept {
+      background: linear-gradient(135deg, #b45309, #d97706);
+      border-color: #b45309;
+      color: #fff;
+    }
+    .confirm-btn--accept:hover {
+      background: linear-gradient(135deg, #92400e, #b45309);
+      border-color: #92400e;
+    }
+    html.dark .confirm-btn--cancel {
+      background: #243d32 !important;
+      border-color: #3d8a62 !important;
+      color: #dceee3 !important;
+    }
+    html.dark .confirm-btn--cancel:hover { background: #2d4a3a !important; }
+
+    .assign-day-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .assign-day-btn {
+      padding: 0.45rem 0.35rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid #b8ddc7;
+      border-radius: 0.5rem;
+      background: #f0f7f3;
+      color: #2d6f4e;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .assign-day-btn:hover { background: #dceee3; }
+    .rest-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; align-items: flex-start; }
+    .web-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #fed2a2;
+      color: #795932;
+      border: 1px solid #e9bf90;
+      text-decoration: none;
+    }
+    .web-link-btn:hover { background: #ffddb9; }
+    html.dark .web-link-btn { background: #3d3224 !important; color: #e0cdb3 !important; }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen transition-colors duration-200">
+
+  <div id="offline-banner" class="offline-banner no-print" role="status"></div>
+
+  <div class="print-toolbar" aria-hidden="true">
+    <strong>Cazorla · 27 jul – 1 ago 2026</strong> — Guía de campo · Emergencias: 112
+  </div>
+
+  <button type="button" id="fab-emergency" class="fab-emergency no-print" aria-label="Abrir emergencias" title="Emergencias">🆘</button>
+
+  <!-- Modal mapas embebido -->
+  <div id="maps-modal" class="maps-modal no-print" role="dialog" aria-modal="true" aria-labelledby="maps-modal-title" aria-hidden="true">
+    <div class="maps-modal-backdrop" id="maps-modal-backdrop"></div>
+    <div class="maps-modal-panel">
+      <button type="button" id="maps-modal-close" class="maps-modal-close" aria-label="Cerrar mapa">×</button>
+      <div class="maps-modal-header">
+        <h2 id="maps-modal-title" class="maps-modal-title">Mapa</h2>
+      </div>
+      <div class="maps-modal-frame-wrap">
+        <div class="maps-type-toggle" role="group" aria-label="Tipo de mapa">
+          <button type="button" id="maps-type-road" class="maps-type-btn active" data-map-type="road" aria-pressed="true">🗺️ Mapa</button>
+          <button type="button" id="maps-type-satellite" class="maps-type-btn" data-map-type="satellite" aria-pressed="false">🛰️ Satélite</button>
+        </div>
+        <iframe id="maps-modal-iframe" title="Mapa embebido" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="maps-modal-footer">
+        <a id="maps-modal-external" href="#" target="_blank" rel="noopener" class="maps-modal-external">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
+          Abrir en App de Maps
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal consejo horario actividad -->
+  <div id="activity-tip-modal" class="tip-modal no-print" role="dialog" aria-modal="true" aria-labelledby="tip-modal-title" aria-hidden="true">
+    <div class="tip-modal-backdrop" id="tip-modal-backdrop"></div>
+    <div class="tip-modal-panel">
+      <button type="button" id="tip-modal-close" class="maps-modal-close" style="top:0.5rem;right:0.5rem" aria-label="Cerrar">×</button>
+      <h3 id="tip-modal-title" class="font-display font-bold text-lg text-forest-800 pr-8"></h3>
+      <p id="tip-modal-desc" class="text-sm text-forest-600 mt-2"></p>
+      <div class="tip-modal-time">
+        <p class="text-xs font-bold uppercase text-amber-900 tracking-wide mb-1">⏰ Mejor momento del día</p>
+        <p id="tip-modal-time" class="text-sm font-semibold text-amber-950"></p>
+      </div>
+      <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide mb-2">Asignar a un día</p>
+      <div id="tip-assign-days" class="assign-day-grid"></div>
+      <button type="button" id="tip-modal-only-info" class="mt-3 w-full text-sm text-forest-500 underline">Solo cerrar</button>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="tip-modal no-print" role="alertdialog" aria-modal="true" aria-labelledby="confirm-modal-title" aria-describedby="confirm-modal-message" aria-hidden="true">
+    <div class="tip-modal-backdrop" id="confirm-modal-backdrop"></div>
+    <div class="tip-modal-panel confirm-modal-panel">
+      <div class="confirm-modal-icon" aria-hidden="true">🗓️</div>
+      <h3 id="confirm-modal-title" class="font-display font-bold text-lg text-forest-800">¿Vaciar el plan?</h3>
+      <p id="confirm-modal-message" class="text-sm text-forest-600 mt-2"></p>
+      <div class="confirm-modal-actions">
+        <button type="button" id="confirm-modal-cancel" class="confirm-btn confirm-btn--cancel">Cancelar</button>
+        <button type="button" id="confirm-modal-accept" class="confirm-btn confirm-btn--accept">Vaciar plan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="emergency-modal" class="emergency-panel no-print" role="dialog" aria-labelledby="emergency-title" aria-modal="true">
+    <div class="emergency-panel-inner">
+      <div class="flex justify-between items-start mb-3">
+        <h2 id="emergency-title" class="font-display text-xl font-bold text-red-700">Emergencias</h2>
+        <button type="button" id="close-emergency" class="close-emergency-btn text-2xl leading-none text-stone-400 hover:text-stone-700" aria-label="Cerrar">×</button>
+      </div>
+      <ul class="space-y-3 mb-4">
+        <li><a href="tel:112" class="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-200"><span class="text-2xl">🚨</span><div><p class="font-bold text-red-900">112</p><p class="text-sm text-red-700">Emergencias europeas</p></div></a></li>
+        <li><a href="tel:953710232" class="flex items-center gap-3 p-3 rounded-xl bg-stone-50 border"><span class="text-2xl">👮</span><div><p class="font-bold">Guardia Civil Cazorla</p><p class="text-sm font-mono">953 71 02 32</p></div></a></li>
+        <li><a href="tel:953366144" class="flex items-center gap-3 p-3 rounded-xl bg-stone-50 border"><span class="text-2xl">🏥</span><div><p class="font-bold">Centro de Salud (urgencias)</p><p class="text-sm font-mono">953 36 61 44</p></div></a></li>
+        <li><a href="tel:953028611" class="flex items-center gap-3 p-3 rounded-xl bg-stone-50 border"><span class="text-2xl">🏨</span><div><p class="font-bold">Hospital CHARE Cazorla</p><p class="text-sm font-mono">953 02 86 11</p></div></a></li>
+      </ul>
+      <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-950">
+        <p class="font-bold mb-1">Sin cobertura móvil</p>
+        <p>Usa las coordenadas GPS de este dashboard en tu navegador satelital. Reúne al grupo en un punto visible. Si hay herido, no mover salvo peligro inmediato. Deja señal visible (ropa brillante, silbato). El 112 funciona con cualquier operador aunque no tengas saldo.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop sidebar -->
+  <nav class="nav-desktop hidden lg:flex flex-col bg-primary text-on-primary shadow-xl" aria-label="Navegación principal">
+    <div class="p-5 border-b border-primary-container">
+      <p class="font-display font-bold text-lg leading-tight flex items-center gap-2">
+        <span class="material-symbols-outlined text-on-primary-container" aria-hidden="true">landscape</span>
+        Cazorla
+      </p>
+      <p class="text-on-primary-container text-sm mt-1">27 jul – 1 ago · 8 pers.</p>
+    </div>
+    <ul class="flex-1 overflow-y-auto py-3 text-sm" id="nav-desktop-list">
+      <li><a href="#resumen" class="nav-link block px-5 py-2.5 hover:bg-primary-container/80 transition">Resumen</a></li>
+      <li><a href="#alojamiento" class="nav-link block px-5 py-2.5 hover:bg-primary-container/80 transition">Alojamiento</a></li>
+      <li><a href="#planificador" class="nav-link block px-5 py-2.5 hover:bg-primary-container/80 transition">Planificador</a></li>
+      <li><a href="#logistica" class="nav-link block px-5 py-2 pl-8 hover:bg-primary-container/80 transition">Logística</a></li>
+      <li><a href="#seguridad" class="nav-link block px-5 py-2.5 hover:bg-primary-container/80 transition">Seguridad</a></li>
+      <li><a href="#consejos-logistica" class="nav-link block px-5 py-2.5 hover:bg-primary-container/80 transition">Consejos</a></li>
+      <li><a href="#checklist" class="nav-link block px-5 py-2.5 hover:bg-primary-container/80 transition">Checklist</a></li>
+      <li><a href="#emergencia" class="nav-link block px-5 py-2.5 hover:bg-red-900/40 text-red-200 transition">Emergencia</a></li>
+    </ul>
+    <div class="p-4 border-t border-primary-container no-print space-y-2">
+      <button type="button" id="toggle-dark-desktop" class="w-full py-2.5 px-3 rounded-lg bg-primary-container hover:opacity-90 text-sm font-semibold transition flex items-center justify-center gap-2">
+        <span aria-hidden="true" id="dark-icon-desktop">🌙</span> Modo oscuro
+      </button>
+      <button type="button" id="toggle-reading-desktop" class="w-full py-2.5 px-3 rounded-lg bg-secondary hover:opacity-90 text-sm font-semibold transition flex items-center justify-center gap-2 text-on-primary">
+        <span aria-hidden="true">☀️</span> Modo lectura
+      </button>
+      <button type="button" id="export-pdf-btn" class="w-full py-2.5 px-3 rounded-lg bg-secondary-container hover:opacity-90 text-sm font-semibold transition flex items-center justify-center gap-2 text-on-surface">
+        <span aria-hidden="true">📄</span> Exportar PDF
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile bottom nav -->
+  <nav class="nav-mobile lg:hidden bg-surface-bright/90 backdrop-blur-md border-t border-surface-container-high no-print" aria-label="Navegación móvil">
+    <div class="flex justify-around items-center px-2 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]" id="nav-mobile-scroll">
+      <a href="#resumen" class="nav-link flex flex-col items-center py-1 px-3 text-label-sm text-on-surface-variant min-w-[3.5rem]">
+        <span class="material-symbols-outlined nav-icon text-[22px] mb-0.5" aria-hidden="true">home</span> Inicio
+      </a>
+      <a href="#planificador" class="nav-link flex flex-col items-center py-1 px-3 text-label-sm text-on-surface-variant min-w-[3.5rem]">
+        <span class="material-symbols-outlined nav-icon text-[22px] mb-0.5" aria-hidden="true">event_note</span> Plan
+      </a>
+      <a href="#planificador" class="nav-link flex flex-col items-center py-1 px-3 text-label-sm text-on-surface-variant min-w-[3.5rem]" data-open-tab="actividades">
+        <span class="material-symbols-outlined nav-icon text-[22px] mb-0.5" aria-hidden="true">explore</span> Explorar
+      </a>
+      <a href="#planificador" class="nav-link flex flex-col items-center py-1 px-3 text-label-sm text-on-surface-variant min-w-[3.5rem]" data-open-tab="restauracion">
+        <span class="material-symbols-outlined nav-icon text-[22px] mb-0.5" aria-hidden="true">restaurant</span> Comer
+      </a>
+      <a href="#checklist" class="nav-link flex flex-col items-center py-1 px-3 text-label-sm text-on-surface-variant min-w-[3.5rem]">
+        <span class="material-symbols-outlined nav-icon text-[22px] mb-0.5" aria-hidden="true">checklist</span> Lista
+      </a>
+      <a href="#emergencia" class="nav-link flex flex-col items-center py-1 px-3 text-label-sm text-red-700 min-w-[3.5rem]">
+        <span class="material-symbols-outlined nav-icon text-[22px] mb-0.5" aria-hidden="true">emergency</span> SOS
+      </a>
+      <button type="button" id="toggle-dark-mobile" class="flex flex-col items-center py-1 px-2 text-label-sm text-on-surface-variant min-w-[3rem]">
+        <span class="text-lg mb-0.5" id="dark-icon-mobile">🌙</span> Noche
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-offset max-w-container-max mx-auto px-margin-mobile lg:px-10 py-6 lg:py-10">
+
+    <!-- Hero -->
+    <header class="mb-8 relative overflow-hidden rounded-xl adventure-card border-0 shadow-natural">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary-container to-secondary opacity-98"></div>
+      <div class="absolute inset-0 opacity-15" style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.12\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+      <div class="relative p-6 sm:p-8 text-on-primary">
+        <p class="text-on-primary-container text-label-lg uppercase tracking-widest mb-2 flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">landscape</span>
+          Sierra de Cazorla · Jaén
+        </p>
+        <h1 class="font-display text-headline-lg sm:text-[2.25rem] font-bold leading-tight tracking-tight">Escapada a Cazorla</h1>
+        <p class="mt-2 text-primary-fixed text-lg flex items-center gap-2">
+          <span class="material-symbols-outlined text-[20px]" aria-hidden="true">calendar_today</span>
+          27 julio – 1 agosto 2026
+        </p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="px-3 py-1 rounded-full bg-white/12 text-sm font-medium backdrop-blur border border-white/20">4 adultos + 4 adolescentes (13 años)</span>
+          <span class="px-3 py-1 rounded-full bg-white/12 text-sm font-medium backdrop-blur border border-white/20">2 familias</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. Resumen -->
+    <section id="resumen" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="h-1 bg-primary"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-headline-md font-bold text-primary mb-4 flex items-center gap-2">
+            <span class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-primary">summarize</span></span>
+            Resumen ejecutivo
+          </h2>
+          <dl class="grid sm:grid-cols-2 gap-4">
+            <div class="bg-forest-50 rounded-xl p-4 border border-forest-100">
+              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Destino</dt>
+              <dd class="mt-1 font-semibold text-forest-900">Sierra de Cazorla, Jaén</dd>
+            </div>
+            <div class="bg-earth-50 rounded-xl p-4 border border-earth-100">
+              <dt class="text-xs font-semibold uppercase text-earth-500 tracking-wide">Alojamiento</dt>
+              <dd class="mt-1 font-semibold text-forest-900">Cortijo Los Teatinos</dd>
+              <dd class="text-sm text-forest-600 mt-0.5">Cerca de Cazorla pueblo</dd>
+            </div>
+            <div class="bg-forest-50 rounded-xl p-4 border border-forest-100">
+              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Fechas</dt>
+              <dd class="mt-1 font-semibold text-forest-900">27 jul – 1 ago 2026</dd>
+              <dd class="text-sm text-forest-600">6 días · 5 noches</dd>
+            </div>
+            <div class="bg-forest-50 rounded-xl p-4 border border-forest-100 sm:col-span-2">
+              <dt class="text-xs font-semibold uppercase text-forest-500 tracking-wide">Enfoque</dt>
+              <dd class="mt-1 text-forest-800 timeline-text">Catálogo amplio de actividades y restauración — tú eliges qué hacer cada día desde el <a href="#planificador" class="underline font-semibold text-forest-700">planificador interactivo</a>.</dd>
+            </div>
+          </dl>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <button type="button" class="map-btn" data-maps-q="Cazorla, Jaén, España" data-maps-title="Cazorla, Jaén">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Ver en Maps
+            </button>
+            <button type="button" class="map-btn map-btn--earth" data-maps-q="Málaga, España" data-maps-title="Origen: Málaga">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+              Ver en Maps · Málaga
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 2. Alojamiento -->
+    <section id="alojamiento" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="h-1 bg-secondary"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-headline-md font-bold text-primary mb-4 flex items-center gap-2">
+            <span class="w-9 h-9 rounded-lg bg-secondary-container flex items-center justify-center"><span class="material-symbols-outlined text-secondary">cottage</span></span>
+            Alojamiento y base
+          </h2>
+          <h3 class="font-display font-bold text-lg text-earth-600 mb-2">Cortijo Los Teatinos</h3>
+          <p class="mb-3">
+            <a href="https://www.escapadarural.com/casa-rural/jaen/cortijo-los-teatinos" target="_blank" rel="noopener" class="web-link-btn">🌐 escapadarural.com · Cortijo Los Teatinos</a>
+          </p>
+          <p class="text-forest-700 mb-3 timeline-text"><strong>Ubicación:</strong> Camino Viejo de Tramaya, s/n · Cazorla (Jaén). A ~800 m del centro, con acceso asfaltado.</p>
+          <ul class="space-y-2 text-forest-700 mb-4">
+            <li class="flex gap-2"><span class="text-forest-500">✓</span> Piscina privada (indispensable en julio)</li>
+            <li class="flex gap-2"><span class="text-forest-500">✓</span> Barbacoa y amplias zonas comunes para las dos familias</li>
+            <li class="flex gap-2"><span class="text-forest-500">✓</span> Acceso por carril — comprar víveres en Cazorla antes del check-in</li>
+          </ul>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="distance-badge">📍 Camino Viejo de Tramaya</span>
+            <span class="distance-badge">🛒 Compra previa en Cazorla pueblo</span>
+          </div>
+          <button type="button" class="map-btn" data-maps-q="37.919567,-3.0049675" data-maps-title="Cortijo Los Teatinos">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Ver en Maps
+          </button>
+          <div class="gps-block" data-lat="37.919567" data-lng="-3.0049675" data-label="Cortijo Los Teatinos">
+            <p class="text-xs font-semibold text-forest-600 uppercase tracking-wide">GPS (Camino Viejo de Tramaya)</p>
+            <p class="gps-coords mt-0.5">37.919567, -3.0049675</p>
+            <button type="button" class="copy-coords-btn">Copiar coordenadas</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- CAZORLA-PLANNER-START — no reemplazar por itinerario fijo -->
+    <section id="planificador" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="h-1 bg-gradient-to-r from-primary via-primary-container to-secondary"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-headline-md font-bold text-primary mb-2 flex items-center gap-2">
+            <span class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-primary">event_note</span></span>
+            Planificador · 27 jul – 1 ago 2026
+          </h2>
+          <p class="text-sm text-forest-600 mb-4">Elige actividades del catálogo, consulta el mejor horario y asígnalas a cada día. Tu plan se guarda en este dispositivo.</p>
+
+          <div class="catalog-tabs" role="tablist">
+            <button type="button" class="catalog-tab active" data-catalog-tab="actividades" role="tab" aria-selected="true">
+              <span class="material-symbols-outlined text-[18px] align-middle mr-1">explore</span> Actividades
+            </button>
+            <button type="button" class="catalog-tab" data-catalog-tab="restauracion" role="tab" aria-selected="false">
+              <span class="material-symbols-outlined text-[18px] align-middle mr-1">restaurant</span> Restauración
+            </button>
+          </div>
+
+          <div id="panel-actividades" data-catalog-panel="actividades">
+            <h3 class="font-display font-semibold text-forest-700 text-sm uppercase tracking-wide mb-2">Tu calendario (6 días)</h3>
+            <div class="day-planner-scroll">
+              <div id="day-planner-grid" class="day-planner-grid" aria-label="Distribución por días"></div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4 no-print">
+              <button type="button" id="clear-plan-btn" class="text-sm px-3 py-1.5 rounded-lg border border-forest-300 text-forest-700 hover:bg-forest-50">Vaciar plan</button>
+            </div>
+            <h3 class="font-display font-semibold text-forest-700 text-sm uppercase tracking-wide mb-3">Catálogo de actividades</h3>
+            <p class="text-xs text-forest-500 mb-3">Ordenado por distancia desde el cortijo. Pulsa una tarjeta para ver el mejor momento del día y asignarla.</p>
+            <div id="activity-catalog" class="catalog-grid"></div>
+          </div>
+
+          <div id="panel-restauracion" data-catalog-panel="restauracion" hidden>
+            <p class="text-sm text-forest-600 mb-4">Top del informe 2026. Web oficial, mapa embebido y coordenadas GPS.</p>
+            <div id="restaurant-catalog" class="catalog-grid"></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="logistica" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
+        <h2 class="font-display text-headline-md font-bold text-primary mb-4 flex items-center gap-2">
+          <span class="w-9 h-9 rounded-lg bg-secondary-container flex items-center justify-center"><span class="material-symbols-outlined text-secondary">analytics</span></span>
+          Puntuación y tiempos (referencia)
+        </h2>
+        <p class="text-sm text-on-surface-variant mb-3">Ordenado por distancia en coche desde Cortijo Los Teatinos (de cerca a lejos).</p>
+        <div class="overflow-x-auto rounded-xl border border-surface-container-high">
+          <table class="w-full text-left text-sm min-w-[300px]">
+            <thead>
+              <tr class="border-b-2 border-outline-variant bg-surface-container-low">
+                <th class="py-2.5 px-3 text-on-surface-variant font-semibold uppercase text-label-sm tracking-wide">Opción</th>
+                <th class="py-2.5 px-3 text-on-surface-variant font-semibold uppercase text-label-sm tracking-wide">Nota</th>
+                <th class="py-2.5 px-3 text-on-surface-variant font-semibold uppercase text-label-sm tracking-wide">Coche</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant text-on-surface bg-surface-container-lowest" id="logistics-table-body"></tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-sm text-on-surface-variant p-4 bg-surface-cream rounded-xl border border-outline-variant">
+          <strong>Consejo del asesor:</strong> La astronomía Starlight tras la cena combina frescor de la sierra y poco esfuerzo. El kayak en el Alto Guadalquivir es la opción favorita para adolescentes por el componente de acción.
+        </p>
+      </article>
+    </section>
+
+    <section id="seguridad" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden border-amber-200">
+        <div class="h-1.5 bg-amber-400"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">🛡️</span>
+            Recomendaciones de seguridad
+          </h2>
+          <ol class="space-y-4">
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">1</span>
+              <div>
+                <p class="font-semibold text-forest-900">Calor extremo (julio)</p>
+                <p class="text-forest-700 text-sm">Senderismo y aventura activa: solo por la mañana. Mínimo 1,5 L/persona.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">2</span>
+              <div>
+                <p class="font-semibold text-forest-900">Reservas grupo de 8</p>
+                <p class="text-forest-700 text-sm">Ferrata, 4×4, barranquismo, kayak río y restaurantes top: reservar con antelación.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-sm">3</span>
+              <div>
+                <p class="font-semibold text-forest-900">Calzado</p>
+                <p class="text-forest-700 text-sm">Kayak río y barranquismo: calzado cerrado que se pueda mojar. Ferrata: buen agarre.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </article>
+    </section>
+
+    <section id="consejos-logistica" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden">
+        <div class="h-1 bg-tertiary"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-headline-md font-bold text-primary mb-2 flex items-center gap-2">
+            <span class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-tertiary">tips_and_updates</span></span>
+            Consejos logísticos del concierge
+          </h2>
+          <p class="text-sm text-on-surface-variant mb-4">Notas prácticas para el grupo con 2 utilitarios y presupuesto comedido.</p>
+          <ul class="space-y-4">
+            <li class="flex gap-3 p-3 rounded-xl bg-surface-cream border border-outline-variant">
+              <span class="material-symbols-outlined text-secondary flex-shrink-0 mt-0.5" aria-hidden="true">directions_car</span>
+              <div>
+                <p class="font-semibold text-on-surface">Logística de los utilitarios</p>
+                <p class="text-on-surface-variant text-sm mt-1">Evitad aparcar en arcenes de tierra batida junto a accesos de ríos (especialmente Borosa): raíces y piedras pueden dañar los bajos. Priorizad parkings pavimentados oficiales de las áreas recreativas.</p>
+              </div>
+            </li>
+            <li class="flex gap-3 p-3 rounded-xl bg-surface-cream border border-outline-variant">
+              <span class="material-symbols-outlined text-secondary flex-shrink-0 mt-0.5" aria-hidden="true">savings</span>
+              <div>
+                <p class="font-semibold text-on-surface">Estrategia de presupuesto comedido</p>
+                <p class="text-on-surface-variant text-sm mt-1">El catálogo incluye <strong>9 opciones gratuitas</strong>. Alternad un día de gasto cero (p. ej. Cerezuelo por la mañana + pozas en Herrerías por la tarde) con un día de experiencia guiada (4×4 o astronomía Starlight).</p>
+              </div>
+            </li>
+            <li class="flex gap-3 p-3 rounded-xl bg-amber-50 border border-amber-200">
+              <span class="material-symbols-outlined text-amber-800 flex-shrink-0 mt-0.5" aria-hidden="true">wb_sunny</span>
+              <div>
+                <p class="font-semibold text-on-surface">Gestión térmica en julio</p>
+                <p class="text-on-surface-variant text-sm mt-1">Entre las <strong>13:30 y las 17:30</strong> la insolación es extrema. Terminad senderos antes de las 13:00. Tardes solo para pozas (Linarejos, Herrerías) o piscina del cortijo.</p>
+              </div>
+            </li>
+            <li class="flex gap-3 p-3 rounded-xl bg-surface-cream border border-outline-variant">
+              <span class="material-symbols-outlined text-secondary flex-shrink-0 mt-0.5" aria-hidden="true">shopping_cart</span>
+              <div>
+                <p class="font-semibold text-on-surface">Aprovisionamiento inicial</p>
+                <p class="text-on-surface-variant text-sm mt-1">Los Teatinos está a ~800 m de Cazorla pueblo. Haced una compra grande de víveres e hidratación en supermercados del núcleo urbano antes del check-in.</p>
+              </div>
+            </li>
+            <li class="flex gap-3 p-3 rounded-xl bg-surface-cream border border-outline-variant">
+              <span class="material-symbols-outlined text-tertiary flex-shrink-0 mt-0.5" aria-hidden="true">wifi_off</span>
+              <div>
+                <p class="font-semibold text-on-surface">Cobertura offline</p>
+                <p class="text-on-surface-variant text-sm mt-1">En cerradas calizas (Utrero, Borosa, Canaliega) no hay señal móvil. Descargad mapas de la zona en Google Maps en modo offline antes de salir de Málaga.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section id="operadores" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
+        <h2 class="font-display text-xl font-bold text-forest-800 mb-4 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">📞</span>
+          Operadores de actividades
+        </h2>
+        <ul class="space-y-4">
+          <li class="flex flex-col gap-3 p-3 rounded-xl bg-forest-50 border border-forest-100">
+            <div>
+              <p class="font-bold text-forest-900">Turisla</p>
+              <p class="text-sm text-forest-600">Vía Ferrata «La Mocha», barranquismo y Bóveda del Cerezuelo · Cazorla</p>
+              <ul class="mt-2 space-y-1 text-sm text-forest-700">
+                <li>📞 <a href="tel:+34699301132" class="underline font-medium text-forest-800 hover:text-forest-600">699 30 11 32</a></li>
+              </ul>
+            </div>
+            <div class="rest-card-actions">
+              <a href="https://turisla.com" target="_blank" rel="noopener" class="web-link-btn">🌐 turisla.com</a>
+              <button type="button" class="map-btn text-sm" data-maps-q="Turisla, Cazorla" data-maps-title="Turisla">Ver en Maps</button>
+            </div>
+          </li>
+          <li class="flex flex-col gap-3 p-3 rounded-xl bg-blue-50 border border-blue-100">
+            <div>
+              <p class="font-bold text-forest-900">Cazorla Aventur</p>
+              <p class="text-sm text-forest-600">Kayak de río, barranquismo y tirolinas · Arroyo Frío / Cazorla</p>
+              <ul class="mt-2 space-y-1 text-sm text-forest-700">
+                <li>📞 <a href="tel:+34647628203" class="underline font-medium text-forest-800 hover:text-forest-600">647 62 82 03</a></li>
+              </ul>
+            </div>
+            <div class="rest-card-actions">
+              <a href="https://www.aventuras-cazorla.com" target="_blank" rel="noopener" class="web-link-btn">🌐 aventuras-cazorla.com</a>
+              <button type="button" class="map-btn map-btn--water text-sm" data-maps-q="Cazorla Aventur, Arroyo Frío" data-maps-title="Cazorla Aventur">Ver en Maps</button>
+            </div>
+          </li>
+          <li class="flex flex-col gap-3 p-3 rounded-xl bg-earth-50 border border-earth-100">
+            <div>
+              <p class="font-bold text-forest-900">Tierra Venturas</p>
+              <p class="text-sm text-forest-600">Ruta 4×4 zonas restringidas y astronomía Starlight · Cazorla</p>
+              <ul class="mt-2 space-y-1 text-sm text-forest-700">
+                <li>📞 <a href="tel:+34953720241" class="underline font-medium text-forest-800 hover:text-forest-600">953 72 02 41</a></li>
+              </ul>
+            </div>
+            <div class="rest-card-actions">
+              <a href="https://tierraventuras.com" target="_blank" rel="noopener" class="web-link-btn">🌐 tierraventuras.com</a>
+              <button type="button" class="map-btn text-sm" data-maps-q="Tierra Venturas, Cazorla" data-maps-title="Tierra Venturas">Ver en Maps</button>
+            </div>
+          </li>
+          <li class="flex flex-col gap-3 p-3 rounded-xl bg-blue-50/80 border border-blue-100">
+            <div>
+              <p class="font-bold text-forest-900">Centro de Ocio El Tranco</p>
+              <p class="text-sm text-forest-600">SUP Giant, kayak embalse y barco solar · Embalse del Tranco</p>
+              <ul class="mt-2 space-y-1 text-sm text-forest-700">
+                <li>📞 <a href="tel:+34608262103" class="underline font-medium text-forest-800 hover:text-forest-600">608 26 21 03</a></li>
+              </ul>
+            </div>
+            <div class="rest-card-actions">
+              <a href="https://trancocazorla.com" target="_blank" rel="noopener" class="web-link-btn">🌐 trancocazorla.com</a>
+              <button type="button" class="map-btn map-btn--water text-sm" data-maps-q="38.1300,-2.7850" data-maps-title="Centro de Ocio El Tranco">Ver en Maps</button>
+            </div>
+          </li>
+          <li class="flex flex-col gap-3 p-3 rounded-xl bg-blue-50 border border-blue-100">
+            <div>
+              <p class="font-bold text-forest-900">Guadalkayak</p>
+              <p class="text-sm text-forest-600">Kayak y piragüismo fluvial familiar · Arroyo Frío</p>
+              <ul class="mt-2 space-y-1 text-sm text-forest-700">
+                <li>📞 <a href="tel:+34676115017" class="underline font-medium text-forest-800 hover:text-forest-600">676 11 50 17</a></li>
+              </ul>
+            </div>
+            <div class="rest-card-actions">
+              <a href="https://guadalkayak.com" target="_blank" rel="noopener" class="web-link-btn">🌐 guadalkayak.com</a>
+              <button type="button" class="map-btn map-btn--water text-sm" data-maps-q="Guadalkayak, Arroyo Frío" data-maps-title="Guadalkayak">Ver en Maps</button>
+            </div>
+          </li>
+          <li class="flex flex-col gap-3 p-3 rounded-xl bg-forest-50 border border-forest-100">
+            <div>
+              <p class="font-bold text-forest-900">EcoCazorla</p>
+              <p class="text-sm text-forest-600">Senderismo guiado y rutas interpretativas en todoterreno · Cazorla</p>
+              <ul class="mt-2 space-y-1 text-sm text-forest-700">
+                <li>📞 <a href="tel:+34648135462" class="underline font-medium text-forest-800 hover:text-forest-600">648 13 54 62</a></li>
+              </ul>
+            </div>
+            <div class="rest-card-actions">
+              <a href="https://ecocazorla.com" target="_blank" rel="noopener" class="web-link-btn">🌐 ecocazorla.com</a>
+              <button type="button" class="map-btn text-sm" data-maps-q="EcoCazorla, Cazorla" data-maps-title="EcoCazorla">Ver en Maps</button>
+            </div>
+          </li>
+          <li class="flex flex-col gap-3 p-3 rounded-xl bg-earth-50 border border-earth-100">
+            <div>
+              <p class="font-bold text-forest-900">Aventuras Cazorla</p>
+              <p class="text-sm text-forest-600">Circuitos forestales suspendidos y multiaventura · Burunchel</p>
+              <ul class="mt-2 space-y-1 text-sm text-forest-700">
+                <li>📞 <a href="tel:+34953710552" class="underline font-medium text-forest-800 hover:text-forest-600">953 71 05 52</a></li>
+              </ul>
+            </div>
+            <div class="rest-card-actions">
+              <a href="https://aventurascazorla.com" target="_blank" rel="noopener" class="web-link-btn">🌐 aventurascazorla.com</a>
+              <button type="button" class="map-btn text-sm" data-maps-q="Aventuras Cazorla, Burunchel" data-maps-title="Aventuras Cazorla">Ver en Maps</button>
+            </div>
+          </li>
+        </ul>
+      </article>
+    </section>
+    <!-- CAZORLA-PLANNER-END -->
+
+    <!-- 8. Checklist -->
+    <section id="checklist" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl p-5 sm:p-6 card-body">
+        <h2 class="font-display text-xl font-bold text-forest-800 mb-2 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-forest-100 flex items-center justify-center">✅</span>
+          Checklist interactivo
+        </h2>
+        <p class="text-sm text-forest-500 mb-4 no-print">Se guarda automáticamente en este dispositivo.</p>
+
+        <h3 class="font-display font-semibold text-forest-700 mt-4 mb-2">Reservas recomendadas</h3>
+        <ul class="space-y-2" data-checklist="reservas">
+          <li class="check-item"><input type="checkbox" id="c1" class="sr-only" /><label for="c1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Vía Ferrata + kayak río + 4×4 (8 pers.)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="c2" class="sr-only" /><label for="c2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Mesón Leandro o Casa Alfonso</span></label></li>
+          <li class="check-item"><input type="checkbox" id="c3" class="sr-only" /><label for="c3" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Restaurante El Tranco (día Tranco/SUP)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="c4" class="sr-only" /><label for="c4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center mt-0.5"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Astronomía Starlight (plazas/fecha)</span></label></li>
+        </ul>
+
+        <h3 class="font-display font-semibold text-forest-700 mt-6 mb-2">Equipaje y suministros</h3>
+        <ul class="space-y-2" data-checklist="equipaje">
+          <li class="check-item"><input type="checkbox" id="e1" class="sr-only" /><label for="e1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Compra víveres en Cazorla (agua, carne, bebidas)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e2" class="sr-only" /><label for="e2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>1,5 L agua mínimo por persona / actividad</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e3" class="sr-only" /><label for="e3" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Calzado cerrado para kayak río (no chanclas)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e4" class="sr-only" /><label for="e4" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Zapatillas buen agarre (ferrata y senderismo)</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e5" class="sr-only" /><label for="e5" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Protector solar, gorra y gafas de sol</span></label></li>
+          <li class="check-item"><input type="checkbox" id="e6" class="sr-only" /><label for="e6" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Binoculares (opcional, ruta 4×4)</span></label></li>
+        </ul>
+
+        <h3 class="font-display font-semibold text-forest-700 mt-6 mb-2">Plan guardado</h3>
+        <p class="text-sm text-forest-600 mb-2">Revisa el <a href="#planificador" class="underline font-semibold">planificador</a> antes de salir.</p>
+        <ul class="space-y-2" data-checklist="dias">
+          <li class="check-item"><input type="checkbox" id="d1" class="sr-only" /><label for="d1" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Calendario de 6 días completado en el planificador</span></label></li>
+        <li class="check-item"><input type="checkbox" id="d2" class="sr-only" /><label for="d2" class="flex items-start gap-3 cursor-pointer p-2 rounded-lg hover:bg-forest-50"><span class="check-box flex-shrink-0 w-6 h-6 rounded-md border-2 border-forest-400 flex items-center justify-center"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span><span>Borosa/Cerezuelo: salida antes de las 09:00</span></label></li>
+        </ul>
+
+        <button type="button" id="clear-checklist" class="mt-6 text-sm text-forest-500 underline hover:text-forest-700 no-print">Restablecer checklist</button>
+      </article>
+    </section>
+
+    <!-- Emergencia (sección + impresión) -->
+    <section id="emergencia" class="mb-8 scroll-mt-20">
+      <article class="adventure-card rounded-2xl overflow-hidden border-2 border-red-200">
+        <div class="h-1.5 bg-red-600"></div>
+        <div class="p-5 sm:p-6 card-body">
+          <h2 class="font-display text-xl font-bold text-red-800 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">🆘</span>
+            Emergencias y campo
+          </h2>
+          <div class="grid sm:grid-cols-2 gap-3 mb-4">
+            <a href="tel:112" class="p-4 rounded-xl bg-red-600 text-white text-center font-bold text-lg no-print-screen">112</a>
+            <a href="tel:953710232" class="p-4 rounded-xl bg-stone-100 border text-center no-print-screen">
+              <span class="block text-xs text-stone-500">Guardia Civil</span>
+              <span class="font-mono font-bold">953 71 02 32</span>
+            </a>
+            <a href="tel:953366144" class="p-4 rounded-xl bg-stone-100 border text-center no-print-screen">
+              <span class="block text-xs text-stone-500">Centro Salud urgencias</span>
+              <span class="font-mono font-bold">953 36 61 44</span>
+            </a>
+            <a href="tel:953028611" class="p-4 rounded-xl bg-stone-100 border text-center no-print-screen">
+              <span class="block text-xs text-stone-500">Hospital CHARE</span>
+              <span class="font-mono font-bold">953 02 86 11</span>
+            </a>
+          </div>
+          <div class="emergency-print-block hidden p-4 bg-stone-100 rounded-xl text-sm space-y-1 font-mono">
+            <p>112 · Guardia Civil 953710232 · CS urgencias 953366144 · Hospital 953028611</p>
+          </div>
+          <div class="p-4 bg-red-50 border border-red-100 rounded-xl text-sm text-red-950">
+            <p class="font-bold mb-2">Si pierdes señal en la sierra</p>
+            <ol class="list-decimal list-inside space-y-1.5">
+              <li>Copia las coordenadas GPS de este dashboard antes de salir.</li>
+              <li>Introduce lat/long en tu GPS o app de mapas offline.</li>
+              <li>No separes al grupo; busca sombra y agua si hay calor.</li>
+              <li>Silbato o espejo para señalizar a rescate aéreo en zonas remotas.</li>
+            </ol>
+          </div>
+          <p class="mt-3 text-xs text-forest-500">Coordenadas aproximadas verificadas en fuentes públicas (Junta de Andalucía, cartografía). Confirma en campo si es crítico.</p>
+        </div>
+      </article>
+    </section>
+
+    <footer class="text-center text-sm text-forest-500 pb-4 no-print">
+      <p id="cache-status">Cazorla 2026 · Cargando caché offline…</p>
+      <p class="text-xs text-forest-400 mt-1" id="build-label">Build 2026.05.26-natural-explorer</p>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      var confirmModal = document.getElementById('confirm-modal');
+      var confirmTitle = document.getElementById('confirm-modal-title');
+      var confirmMessage = document.getElementById('confirm-modal-message');
+      var confirmAccept = document.getElementById('confirm-modal-accept');
+      var confirmCancel = document.getElementById('confirm-modal-cancel');
+      var confirmBackdrop = document.getElementById('confirm-modal-backdrop');
+      var confirmOnAccept = null;
+
+      function closeConfirmModal() {
+        if (!confirmModal) return;
+        confirmModal.classList.remove('open');
+        confirmModal.setAttribute('aria-hidden', 'true');
+        confirmOnAccept = null;
+      }
+
+      window.showConfirmModal = function (opts) {
+        if (!confirmModal) return;
+        opts = opts || {};
+        confirmTitle.textContent = opts.title || '¿Estás seguro?';
+        confirmMessage.textContent = opts.message || '';
+        confirmAccept.textContent = opts.acceptLabel || 'Aceptar';
+        confirmCancel.textContent = opts.cancelLabel || 'Cancelar';
+        confirmOnAccept = typeof opts.onConfirm === 'function' ? opts.onConfirm : null;
+        confirmModal.classList.add('open');
+        confirmModal.setAttribute('aria-hidden', 'false');
+        confirmCancel.focus();
+      };
+
+      confirmAccept?.addEventListener('click', function () {
+        var cb = confirmOnAccept;
+        closeConfirmModal();
+        if (cb) cb();
+      });
+      confirmCancel?.addEventListener('click', closeConfirmModal);
+      confirmBackdrop?.addEventListener('click', closeConfirmModal);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && confirmModal?.classList.contains('open')) closeConfirmModal();
+      });
+    })();
+
+    (function () {
+      const STORAGE_KEY = 'cazorla-dashboard-v1';
+      const READING_KEY = 'cazorla-reading-mode';
+      const DARK_KEY = 'cazorla-dark-mode';
+      const DASHBOARD_BUILD = '2026.05.26-natural-explorer';
+      const CACHE_NAME = 'cazorla-field-v4';
+      const INDEX_URL = 'index.html';
+      const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap';
+
+      // —— Service Worker (blob embebido) ——
+      const SW_SOURCE = `
+        const CACHE = '${CACHE_NAME}';
+        const CORE = [
+          '${INDEX_URL}',
+          '${FONT_CSS}',
+          'https://cdn.tailwindcss.com'
+        ];
+        self.addEventListener('install', function(e) {
+          self.skipWaiting();
+          e.waitUntil(
+            caches.open(CACHE).then(function(cache) {
+              return cache.addAll(CORE).catch(function() { return Promise.resolve(); });
+            })
+          );
+        });
+        self.addEventListener('activate', function(e) {
+          e.waitUntil(
+            caches.keys().then(function(keys) {
+              return Promise.all(keys.filter(function(k) { return k !== CACHE; }).map(function(k) { return caches.delete(k); }));
+            }).then(function() { return self.clients.claim(); })
+          );
+        });
+        self.addEventListener('fetch', function(e) {
+          if (e.request.method !== 'GET') return;
+          var url = e.request.url;
+          if (url.indexOf('index.html') !== -1 || e.request.mode === 'navigate') {
+            e.respondWith(
+              fetch(e.request).then(function(res) {
+                if (res && res.status === 200) {
+                  caches.open('${CACHE_NAME}').then(function(c) { c.put(e.request, res.clone()); });
+                }
+                return res;
+              }).catch(function() {
+                return caches.match(e.request).then(function(cached) {
+                  return cached || caches.match('${INDEX_URL}');
+                });
+              })
+            );
+            return;
+          }
+          if (url.indexOf('cdn.tailwindcss.com') !== -1 || url.indexOf('fonts.googleapis') !== -1 || url.indexOf('fonts.gstatic.com') !== -1) {
+            e.respondWith(
+              caches.match(e.request).then(function(cached) {
+                var fetchPromise = fetch(e.request).then(function(res) {
+                  if (res && res.status === 200) {
+                    var clone = res.clone();
+                    caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+                  }
+                  return res;
+                }).catch(function() { return cached; });
+                return cached || fetchPromise;
+              })
+            );
+          }
+        });
+      `;
+
+      function registerServiceWorker() {
+        if (!('serviceWorker' in navigator)) {
+          updateCacheStatus('Navegador sin Service Worker · Usa Chrome/Safari actualizado');
+          return prefetchAssets().then(function() { return false; });
+        }
+        if (location.protocol === 'file:') {
+          updateCacheStatus('Con WiFi: abre una vez, luego funciona sin red (HTML + datos). Para caché de diseño, sirve la carpeta con un servidor local.');
+          return prefetchAssets().catch(function() {}).then(function() { return false; });
+        }
+        function onRegistered() {
+          return prefetchAssets().then(function() {
+            updateCacheStatus('Listo para campo · Tailwind y fuentes en caché');
+            return true;
+          });
+        }
+        return navigator.serviceWorker.register('cazorla-sw.js').then(onRegistered).catch(function() {
+          try {
+            var blob = new Blob([SW_SOURCE], { type: 'application/javascript' });
+            return navigator.serviceWorker.register(URL.createObjectURL(blob)).then(onRegistered);
+          } catch (e) {
+            updateCacheStatus('Caché parcial · Recarga con WiFi antes de salir al monte');
+            return false;
+          }
+        });
+      }
+
+      function prefetchAssets() {
+        if (!('caches' in window)) return Promise.resolve();
+        return caches.open(CACHE_NAME).then(function(cache) {
+          return cache.add(INDEX_URL).catch(function() {}).then(function() {
+            return fetch(FONT_CSS, { mode: 'cors' }).then(function(res) {
+              if (res.ok) return cache.put(FONT_CSS, res);
+            });
+          }).catch(function() {}).then(function() {
+            return fetch('https://cdn.tailwindcss.com', { mode: 'cors' }).then(function(res) {
+              if (res.ok) return cache.put('https://cdn.tailwindcss.com', res);
+            });
+          }).catch(function() {});
+        }).catch(function() {});
+      }
+
+      function updateCacheStatus(msg) {
+        var el = document.getElementById('cache-status');
+        if (el) el.textContent = msg;
+      }
+
+      // —— Offline banner ——
+      var banner = document.getElementById('offline-banner');
+      function setOnlineStatus() {
+        if (!banner) return;
+        if (!navigator.onLine) {
+          banner.textContent = 'Sin conexión · GPS y teléfonos guardados siguen disponibles';
+          banner.classList.add('show');
+        } else {
+          banner.classList.remove('show');
+        }
+      }
+      window.addEventListener('online', setOnlineStatus);
+      window.addEventListener('offline', setOnlineStatus);
+      setOnlineStatus();
+
+      // —— Dark mode ——
+      function setDarkMode(on, persist) {
+        document.documentElement.classList.toggle('dark', on);
+        if (persist !== false) {
+          try { localStorage.setItem(DARK_KEY, on ? '1' : '0'); } catch (_) {}
+        }
+        var meta = document.getElementById('theme-color-meta');
+        if (meta) meta.content = on ? '#0c1612' : '#163526';
+        var label = on ? 'Modo claro' : 'Modo oscuro';
+        var icon = on ? '☀️' : '🌙';
+        var desktopBtn = document.getElementById('toggle-dark-desktop');
+        if (desktopBtn) desktopBtn.innerHTML = '<span aria-hidden="true">' + icon + '</span> ' + label;
+        var mobileBtn = document.getElementById('toggle-dark-mobile');
+        if (mobileBtn) {
+          mobileBtn.innerHTML = '<span class="text-lg mb-0.5" id="dark-icon-mobile">' + icon + '</span> ' + (on ? 'Día' : 'Noche');
+        }
+      }
+      function toggleDarkMode() {
+        setDarkMode(!document.documentElement.classList.contains('dark'));
+      }
+      setDarkMode(document.documentElement.classList.contains('dark'), false);
+      document.getElementById('toggle-dark-desktop')?.addEventListener('click', toggleDarkMode);
+      document.getElementById('toggle-dark-mobile')?.addEventListener('click', toggleDarkMode);
+
+      // —— Reading mode ——
+      function setReadingMode(on) {
+        document.body.classList.toggle('reading-mode', on);
+        localStorage.setItem(READING_KEY, on ? '1' : '0');
+        var label = on ? 'Modo normal' : 'Modo lectura';
+        ['toggle-reading-desktop', 'toggle-reading-mobile'].forEach(function(id) {
+          var btn = document.getElementById(id);
+          if (btn) btn.innerHTML = (id.includes('mobile') ? '<span class="text-lg mb-0.5">' + (on ? '📖' : '☀️') + '</span>' : '<span aria-hidden="true">' + (on ? '📖' : '☀️') + '</span> ') + label;
+        });
+      }
+      if (localStorage.getItem(READING_KEY) === '1') setReadingMode(true);
+      document.getElementById('toggle-reading-desktop')?.addEventListener('click', function() { setReadingMode(!document.body.classList.contains('reading-mode')); });
+      document.getElementById('toggle-reading-mobile')?.addEventListener('click', function() { setReadingMode(!document.body.classList.contains('reading-mode')); });
+
+      // —— Checklist ——
+      function saveChecks() {
+        var state = {};
+        document.querySelectorAll('.check-item input[type="checkbox"]').forEach(function(cb) { state[cb.id] = cb.checked; });
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+      }
+      function loadChecks() {
+        try {
+          var state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          Object.entries(state).forEach(function(entry) {
+            var el = document.getElementById(entry[0]);
+            if (el) el.checked = !!entry[1];
+          });
+        } catch (_) {}
+      }
+      loadChecks();
+      document.querySelectorAll('.check-item input').forEach(function(cb) { cb.addEventListener('change', saveChecks); });
+      document.getElementById('clear-checklist')?.addEventListener('click', function() {
+        if (confirm('¿Borrar todo el progreso del checklist?')) {
+          document.querySelectorAll('.check-item input').forEach(function(cb) { cb.checked = false; });
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      });
+
+      // —— Copiar coordenadas (delegación, incluye restaurantes dinámicos) ——
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.copy-coords-btn');
+        if (!btn) return;
+        var block = btn.closest('.gps-block');
+        if (!block) return;
+        var text = block.dataset.lat + ', ' + block.dataset.lng;
+        function done() {
+          btn.textContent = '¡Copiado!';
+          btn.classList.add('copied');
+          setTimeout(function () { btn.textContent = 'Copiar coordenadas'; btn.classList.remove('copied'); }, 2000);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
+        } else {
+          fallbackCopy(text, done);
+        }
+      });
+      function fallbackCopy(text, cb) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); cb(); } catch (_) { alert('Coordenadas: ' + text); }
+        document.body.removeChild(ta);
+      }
+
+      // —— Iconos automáticos en rutas naturales ——
+      var ROUTE_RULES = [
+        { re: /r[ií]o\s+borosa|borosa/gi, icon: '🏞️' },
+        { re: /cerrada\s+de\s+el[ií]as/gi, icon: '🏞️' },
+        { re: /guadalquivir/gi, icon: '🏞️' },
+        { re: /embalse|tranco/gi, icon: '🏞️' },
+        { re: /reserva\s+de\s+gualay|gualay/gi, icon: '⛰️' },
+        { re: /ruta\s+4\s*[x×]4|4\s*[x×]4/gi, icon: '⛰️' },
+        { re: /v[ií]a\s+ferrata|la\s+mocha/gi, icon: '⛰️' },
+        { re: /senderismo|sendero/gi, icon: '⛰️' }
+      ];
+      document.querySelectorAll('.route-title').forEach(function(el) {
+        var text = el.textContent;
+        var icon = '';
+        ROUTE_RULES.forEach(function(rule) {
+          if (rule.re.test(text)) icon = rule.icon;
+          rule.re.lastIndex = 0;
+        });
+        if (icon && !el.querySelector('.route-icon')) {
+          var span = document.createElement('span');
+          span.className = 'route-icon';
+          span.setAttribute('aria-hidden', 'true');
+          span.textContent = icon + ' ';
+          el.prepend(span);
+        }
+      });
+
+      // —— Planificador interactivo ——
+      (function () {
+        var PLAN_KEY = 'cazorla-plan-v3';
+        var STAY_DAYS = [
+          { id: '2026-07-27', label: 'Lun 27', sub: 'Llegada' },
+          { id: '2026-07-28', label: 'Mar 28', sub: '' },
+          { id: '2026-07-29', label: 'Mié 29', sub: '' },
+          { id: '2026-07-30', label: 'Jue 30', sub: '' },
+          { id: '2026-07-31', label: 'Vie 31', sub: '' },
+          { id: '2026-08-01', label: 'Sáb 1', sub: 'Regreso' }
+        ];
+        var ACTIVITIES = [
+          { id: 'cerezuelo', title: 'Ruta del Río Cerezuelo', rating: 9.5, drive: '4 min', cat: 'Senderismo', icon: '🏞️',
+            desc: 'Sendero circular de 4,5 km bajo frondosa bóveda de ribera. Máxima sombra y agua; ideal tarde de llegada. Gratis.',
+            bestTime: 'Mañana (08:00–11:30) o tarde de llegada. Se puede iniciar a pie desde el cortijo.',
+            mapsQ: 'Río Cerezuelo, Cazorla, Jaén', lat: '37.9115', lng: '-3.0012' },
+          { id: 'boveda', title: 'Bóveda del Cerezuelo y Ruinas de Santa María', rating: 8.8, drive: '5 min', cat: 'Aventura', icon: '🏛️',
+            desc: 'Paseo urbano con acceso subterráneo (casco) a la galería del s. XVI bajo la plaza mayor. ~3€/persona.',
+            bestTime: 'Mañana o tarde (interior fresco). Reservar con Turisla.',
+            mapsQ: 'Plaza de la Corredera, Cazorla', lat: '37.9103', lng: '-3.0032' },
+          { id: 'castillo-yedra', title: 'Castillo de la Yedra', rating: 8.6, drive: '6 min', cat: 'Senderismo', icon: '🏰',
+            desc: 'Fortaleza medieval con Museo de Artes y Costumbres Populares de la Junta de Andalucía. Gratis.',
+            bestTime: 'Mañana o primera hora de tarde. Visita en interiores protegidos del calor.',
+            mapsQ: 'Castillo de la Yedra, Cazorla', lat: '37.9106', lng: '-3.0050' },
+          { id: 'san-isicio', title: 'Ermita de la Virgen de la Cabeza y San Isicio', rating: 8.4, drive: '7 min', cat: 'Senderismo', icon: '🥾',
+            desc: 'Sendero fácil de 3 km entre pinares y olivares. Vistas panorámicas del pueblo al atardecer. Gratis.',
+            bestTime: 'Atardecer (19:00–21:00). Temperatura óptima y luz dorada.',
+            mapsQ: 'Ermita de San Isicio, Cazorla', lat: '37.9050', lng: '-3.0180' },
+          { id: 'ferrata', title: 'Vía Ferrata «La Mocha» (La Iruela)', rating: 9.1, drive: '10 min', cat: 'Aventura', icon: '⛰️',
+            desc: 'Escalada asistida con peldaños de hierro y cables (nivel K2, iniciación). Turisla. ~35–40€/persona.',
+            bestTime: 'Mañana (09:00–13:00). Muy expuesto al sol: reservar y salir pronto.',
+            mapsQ: 'Vía Ferrata La Mocha, La Iruela', lat: '37.9210', lng: '-3.0005' },
+          { id: '4x4', title: 'Ruta 4×4 Zonas de Reserva', rating: 9.0, drive: '12 min', cat: 'Naturaleza', icon: '🦌',
+            desc: 'Vehículo 9 plazas por pistas restringidas. Telescopios para ciervos, gamos y cabras monteses. Tierra Venturas. ~30–35€/persona.',
+            bestTime: 'Tarde (18:00–21:00). Mejor avistamiento al atardecer; vehículo climatizado.',
+            mapsQ: 'Tierra Venturas, Cazorla', lat: '37.9120', lng: '-3.0018' },
+          { id: 'astronomia', title: 'Astronomía Starlight', rating: 9.4, drive: '15 min', cat: 'Nocturna', icon: '🌌',
+            desc: 'Sesión guiada en zona Starlight. Telescopios para anillos de Saturno y constelaciones de julio. ~15–20€/persona.',
+            bestTime: 'Noche (22:00–00:30), tras la cena. Sin esfuerzo; máxima visibilidad en julio.',
+            mapsQ: 'Mirador La Iruela, Cazorla', lat: '37.9214', lng: '-2.9998' },
+          { id: 'linarejos', title: 'Pozas de Linarejos y Alto Guadalquivir', rating: 8.7, drive: '35 min', cat: 'Agua / equipo', icon: '💧',
+            desc: 'Remansos de agua limpia y fría para baños suaves en las horas de tarde. Gratis.',
+            bestTime: 'Tarde (16:00–19:00). Ideal cuando el senderismo matinal ha terminado.',
+            mapsQ: 'Linarejos, Cazorla, Jaén', lat: '37.9420', lng: '-2.9680' },
+          { id: 'utrero-senderismo', title: 'Cerrada del Utrero (senderismo)', rating: 8.5, drive: '40 min', cat: 'Senderismo', icon: '🦅',
+            desc: 'Sendero circular ~45 min en cañón calizo. Buitres leonados anidando. Gratis.',
+            bestTime: 'Mañana (09:00–12:00). Cañón sombreado; señal móvil nula — mapas offline.',
+            mapsQ: 'Cerrada del Utrero, Cazorla', lat: '37.9480', lng: '-2.9650' },
+          { id: 'barranquismo', title: 'Barranquismo Cerrada del Utrero', rating: 8.6, drive: '40 min', cat: 'Aventura', icon: '🏞️',
+            desc: 'Descenso del cauce con neopreno, casco y arnés. Saltos a pozas y rápeles. Nivel iniciación. ~40–45€/persona.',
+            bestTime: 'Mañana (10:00–14:00). Agua fría y menos gente; calzado cerrado que se pueda mojar.',
+            mapsQ: 'Cerrada del Utrero, Cazorla', lat: '37.9480', lng: '-2.9650' },
+          { id: 'mirador-palomas', title: 'Mirador del Puerto de las Palomas', rating: 8.3, drive: '40 min', cat: 'Naturaleza', icon: '🔭',
+            desc: 'A más de 1.200 m, apto para utilitarios. Buitres y alimoches planeando a la altura de los ojos. Gratis.',
+            bestTime: 'Mañana temprano o parada breve de camino a otra actividad.',
+            mapsQ: 'Puerto de las Palomas, Sierra de Cazorla', lat: '37.9980', lng: '-2.8720' },
+          { id: 'kayak-rio', title: 'Kayak Alto Guadalquivir (Río)', rating: 8.9, drive: '40 min', cat: 'Aventura acuática', icon: '🛶',
+            desc: 'Descenso guiado en piraguas por tramos estables con pequeños rápidos. Favorito para adolescentes de 13 años. ~30–35€/persona.',
+            bestTime: 'Mañana (09:30–13:30). Calzado cerrado que se pueda mojar. Base en Arroyo Frío.',
+            mapsQ: 'Cazorla Aventur, Arroyo Frío, Jaén', lat: '37.9540', lng: '-2.9910' },
+          { id: 'multiaventura', title: 'Parque Multiaventura y Tirolinas', rating: 8.3, drive: '40 min', cat: 'Aventura', icon: '🌲',
+            desc: 'Circuitos de cuerdas, puentes colgantes y tirolinas entre pinos (Arroyo Frío). ~20–25€/persona.',
+            bestTime: 'Mañana (09:00–13:00). Protección bajo pinar denso; reservar para 8 personas.',
+            mapsQ: 'Aventuras Cazorla, Burunchel', lat: '37.9540', lng: '-2.9910' },
+          { id: 'herrerias', title: 'Puente de las Herrerías (pozas)', rating: 9.1, drive: '45 min', cat: 'Agua / equipo', icon: '💧',
+            desc: 'Área recreativa oficial bajo pinos centenarios. Pozas sombreadas poco profundas, baño familiar seguro. Gratis.',
+            bestTime: 'Tarde (16:00–19:00). Parking pavimentado apto para utilitarios.',
+            mapsQ: 'Puente de las Herrerías, Cazorla', lat: '37.9010', lng: '-2.9388' },
+          { id: 'borosa', title: 'Ruta del Río Borosa', rating: 8.8, drive: '50 min', cat: 'Senderismo', icon: '🏞️',
+            desc: 'Pasarelas sobre pozas turquesa hasta la Cerrada de Elías. El sendero más famoso de Jaén. Gratis.',
+            bestTime: 'Parking antes de las 08:15. Salida 08:00–08:30; crítico en julio por calor y aparcamiento.',
+            mapsQ: '38.01505,-2.86491', lat: '38.01505', lng: '-2.86491' },
+          { id: 'canaliega', title: 'Cerrada de la Canaliega', rating: 8.5, drive: '55 min', cat: 'Senderismo', icon: '🌿',
+            desc: 'Alternativa poco masificada junto al arroyo. Silencio y sombra continua. Gratis.',
+            bestTime: 'Mañana (08:00–12:00). Señal móvil nula — mapas offline.',
+            mapsQ: 'Cerrada de la Canaliega, Sierra de Cazorla', lat: '38.0250', lng: '-2.8550' },
+          { id: 'paddle', title: 'Kayak / Paddle Surf Giant (SUP)', rating: 8.4, drive: '1 h 10 min', cat: 'Agua / equipo', icon: '🛶',
+            desc: 'Kayak recreativo o tabla SUP gigante para 8 personas en aguas tranquilas del embalse. Centro de Ocio El Tranco. ~12–15€/persona.',
+            bestTime: 'Mañana o primera hora de tarde. Combina con comida en el embalse.',
+            mapsQ: '38.1300,-2.7850', lat: '38.1300', lng: '-2.7850' }
+        ];
+        var RESTAURANTS = [
+          { id: 'iruela', title: 'Restaurante La Iruela', rating: 8.5, drive: '10 min', cat: 'Castillo',
+            desc: 'Ideal tras visitar el castillo de La Iruela.',
+            web: 'https://www.lairuela.es', webLabel: 'lairuela.es',
+            mapsQ: 'Restaurante La Iruela, La Iruela, Jaén', lat: '37.9210', lng: '-3.0005', address: 'La Iruela · junto al castillo' },
+          { id: 'leandro', title: 'Mesón Leandro', rating: 9.7, drive: '12 min', cat: 'Gourmet',
+            desc: 'Excelencia gastronómica de la sierra. Carnes y cordero segureño.',
+            web: 'https://www.mesonleandro.com', webLabel: 'mesonleandro.com',
+            mapsQ: 'Mesón Leandro, C. Hoz 3, Cazorla', lat: '37.9103', lng: '-3.0035', address: 'C. Hoz, 3 · Cazorla' },
+          { id: 'alfonso', title: 'Casa Alfonso', rating: 9.2, drive: '12 min', cat: 'Terraza familiar',
+            desc: 'Gran terraza y cocina creativa mediterránea.',
+            web: 'https://www.casalfonso.es', webLabel: 'casalfonso.es',
+            mapsQ: 'Casa Alfonso, Plaza Consuelo Mendieta, Cazorla', lat: '37.9108', lng: '-3.0028', address: 'Pl. Consuelo Mendieta · Cazorla' },
+          { id: 'tranco', title: 'Restaurante El Tranco', rating: 8.9, drive: '1 h 10 min', cat: 'Embalse',
+            desc: 'Vistas al embalse. Gastronomía local. Reserva recomendada.',
+            web: 'https://www.centrodeocioeltranco.com', webLabel: 'centrodeocioeltranco.com',
+            mapsQ: '38.1300,-2.7850', lat: '38.1300', lng: '-2.7850', address: 'Embalse del Tranco' }
+        ];
+        var plan = {};
+        var selectedActivity = null;
+
+        function esc(s) {
+          return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function activityMediaClass(cat) {
+          if (/senderismo|naturaleza|4×4/i.test(cat)) return 'catalog-card-media--nature';
+          if (/nocturna|starlight|astronom/i.test(cat)) return 'catalog-card-media--starlight';
+          if (/agua|kayak|paddle|acuática/i.test(cat)) return 'catalog-card-media--water';
+          if (/aventura|ferrata|barranquismo/i.test(cat)) return 'catalog-card-media--adventure';
+          return '';
+        }
+        function activityBadgeClass(cat) {
+          if (/senderismo|naturaleza|4×4/i.test(cat)) return 'catalog-badge--nature';
+          if (/nocturna|starlight|astronom/i.test(cat)) return 'catalog-badge--starlight';
+          if (/agua|kayak|paddle|acuática/i.test(cat)) return 'catalog-badge--water';
+          if (/aventura|ferrata|barranquismo/i.test(cat)) return 'catalog-badge--adventure';
+          return 'catalog-badge--default';
+        }
+        function getActivity(id) {
+          return ACTIVITIES.filter(function (a) { return a.id === id; })[0];
+        }
+        function loadPlan() {
+          try { plan = JSON.parse(localStorage.getItem(PLAN_KEY) || '{}'); } catch (e) { plan = {}; }
+          STAY_DAYS.forEach(function (d) { if (!Array.isArray(plan[d.id])) plan[d.id] = []; });
+        }
+        function savePlan() {
+          try { localStorage.setItem(PLAN_KEY, JSON.stringify(plan)); } catch (e) {}
+          renderPlanner();
+        }
+        function isPlanned(id) {
+          return STAY_DAYS.some(function (d) { return plan[d.id].indexOf(id) >= 0; });
+        }
+        function renderDayPlanner() {
+          var grid = document.getElementById('day-planner-grid');
+          if (!grid) return;
+          grid.innerHTML = STAY_DAYS.map(function (day) {
+            var ids = plan[day.id] || [];
+            var chips = ids.length ? ids.map(function (aid) {
+              var a = getActivity(aid);
+              if (!a) return '';
+              return '<div class="plan-chip" data-chip-activity="' + aid + '">' +
+                '<span class="flex-1">' + a.icon + ' ' + esc(a.title) + '</span>' +
+                '<button type="button" class="plan-chip-remove" data-remove-day="' + day.id + '" data-remove-id="' + aid + '" aria-label="Quitar">×</button></div>';
+            }).join('') : '<p class="day-column-empty">Pulsa una actividad del catálogo</p>';
+            return '<div class="day-column"><div class="day-column-header">' + esc(day.label) +
+              (day.sub ? ' · ' + esc(day.sub) : '') + '</div><div class="day-column-body">' + chips + '</div></div>';
+          }).join('');
+        }
+        function renderActivityCatalog() {
+          var el = document.getElementById('activity-catalog');
+          if (!el) return;
+          el.innerHTML = ACTIVITIES.map(function (a) {
+            var mediaCls = activityMediaClass(a.cat);
+            return '<button type="button" class="catalog-card' + (isPlanned(a.id) ? ' is-planned' : '') + '" data-activity-id="' + a.id + '">' +
+              '<div class="catalog-card-media ' + mediaCls + '">' +
+              '<span class="catalog-badge ' + activityBadgeClass(a.cat) + '">' + esc(a.cat) + '</span>' +
+              '<span class="rating-pill-stitch"><span class="material-symbols-outlined filled-icon text-adventure-accent text-[14px]">star</span> ' + a.rating + '</span>' +
+              '</div>' +
+              '<div class="catalog-card-body">' +
+              '<h4 class="font-display font-semibold text-headline-md text-primary text-left leading-snug">' + a.icon + ' ' + esc(a.title) + '</h4>' +
+              '<p class="text-sm text-on-surface-variant text-left mt-1 line-clamp-2">' + esc(a.desc) + '</p>' +
+              '<div class="catalog-meta">' +
+              '<span><span class="material-symbols-outlined text-[16px]">directions_car</span> ' + esc(a.drive) + '</span>' +
+              '<span><span class="material-symbols-outlined text-[16px]">schedule</span> Ver horario</span>' +
+              '</div>' +
+              (isPlanned(a.id) ? '<p class="text-xs text-primary font-semibold mt-2 text-left flex items-center gap-1"><span class="material-symbols-outlined filled-icon text-[14px]">check_circle</span> En tu plan</p>' : '') +
+              '</div></button>';
+          }).join('');
+        }
+        function renderRestaurants() {
+          var el = document.getElementById('restaurant-catalog');
+          if (!el) return;
+          el.innerHTML = RESTAURANTS.map(function (r) {
+            return '<article class="catalog-card" style="cursor:default">' +
+              '<div class="catalog-card-media catalog-card-media--gastro">' +
+              '<span class="catalog-badge catalog-badge--gastro">' + esc(r.cat) + '</span>' +
+              '<span class="rating-pill-stitch"><span class="material-symbols-outlined filled-icon text-gastronomy-accent text-[14px]">star</span> ' + r.rating + '</span>' +
+              '</div>' +
+              '<div class="catalog-card-body">' +
+              '<h3 class="font-display font-semibold text-headline-md text-primary">' + esc(r.title) + '</h3>' +
+              '<p class="text-sm text-on-surface-variant mt-1">' + esc(r.desc) + '</p>' +
+              '<p class="text-xs text-tertiary mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> ' + esc(r.address) + ' · ' + esc(r.drive) + '</p>' +
+              '<div class="rest-card-actions">' +
+              '<a href="' + esc(r.web) + '" target="_blank" rel="noopener" class="web-link-btn">🌐 ' + esc(r.webLabel) + '</a>' +
+              '<button type="button" class="map-btn text-sm" data-maps-q="' + esc(r.mapsQ) + '" data-maps-title="' + esc(r.title) + '">Ver en Maps</button></div>' +
+              '<div class="gps-block mt-2" data-lat="' + r.lat + '" data-lng="' + r.lng + '" data-label="' + esc(r.title) + '">' +
+              '<p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wide">GPS</p>' +
+              '<p class="gps-coords mt-0.5">' + r.lat + ', ' + r.lng + '</p>' +
+              '<button type="button" class="copy-coords-btn">Copiar coordenadas</button></div></div></article>';
+          }).join('');
+        }
+        function parseDriveMinutes(drive) {
+          var s = String(drive);
+          var hours = s.match(/(\d+)\s*h/);
+          var mins = s.match(/(\d+)\s*min/);
+          var h = hours ? parseInt(hours[1], 10) : 0;
+          var m = mins ? parseInt(mins[1], 10) : 0;
+          if (!hours && !mins) return 9999;
+          return h * 60 + m;
+        }
+        function renderLogisticsTable() {
+          var tbody = document.getElementById('logistics-table-body');
+          if (!tbody) return;
+          var rows = ACTIVITIES.map(function (a) {
+            return { title: a.title, rating: a.rating, drive: a.drive, driveMin: parseDriveMinutes(a.drive) };
+          }).concat(RESTAURANTS.map(function (r) {
+            return { title: r.title, rating: r.rating, drive: r.drive, driveMin: parseDriveMinutes(r.drive) };
+          })).sort(function (a, b) {
+            return a.driveMin - b.driveMin || b.rating - a.rating;
+          });
+          tbody.innerHTML = rows.map(function (r) {
+            return '<tr><td class="py-2 pr-3 font-medium">' + esc(r.title) + '</td><td class="py-2 pr-3">⭐ ' + r.rating +
+              '</td><td class="py-2">' + esc(r.drive) + '</td></tr>';
+          }).join('');
+        }
+        function renderPlanner() {
+          renderDayPlanner();
+          renderActivityCatalog();
+          renderRestaurants();
+          renderLogisticsTable();
+        }
+        function openTipModal(activityId) {
+          var a = getActivity(activityId);
+          if (!a) return;
+          selectedActivity = activityId;
+          document.getElementById('tip-modal-title').textContent = a.title;
+          document.getElementById('tip-modal-desc').textContent = a.desc;
+          document.getElementById('tip-modal-time').textContent = a.bestTime;
+          document.getElementById('tip-assign-days').innerHTML = STAY_DAYS.map(function (d) {
+            var on = plan[d.id].indexOf(activityId) >= 0;
+            return '<button type="button" class="assign-day-btn' + (on ? ' ring-2 ring-forest-500 font-bold' : '') +
+              '" data-assign-day="' + d.id + '" data-assign-id="' + activityId + '">' + esc(d.label) + (on ? ' ✓' : '') + '</button>';
+          }).join('');
+          var modal = document.getElementById('activity-tip-modal');
+          modal.classList.add('open');
+          modal.setAttribute('aria-hidden', 'false');
+        }
+        function closeTipModal() {
+          document.getElementById('activity-tip-modal').classList.remove('open');
+          document.getElementById('activity-tip-modal').setAttribute('aria-hidden', 'true');
+          selectedActivity = null;
+        }
+        function toggleOnDay(dayId, activityId) {
+          var list = plan[dayId];
+          var i = list.indexOf(activityId);
+          if (i >= 0) list.splice(i, 1); else list.push(activityId);
+          savePlan();
+          if (selectedActivity === activityId) openTipModal(activityId);
+        }
+
+        document.querySelectorAll('.catalog-tab').forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var t = tab.dataset.catalogTab;
+            document.querySelectorAll('.catalog-tab').forEach(function (x) {
+              x.classList.toggle('active', x === tab);
+              x.setAttribute('aria-selected', x === tab ? 'true' : 'false');
+            });
+            document.querySelectorAll('[data-catalog-panel]').forEach(function (p) {
+              p.hidden = p.dataset.catalogPanel !== t;
+            });
+          });
+        });
+        document.querySelectorAll('[data-open-tab]').forEach(function (link) {
+          link.addEventListener('click', function () {
+            var t = link.dataset.openTab;
+            setTimeout(function () {
+              var tab = document.querySelector('.catalog-tab[data-catalog-tab="' + t + '"]');
+              if (tab) tab.click();
+            }, 400);
+          });
+        });
+        document.getElementById('activity-catalog')?.addEventListener('click', function (e) {
+          var card = e.target.closest('[data-activity-id]');
+          if (card) openTipModal(card.dataset.activityId);
+        });
+        document.getElementById('day-planner-grid')?.addEventListener('click', function (e) {
+          var rm = e.target.closest('[data-remove-id]');
+          if (rm) { e.stopPropagation(); toggleOnDay(rm.dataset.removeDay, rm.dataset.removeId); return; }
+          var chip = e.target.closest('[data-chip-activity]');
+          if (chip) openTipModal(chip.dataset.chipActivity);
+        });
+        document.getElementById('tip-assign-days')?.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-assign-day]');
+          if (btn) toggleOnDay(btn.dataset.assignDay, btn.dataset.assignId);
+        });
+        document.getElementById('tip-modal-close')?.addEventListener('click', closeTipModal);
+        document.getElementById('tip-modal-backdrop')?.addEventListener('click', closeTipModal);
+        document.getElementById('tip-modal-only-info')?.addEventListener('click', closeTipModal);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && document.getElementById('activity-tip-modal').classList.contains('open')) closeTipModal();
+        });
+        document.getElementById('clear-plan-btn')?.addEventListener('click', function () {
+          showConfirmModal({
+            title: '¿Vaciar el plan?',
+            message: 'Se quitarán todas las actividades asignadas a los 6 días. Podrás volver a armar el calendario desde el catálogo.',
+            acceptLabel: 'Vaciar plan',
+            cancelLabel: 'Cancelar',
+            onConfirm: function () {
+              STAY_DAYS.forEach(function (d) { plan[d.id] = []; });
+              savePlan();
+            }
+          });
+        });
+        function initPlanner() {
+          if (!document.getElementById('day-planner-grid') || !document.getElementById('activity-catalog')) {
+            var host = document.querySelector('main');
+            if (host) {
+              var alert = document.createElement('div');
+              alert.className = 'mb-6 p-4 rounded-xl border-2 border-amber-400 bg-amber-50 text-amber-950 text-sm';
+              alert.setAttribute('role', 'alert');
+              alert.innerHTML = '<strong>Planificador no cargado.</strong> El HTML de esta página está incompleto o es una copia en caché antigua. Recarga con <kbd>Ctrl+F5</kbd> o abre de nuevo <code>index.html</code> desde Descargas.';
+              host.insertBefore(alert, host.firstChild);
+            }
+            return;
+          }
+          loadPlan();
+          renderPlanner();
+        }
+        initPlanner();
+      })();
+
+      // —— Modal mapas embebido (iframe) ——
+      (function () {
+        var MAP_TYPE_KEY = 'cazorla-map-layer';
+        var mapsModal = document.getElementById('maps-modal');
+        var mapsIframe = document.getElementById('maps-modal-iframe');
+        var mapsTitle = document.getElementById('maps-modal-title');
+        var mapsExternal = document.getElementById('maps-modal-external');
+        var mapsClose = document.getElementById('maps-modal-close');
+        var mapsBackdrop = document.getElementById('maps-modal-backdrop');
+        var btnMapRoad = document.getElementById('maps-type-road');
+        var btnMapSatellite = document.getElementById('maps-type-satellite');
+        var currentMapsQuery = '';
+        var currentMapType = 'road';
+
+        function queryFromStandardUrl(url) {
+          try {
+            return new URL(url).searchParams.get('q') || '';
+          } catch (e) {
+            return '';
+          }
+        }
+
+        function loadMapTypePreference() {
+          try {
+            var saved = localStorage.getItem(MAP_TYPE_KEY);
+            return saved === 'satellite' ? 'satellite' : 'road';
+          } catch (e) {
+            return 'road';
+          }
+        }
+
+        function saveMapTypePreference(type) {
+          try { localStorage.setItem(MAP_TYPE_KEY, type); } catch (e) {}
+        }
+
+        function toEmbedSrc(query, mapType) {
+          var q = (query || '').trim();
+          if (!q) return '';
+          if (q.indexOf('google.com/maps/embed') !== -1) return q;
+          var src = 'https://maps.google.com/maps?q=' + encodeURIComponent(q) + '&hl=es&z=15&output=embed';
+          if (mapType === 'satellite') {
+            src += '&t=k';
+          } else {
+            src += '&t=m';
+          }
+          return src;
+        }
+
+        function toExternalHref(query) {
+          var q = (query || '').trim();
+          if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(q)) {
+            return 'https://maps.google.com/?q=' + q.replace(/\s/g, '') + '&nav=1';
+          }
+          return 'https://maps.google.com/?q=' + encodeURIComponent(q);
+        }
+
+        function updateMapTypeButtons() {
+          var isRoad = currentMapType === 'road';
+          btnMapRoad?.classList.toggle('active', isRoad);
+          btnMapSatellite?.classList.toggle('active', !isRoad);
+          btnMapRoad?.setAttribute('aria-pressed', isRoad ? 'true' : 'false');
+          btnMapSatellite?.setAttribute('aria-pressed', !isRoad ? 'true' : 'false');
+        }
+
+        function applyMapLayer() {
+          if (!currentMapsQuery || !mapsIframe) return;
+          mapsIframe.src = toEmbedSrc(currentMapsQuery, currentMapType);
+        }
+
+        function setMapType(type, persist) {
+          currentMapType = type === 'satellite' ? 'satellite' : 'road';
+          if (persist !== false) saveMapTypePreference(currentMapType);
+          updateMapTypeButtons();
+          applyMapLayer();
+        }
+
+        currentMapType = loadMapTypePreference();
+        updateMapTypeButtons();
+
+        btnMapRoad?.addEventListener('click', function () { setMapType('road'); });
+        btnMapSatellite?.addEventListener('click', function () { setMapType('satellite'); });
+
+        window.openMapsModal = function (query, title) {
+          if (!mapsModal || !mapsIframe) return;
+          currentMapsQuery = (query || '').trim();
+          currentMapType = loadMapTypePreference();
+          updateMapTypeButtons();
+          mapsTitle.textContent = title || 'Mapa';
+          mapsIframe.src = toEmbedSrc(currentMapsQuery, currentMapType);
+          mapsExternal.href = toExternalHref(currentMapsQuery);
+          mapsModal.classList.add('open');
+          mapsModal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+          mapsClose.focus();
+        };
+
+        function closeMapsModal() {
+          if (!mapsModal) return;
+          mapsModal.classList.remove('open');
+          mapsModal.setAttribute('aria-hidden', 'true');
+          mapsIframe.src = '';
+          document.body.style.overflow = '';
+        }
+
+        document.addEventListener('click', function (e) {
+          var btn = e.target.closest('.map-btn');
+          if (!btn) return;
+          var q = btn.dataset.mapsQ || (btn.href ? queryFromStandardUrl(btn.href) : '');
+          if (!q) return;
+          e.preventDefault();
+          var title = btn.dataset.mapsTitle || btn.textContent.replace(/^Ver en Maps\s*·?\s*/i, '').trim() || 'Mapa';
+          window.openMapsModal(q, title);
+        });
+
+        mapsClose?.addEventListener('click', closeMapsModal);
+        mapsBackdrop?.addEventListener('click', closeMapsModal);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && mapsModal.classList.contains('open')) closeMapsModal();
+        });
+      })();
+
+      // —— Emergencia modal ——
+      var modal = document.getElementById('emergency-modal');
+      document.getElementById('fab-emergency')?.addEventListener('click', function() { modal?.classList.add('open'); });
+      document.getElementById('close-emergency')?.addEventListener('click', function() { modal?.classList.remove('open'); });
+      modal?.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
+
+      // —— Exportar PDF (impresión optimizada) ——
+      document.getElementById('export-pdf-btn')?.addEventListener('click', function() {
+        document.body.classList.add('print-export');
+        var prev = document.title;
+        document.title = 'Cazorla_Escapada_Julio_Guia_Campo';
+        window.print();
+        setTimeout(function() {
+          document.body.classList.remove('print-export');
+          document.title = prev;
+        }, 500);
+      });
+
+      // —— Nav activo ——
+      var sections = [].slice.call(document.querySelectorAll('section[id]'));
+      var navLinks = [].slice.call(document.querySelectorAll('.nav-link'));
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var id = entry.target.id;
+            navLinks.forEach(function(link) {
+              link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+            });
+          }
+        });
+      }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+      sections.forEach(function(s) { observer.observe(s); });
+
+      registerServiceWorker();
+    })();
+  </script>
+</body>
+</html>
